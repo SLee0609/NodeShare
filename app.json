@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "LCConnect",
+    "name": "LC Connect",
     "slug": "LCConnect",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "image": "./assets/cslclogo.png",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "updates": {
