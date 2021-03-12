@@ -3,13 +3,17 @@ import { LogBox } from "react-native";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-// import { enableScreens } from "react-native-screens";
+import { enableScreens } from "react-native-screens";
 
 import Navigator from "./navigation/Navigator";
 
 // optimize navigation performances
-// don't use until react-navigation releases an update (currently conflicts with react-native-screens)
-// enableScreens();
+enableScreens();
+
+// ignore warning that is thrown about old version of react-navigation
+LogBox.ignoreLogs([
+  "It appears that you are using old version of react-navigation library. Please update @react-navigation/bottom-tabs, @react-navigation/stack and @react-navigation/drawer to version 5.10.0 or above to take full advantage of new functionality added to react-native-screens",
+]);
 
 // ignore warning that is thrown - remove when react-navigation releases an update (warns about future incompatibility when expo is upgraded to SDK 41)
 LogBox.ignoreLogs([

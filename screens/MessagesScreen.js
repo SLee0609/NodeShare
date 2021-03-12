@@ -9,6 +9,12 @@ const MessagesScreen = (props) => {
   );
 };
 
+MessagesScreen.navigationOptions = (navData) => {
+  return {
+    headerTitle: "Messages",
+  };
+};
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,

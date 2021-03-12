@@ -9,6 +9,12 @@ const SettingsScreen = (props) => {
   );
 };
 
+SettingsScreen.navigationOptions = (navData) => {
+  return {
+    headerTitle: "Settings",
+  };
+};
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,

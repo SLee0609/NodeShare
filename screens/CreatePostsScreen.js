@@ -9,6 +9,12 @@ const CreatePostsScreen = (props) => {
   );
 };
 
+CreatePostsScreen.navigationOptions = (navData) => {
+  return {
+    headerTitle: "Create Posts",
+  };
+};
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,

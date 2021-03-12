@@ -1,17 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-const YourPostsScreen = (props) => {
+const PostDetailScreen = (props) => {
   return (
     <View style={styles.screen}>
-      <Text>Your Posts Screen</Text>
+      <Text>Post Detail Screen</Text>
     </View>
   );
 };
 
-YourPostsScreen.navigationOptions = (navData) => {
+PostDetailScreen.navigationOptions = (navData) => {
   return {
-    headerTitle: "Your Posts",
+    headerTitle: "Post Details",
   };
 };
 
@@ -23,4 +23,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default YourPostsScreen;
+export default PostDetailScreen;

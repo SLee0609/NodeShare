@@ -10,6 +10,7 @@ import YourPostsScreen from "../screens/YourPostsScreen";
 import CreatePostsScreen from "../screens/CreatePostsScreen";
 import MessagesScreen from "../screens/MessagesScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import PostDetailScreen from "../screens/PostDetailScreen";
 import AllPostsScreen from "../screens/AllPostsScreen";
 import InformationScreen from "../screens/post-types/InformationScreen";
 import ServicesScreen from "../screens/post-types/ServicesScreen";
@@ -20,22 +21,19 @@ import OtherScreen from "../screens/post-types/OtherScreen";
 import Colors from "../constants/Colors";
 
 // nav options for stack that configures header style
-const defaultStackNavOptions = (title) => {
-  return {
-    title: title,
-    headerStyle: {
-      backgroundColor: Colors.primaryColor,
-      height: Dimensions.get("window").height * 0.12,
-    },
-    headerTitleStyle: {
-      fontFamily: "open-sans-bold",
-      fontSize: 20,
-    },
-    headerBackTitleStyle: {
-      fontFamily: "open-sans",
-    },
-    headerTintColor: Colors.accentColor,
-  };
+const defaultStackNavOptions = {
+  headerStyle: {
+    backgroundColor: Colors.primaryColor,
+    height: Dimensions.get("window").height * 0.12,
+  },
+  headerTitleStyle: {
+    fontFamily: "open-sans-bold",
+    fontSize: 20,
+  },
+  headerBackTitleStyle: {
+    fontFamily: "open-sans",
+  },
+  headerTintColor: Colors.accentColor,
 };
 
 // create stack navigators for each screen
@@ -44,7 +42,7 @@ const YourPostsNav = createStackNavigator(
     YourPosts: YourPostsScreen,
   },
   {
-    defaultNavigationOptions: defaultStackNavOptions("Your Posts"),
+    defaultNavigationOptions: defaultStackNavOptions,
   }
 );
 const CreatePostsNav = createStackNavigator(
@@ -52,7 +50,7 @@ const CreatePostsNav = createStackNavigator(
     CreatePosts: CreatePostsScreen,
   },
   {
-    defaultNavigationOptions: defaultStackNavOptions("Create Posts"),
+    defaultNavigationOptions: defaultStackNavOptions,
   }
 );
 const MessagesNav = createStackNavigator(
@@ -60,7 +58,7 @@ const MessagesNav = createStackNavigator(
     Messages: MessagesScreen,
   },
   {
-    defaultNavigationOptions: defaultStackNavOptions("Messages"),
+    defaultNavigationOptions: defaultStackNavOptions,
   }
 );
 const SettingsNav = createStackNavigator(
@@ -68,12 +66,13 @@ const SettingsNav = createStackNavigator(
     Settings: SettingsScreen,
   },
   {
-    defaultNavigationOptions: defaultStackNavOptions("Settings"),
+    defaultNavigationOptions: defaultStackNavOptions,
   }
 );
 const AllPostsNav = createStackNavigator(
   {
     AllPosts: AllPostsScreen,
+    PostDetail: PostDetailScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -82,6 +81,7 @@ const AllPostsNav = createStackNavigator(
 const InformationNav = createStackNavigator(
   {
     Information: InformationScreen,
+    PostDetail: PostDetailScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -90,6 +90,7 @@ const InformationNav = createStackNavigator(
 const ServicesNav = createStackNavigator(
   {
     Services: ServicesScreen,
+    PostDetail: PostDetailScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -98,6 +99,7 @@ const ServicesNav = createStackNavigator(
 const SalesNav = createStackNavigator(
   {
     Sales: SalesScreen,
+    PostDetail: PostDetailScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -106,6 +108,7 @@ const SalesNav = createStackNavigator(
 const TradingNav = createStackNavigator(
   {
     Trading: TradingScreen,
+    PostDetail: PostDetailScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -114,6 +117,7 @@ const TradingNav = createStackNavigator(
 const FunNav = createStackNavigator(
   {
     Fun: FunScreen,
+    PostDetail: PostDetailScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -122,6 +126,7 @@ const FunNav = createStackNavigator(
 const OtherNav = createStackNavigator(
   {
     Other: OtherScreen,
+    PostDetail: PostDetailScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
