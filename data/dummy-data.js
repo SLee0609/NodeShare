@@ -22,7 +22,7 @@ export const USERS = [
 export const POSTS = [
   new Post(
     "p1",
-    ["c1", "c2", "c6"],
+    ["c1", "c2", "c5", "c6"],
     "Looking for a Guitarist",
     "u1",
     "https://cdn.mos.cms.futurecdn.net/CT5CNXjsQLaWrqVg7WYnzR.jpg",

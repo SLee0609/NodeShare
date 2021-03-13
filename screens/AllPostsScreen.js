@@ -5,12 +5,13 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import HeaderButton from "../components/HeaderButton";
 import PostOverviewList from "../components/PostOverviewList";
 import { POSTS } from "../data/dummy-data";
+import DefaultText from "../components/DefaultText";
 
 // Loads post overview list for all posts
 const AllPostsScreen = (props) => {
   if (POSTS.length === 0) {
     return (
-      <View style={styles.content}>
+      <View style={styles.screen}>
         <DefaultText>No posts found!</DefaultText>
       </View>
     );
@@ -22,7 +23,6 @@ const AllPostsScreen = (props) => {
 
 AllPostsScreen.navigationOptions = (navData) => {
   return {
-    headerTitle: "All Posts",
     headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
