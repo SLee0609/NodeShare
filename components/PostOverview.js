@@ -1,12 +1,13 @@
 import React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import ProfilePicture from "react-native-profile-picture";
 
+import ProfilePic from "../components/ProfilePicture";
 import { USERS } from "../data/dummy-data";
 import Colors from "../constants/Colors";
 import DefaultText from "./DefaultText";
 
-// An individual post overview component; used in PostOverviewList
+// Accepts post title, userId, and onSelect function
+// Returns an individual post overview component; used in PostOverviewList
 const PostOverview = (props) => {
   // find user
   const user = USERS.find((u) => u.id === props.userId);
@@ -16,13 +17,7 @@ const PostOverview = (props) => {
       <TouchableOpacity onPress={props.onSelectPost}>
         <View style={styles.mainContainer}>
           <View style={styles.pictureContainer}>
-            <ProfilePicture
-              isPicture={true}
-              URLPicture={user.profilePicture}
-              width={60}
-              height={60}
-              pictureStyle={styles.picture}
-            />
+            <ProfilePic imgUrl={user.profilePicture} width={60} height={60} />
           </View>
           <View style={styles.textContainer}>
             <DefaultText style={styles.title}>{props.title}</DefaultText>
@@ -39,8 +34,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: Colors.gray,
     borderRadius: 10,
+    marginBottom: 15,
     paddingVertical: 15,
-    paddingHorizontal: 15,
+    paddingLeft: 15,
+    paddingRight: 40,
     // shadowColor: "black",
     // shadowOpacity: 0.5,
     // shadowOffset: { width: 0, height: 2 },
@@ -59,14 +56,10 @@ const styles = StyleSheet.create({
   textContainer: {
     justifyContent: "space-evenly",
     marginHorizontal: 20,
-    alignItems: "center",
-  },
-  picture: {
-    borderColor: "black",
-    borderWidth: 2,
+    alignItems: "flex-start",
   },
   title: {
-    fontSize: 17,
+    fontSize: 18,
     fontFamily: "open-sans-bold",
   },
 });

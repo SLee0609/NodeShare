@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 
+import PostDetail from "../components/PostDetail";
 import { CATEGORIES, USERS, POSTS } from "../data/dummy-data";
 
 const PostDetailScreen = (props) => {
@@ -8,9 +9,10 @@ const PostDetailScreen = (props) => {
   const postId = props.navigation.getParam("postId");
   const post = POSTS.find((p) => p.id === postId);
 
+  // return the post detail for that particular post
   return (
     <View style={styles.screen}>
-      <Text>{post.title}</Text>
+      <PostDetail post={post} />
     </View>
   );
 };

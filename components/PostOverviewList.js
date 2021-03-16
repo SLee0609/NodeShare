@@ -3,8 +3,10 @@ import { View, FlatList, StyleSheet } from "react-native";
 import { SearchBar } from "react-native-elements";
 
 import PostOverview from "../components/PostOverview";
+import DefaultText from "../components/DefaultText";
 
-// Flatlist of post overviews that appears in post screens (all posts, information, etc.)
+// Accepts a list of posts and returns a search bar and flatlist of post overviews
+// Used in post screens (all posts, information, etc.)
 const PostOverviewList = (props) => {
   // searchTerm tracks what is currently in the search bar
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,6 +34,23 @@ const PostOverviewList = (props) => {
     setSearchTerm(searchTerm);
   };
 
+  let list = (
+    <View style={styles.textContainer}>
+      <DefaultText>No posts found!</DefaultText>
+    </View>
+  );
+
+  if (props.listData.length != 0) {
+    list = (
+      <FlatList
+        data={props.listData}
+        keyExtractor={(item) => item.id}
+        renderItem={renderPostOverview}
+        style={{ width: "100%", padding: 15 }}
+      />
+    );
+  }
+
   // returns the flatlist of post overviews
   return (
     <View style={styles.list}>
@@ -41,15 +60,9 @@ const PostOverviewList = (props) => {
         inputContainerStyle={styles.inputContainer}
         inputStyle={styles.input}
         onChangeText={updateSearch}
-        lightTheme={true}
         value={searchTerm}
       ></SearchBar>
-      <FlatList
-        data={props.listData}
-        keyExtractor={(item) => item.id}
-        renderItem={renderPostOverview}
-        style={{ width: "100%", padding: 15 }}
-      />
+      {list}
     </View>
   );
 };
@@ -65,9 +78,14 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   input: {
-    color: "black",
+    color: "white",
   },
   list: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  textContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",

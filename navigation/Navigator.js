@@ -20,23 +20,25 @@ import FunScreen from "../screens/post-types/FunScreen";
 import OtherScreen from "../screens/post-types/OtherScreen";
 import Colors from "../constants/Colors";
 
-// nav options for stack that configures header style
+// Default nav options for stack navigators
 const defaultStackNavOptions = {
   headerStyle: {
     backgroundColor: Colors.primaryColor,
-    height: Dimensions.get("window").height * 0.12,
+    height: Dimensions.get("window").height * 0.14,
   },
   headerTitleStyle: {
     fontFamily: "open-sans-bold",
-    fontSize: 20,
+    fontSize: 25,
   },
   headerBackTitleStyle: {
     fontFamily: "open-sans",
   },
   headerTintColor: Colors.accentColor,
+  headerBackTitle: "",
+  cardStyle: { backgroundColor: "white" },
 };
 
-// create stack navigators for each screen
+// Create stack navigators for each screen
 const YourPostsNav = createStackNavigator(
   {
     YourPosts: YourPostsScreen,
@@ -133,7 +135,7 @@ const OtherNav = createStackNavigator(
   }
 );
 
-// drawer navigation for filtering posts
+// Drawer navigation for filtering posts
 const PostFilteringNavigator = createDrawerNavigator(
   {
     AllPosts: {
@@ -190,7 +192,7 @@ const PostFilteringNavigator = createDrawerNavigator(
   }
 );
 
-// main app navigator
+// Main app navigator is the bottom tab navigator with 5 icons
 const Navigator = createBottomTabNavigator(
   {
     Posts: {
@@ -247,7 +249,13 @@ const Navigator = createBottomTabNavigator(
   {
     tabBarOptions: {
       showLabel: false,
-      activeTintColor: "black",
+      style: {
+        backgroundColor: "black",
+        height: Dimensions.get("window").height * 0.07,
+        borderTopColor: "black",
+        borderTopWidth: 1,
+      },
+      activeTintColor: "white",
     },
   }
 );
