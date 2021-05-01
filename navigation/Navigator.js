@@ -1,11 +1,12 @@
 import React from "react";
 import { Dimensions } from "react-native";
-import { createAppContainer } from "react-navigation";
+import { createAppContainer, NavigationEvents } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { AntDesign } from "@expo/vector-icons";
 
+import RegistrationScreen from "../screens/RegistrationScreen";
 import YourPostsScreen from "../screens/YourPostsScreen";
 import CreatePostsScreen from "../screens/CreatePostsScreen";
 import MessagesScreen from "../screens/MessagesScreen";
@@ -40,7 +41,26 @@ const defaultStackNavOptions = {
   cardStyle: { backgroundColor: Colors.gray },
 };
 
+const defaultStackNavOptionsWithoutHeader = {
+  headerStyle: {
+    backgroundColor: Colors.primaryColor,
+    height: Dimensions.get("window").height * 0.14,
+    borderBottomColor: "black",
+    borderBottomWidth: 2,
+  },
+  headerShown: false,
+  cardStyle: { backgroundColor: Colors.gray },
+};
+
 // Create stack navigators for each screen
+const RegistrationNav = createStackNavigator(
+  {
+    Registration: RegistrationScreen,
+  },
+  {
+    defaultNavigationOptions: defaultStackNavOptions,
+  }
+);
 const YourPostsNav = createStackNavigator(
   {
     YourPosts: YourPostsScreen,
@@ -194,8 +214,8 @@ const PostFilteringNavigator = createDrawerNavigator(
   }
 );
 
-// Main app navigator is the bottom tab navigator with 5 icons
-const Navigator = createBottomTabNavigator(
+// BottomTabNavigator navigator is the bottom tab navigator with 5 icons
+const BottomTabNavigator = createBottomTabNavigator(
   {
     Posts: {
       screen: PostFilteringNavigator,
@@ -259,6 +279,16 @@ const Navigator = createBottomTabNavigator(
       },
       activeTintColor: "white",
     },
+  }
+);
+
+const Navigator = createStackNavigator(
+  {
+    Registration: RegistrationNav,
+    LCConnect: BottomTabNavigator,
+  },
+  {
+    defaultNavigationOptions: defaultStackNavOptionsWithoutHeader,
   }
 );
 
