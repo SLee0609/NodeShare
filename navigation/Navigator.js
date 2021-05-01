@@ -25,6 +25,8 @@ const defaultStackNavOptions = {
   headerStyle: {
     backgroundColor: Colors.primaryColor,
     height: Dimensions.get("window").height * 0.14,
+    borderBottomColor: "black",
+    borderBottomWidth: 2,
   },
   headerTitleStyle: {
     fontFamily: "open-sans-bold",
@@ -35,7 +37,7 @@ const defaultStackNavOptions = {
   },
   headerTintColor: Colors.accentColor,
   headerBackTitle: "",
-  cardStyle: { backgroundColor: "white" },
+  cardStyle: { backgroundColor: Colors.gray },
 };
 
 // Create stack navigators for each screen

@@ -32,7 +32,7 @@ const PostOverview = (props) => {
 const styles = StyleSheet.create({
   postItem: {
     justifyContent: "center",
-    backgroundColor: Colors.gray,
+    backgroundColor: Colors.blue,
     borderRadius: 10,
     marginBottom: 15,
     paddingVertical: 15,
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     // shadowOffset: { width: 0, height: 2 },
     // shadowRadius: 15,
     borderColor: "black",
-    borderWidth: 2,
+    borderWidth: 3,
   },
   mainContainer: {
     flexDirection: "row",

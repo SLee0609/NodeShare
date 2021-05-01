@@ -42,8 +42,9 @@ const styles = StyleSheet.create({
     padding: 5,
     paddingLeft: 10,
     flexDirection: "row",
-    borderColor: "black",
-    borderWidth: 2,
+    borderBottomColor: "black",
+    borderBottomWidth: 2,
+    backgroundColor: "black",
   },
   profilePictureContainer: {
     justifyContent: "center",
@@ -54,6 +55,7 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 22,
+    color: "white",
   },
   imageContainer: {
     flex: 1,
