@@ -7,6 +7,7 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import { AntDesign } from "@expo/vector-icons";
 
 import RegistrationScreen from "../screens/RegistrationScreen";
+import LoginScreen from "../screens/LoginScreen";
 import YourPostsScreen from "../screens/YourPostsScreen";
 import CreatePostsScreen from "../screens/CreatePostsScreen";
 import MessagesScreen from "../screens/MessagesScreen";
@@ -53,6 +54,14 @@ const defaultStackNavOptionsWithoutHeader = {
 };
 
 // Create stack navigators for each screen
+const LoginNav = createStackNavigator(
+  {
+    Login: LoginScreen,
+  },
+  {
+    defaultNavigationOptions: defaultStackNavOptions,
+  }
+);
 const RegistrationNav = createStackNavigator(
   {
     Registration: RegistrationScreen,
@@ -285,7 +294,8 @@ const BottomTabNavigator = createBottomTabNavigator(
 const Navigator = createStackNavigator(
   {
     Registration: RegistrationNav,
-    LCConnect: BottomTabNavigator,
+    Login: LoginNav,
+    App: BottomTabNavigator,
   },
   {
     defaultNavigationOptions: defaultStackNavOptionsWithoutHeader,

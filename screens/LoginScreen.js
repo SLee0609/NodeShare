@@ -10,26 +10,20 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Colors from "../constants/Colors";
 
-// Screen where users can register an account
-const RegistrationScreen = (props) => {
-  // states for name, email, and password
-  const [fullName, setFullName] = useState("");
+// Screen where users can log in
+const LoginScreen = (props) => {
+  // states for email and password
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
-  // switches to login page if user clicks the "login" button
-  const onFooterLinkPress = () => {
-    props.navigation.navigate("Login");
+  // checks email and password if user clicks "log in" button
+  const onLoginPress = () => {
+    props.navigation.navigate("App");
   };
 
-  // saves account information in Firebase when user clicks "Create account" button
-  const onRegisterPress = () => {
-    if (password !== confirmPassword) {
-      alert("Passwords don't match.");
-      return;
-    }
-    props.navigation.navigate("App");
+  // navigates to registration screen if user clicks "sign up" button
+  const onFooterLinkPress = () => {
+    props.navigation.navigate("Registration");
   };
 
   return (
@@ -41,15 +35,6 @@ const RegistrationScreen = (props) => {
         <Image
           style={styles.logo}
           source={require("../assets/cslclogosmall.png")}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Full Name"
-          placeholderTextColor="#aaaaaa"
-          onChangeText={(text) => setFullName(text)}
-          value={fullName}
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
         />
         <TextInput
           style={styles.input}
@@ -70,27 +55,14 @@ const RegistrationScreen = (props) => {
           underlineColorAndroid="transparent"
           autoCapitalize="none"
         />
-        <TextInput
-          style={styles.input}
-          placeholderTextColor="#aaaaaa"
-          secureTextEntry
-          placeholder="Confirm Password"
-          onChangeText={(text) => setConfirmPassword(text)}
-          value={confirmPassword}
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => onRegisterPress()}
-        >
-          <Text style={styles.buttonTitle}>Create account</Text>
+        <TouchableOpacity style={styles.button} onPress={() => onLoginPress()}>
+          <Text style={styles.buttonTitle}>Log in</Text>
         </TouchableOpacity>
         <View style={styles.footerView}>
           <Text style={styles.footerText}>
-            Already got an account?{" "}
+            Don't have an account?{" "}
             <Text onPress={onFooterLinkPress} style={styles.footerLink}>
-              Log in
+              Sign up
             </Text>
           </Text>
         </View>
@@ -99,7 +71,7 @@ const RegistrationScreen = (props) => {
   );
 };
 
-RegistrationScreen.navigationOptions = (navData) => {
+LoginScreen.navigationOptions = (navData) => {
   return { cardStyle: { backgroundColor: Colors.logoBlue } };
 };
 
@@ -157,4 +129,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegistrationScreen;
+export default LoginScreen;
