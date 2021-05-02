@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { firebase } from '../firebase/config'
+import { firebase } from "../firebase/config";
 import {
   Image,
   Text,
@@ -11,47 +11,50 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Colors from "../constants/Colors";
 
+// Screen where users can register an account
 const RegistrationScreen = (props) => {
+  // states for name, email, and password
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // switches to login page if user clicks the "login" button
   const onFooterLinkPress = () => {
-    // navigation.navigate("Login");
+    props.navigation.navigate("Login");
   };
 
-  
+  // saves account information in Firebase when user clicks "Create account" button
   const onRegisterPress = () => {
     if (password !== confirmPassword) {
-        alert("Passwords don't match.")
-        return
+      alert("Passwords don't match.");
+      return;
     }
     firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then((response) => {
-            const uid = response.user.uid
-            const data = {
-                id: uid,
-                email,
-                fullName,
-            };
-            const usersRef = firebase.firestore().collection('users')
-            usersRef
-                .doc(uid)
-                .set(data)
-                .catch((error) => {
-                    alert(error)
-                    return
-                });
-        })
-        .catch((error) => {
-            alert(error)
-            return
-    });
-    props.navigation.navigate("LCConnect");
-}
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((response) => {
+        const uid = response.user.uid;
+        const data = {
+          id: uid,
+          email,
+          fullName,
+        };
+        const usersRef = firebase.firestore().collection("users");
+        usersRef
+          .doc(uid)
+          .set(data)
+          .catch((error) => {
+            alert(error);
+            return;
+          });
+      })
+      .catch((error) => {
+        alert(error);
+        return;
+      });
+    props.navigation.navigate("App");
+  };
 
   return (
     <View style={styles.container}>
