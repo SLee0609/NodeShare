@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { firebase } from '../firebase/config'
 import {
   Image,
   Text,
@@ -20,13 +21,37 @@ const RegistrationScreen = (props) => {
     // navigation.navigate("Login");
   };
 
+  
   const onRegisterPress = () => {
     if (password !== confirmPassword) {
-      alert("Passwords don't match.");
-      return;
+        alert("Passwords don't match.")
+        return
     }
+    firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then((response) => {
+            const uid = response.user.uid
+            const data = {
+                id: uid,
+                email,
+                fullName,
+            };
+            const usersRef = firebase.firestore().collection('users')
+            usersRef
+                .doc(uid)
+                .set(data)
+                .catch((error) => {
+                    alert(error)
+                    return
+                });
+        })
+        .catch((error) => {
+            alert(error)
+            return
+    });
     props.navigation.navigate("LCConnect");
-  };
+}
 
   return (
     <View style={styles.container}>
