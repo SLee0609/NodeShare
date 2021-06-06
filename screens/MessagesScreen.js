@@ -11,6 +11,7 @@ const MessagesScreen = (props) => {
 
 MessagesScreen.navigationOptions = (navData) => {
   return {
+    headerLeft: () => null,
     headerTitle: "Messages",
   };
 };

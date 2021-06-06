@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     paddingVertical: 15,
     paddingLeft: 15,
-    paddingRight: 40,
+    paddingRight: 15,
     // shadowColor: "black",
     // shadowOpacity: 0.5,
     // shadowOffset: { width: 0, height: 2 },
@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   textContainer: {
+    flex: 1,
     justifyContent: "space-evenly",
     marginHorizontal: 20,
     alignItems: "flex-start",

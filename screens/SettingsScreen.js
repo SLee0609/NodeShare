@@ -11,6 +11,7 @@ const SettingsScreen = (props) => {
 
 SettingsScreen.navigationOptions = (navData) => {
   return {
+    headerLeft: () => null,
     headerTitle: "Settings",
   };
 };
