@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
+  Dimensions,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Colors from "../constants/Colors";
@@ -100,7 +101,10 @@ const RegistrationScreen = (props) => {
 };
 
 RegistrationScreen.navigationOptions = (navData) => {
-  return { cardStyle: { backgroundColor: Colors.logoBlue } };
+  return {
+    headerLeft: () => null,
+    cardStyle: { backgroundColor: Colors.logoBlue },
+  };
 };
 
 const styles = StyleSheet.create({
@@ -110,10 +114,9 @@ const styles = StyleSheet.create({
   },
   logo: {
     flex: 1,
-    height: 200,
-    width: 200,
+    height: Dimensions.get("window").width * 0.7,
+    width: Dimensions.get("window").width * 0.7,
     alignSelf: "center",
-    margin: 15,
   },
   input: {
     height: 48,
