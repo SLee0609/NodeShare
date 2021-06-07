@@ -24,6 +24,7 @@ import Colors from "../constants/Colors";
 
 // Default nav options for stack navigators
 const defaultStackNavOptions = {
+  headerTitleAlign: "center",
   headerStyle: {
     backgroundColor: Colors.primaryColor,
     height: Dimensions.get("window").height * 0.14,

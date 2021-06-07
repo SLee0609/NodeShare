@@ -80,6 +80,9 @@ const PostDetail = (props) => {
         </TouchableOpacity>
       </View>
       <View style={styles.textContainer}>
+        <View style={styles.titleContainer}>
+          <DefaultText style={styles.titleText}>{post.title}</DefaultText>
+        </View>
         <Text>
           <DefaultText style={styles.usernameText}>{user.name} </DefaultText>
           <DefaultText style={styles.description}>
@@ -144,8 +147,17 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 20,
   },
-  usernameText: {
+  titleContainer: {
+    width: "100%",
+    marginBottom: 10,
+  },
+  titleText: {
     fontSize: 18,
+    fontFamily: "open-sans-bold",
+    color: "white",
+  },
+  usernameText: {
+    fontSize: 17,
     fontFamily: "open-sans-bold",
     color: "white",
   },
@@ -153,6 +165,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "open-sans",
     color: "white",
+    marginTop: 10,
   },
   timeContainer: {
     alignItems: "flex-end",

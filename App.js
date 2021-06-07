@@ -15,10 +15,10 @@ LogBox.ignoreLogs([
   "It appears that you are using old version of react-navigation library. Please update @react-navigation/bottom-tabs, @react-navigation/stack and @react-navigation/drawer to version 5.10.0 or above to take full advantage of new functionality added to react-native-screens",
 ]);
 
-// // Ignore warning that is thrown - remove when react-navigation releases an update (warns about future incompatibility when expo is upgraded to SDK 41)
-// LogBox.ignoreLogs([
-//   "Your project is accessing the following APIs from a deprecated global rather than a module import: Constants (expo-constants).",
-// ]);
+// Ignore warning that is thrown - remove when react-navigation releases an update (warns about future incompatibility when expo is upgraded to SDK 41)
+LogBox.ignoreLogs([
+  "Your project is accessing the following APIs from a deprecated global rather than a module import: Constants (expo-constants).",
+]);
 
 // Function to load fonts
 const fetchFonts = () => {
