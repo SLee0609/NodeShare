@@ -31,7 +31,35 @@ const RegistrationScreen = (props) => {
       alert("Passwords don't match.");
       return;
     }
-    firebase
+    if (!email){
+      alert("No email provided.");
+      return;
+    }
+    firebase.auth()
+  .createUserWithEmailAndPassword(email, password)
+  .then(() => {
+    alert('User account created & signed in!');
+    props.navigation.navigate("App");
+  })
+  .catch(error => {
+    if (error.code === 'auth/email-already-in-use') {
+      alert('That email address is already in use!');
+    }
+
+    if (error.code === 'auth/invalid-email') {
+      alert('That email address is invalid!');
+    }
+
+    console.error(error);
+  });
+    /*try {
+      firebase.auth().createUserWithEmailAndPassword(email, password);
+      props.navigation.navigate("App");
+     } catch (e) {
+       console.error(e.message);
+     }
+    
+    /*firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then((response) => {
@@ -54,7 +82,7 @@ const RegistrationScreen = (props) => {
         alert(error);
         return;
       });
-    props.navigation.navigate("App");
+    props.navigation.navigate("App");*/
   };
 
   return (

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { firebase } from "../firebase/config";
 import {
   Image,
   Text,
@@ -19,9 +20,55 @@ const LoginScreen = (props) => {
 
   // checks email and password if user clicks "log in" button
   const onLoginPress = () => {
+    if (!email){
+      alert("No email provided.");
+      return;
+    }
+    firebase.auth()
+  .signInWithEmailAndPassword(email, password)
+  .then(() => {
+    alert('User account signed in!');
     props.navigation.navigate("App");
-  };
+  })
+  .catch(error => {
+    if (error.code === 'auth/email-already-in-use') {
+      alert('That email address is already in use!');
+    }
 
+    if (error.code === 'auth/invalid-email') {
+      alert('That email address is invalid!');
+    }
+    if (error.code==='auth/wrong-password'){
+      alert('Wrong password.')
+    }
+
+    console.error(error);
+  });
+  /*firebase
+            .auth()
+            .signInWithEmailAndPassword(email, password)
+            .then((response) => {
+                const uid = response.user.uid
+                const usersRef = firebase.firestore().collection('users')
+                usersRef
+                    .doc(uid)
+                    .get()
+                    .then(firestoreDocument => {
+                        if (!firestoreDocument.exists) {
+                            alert("User does not exist anymore.")
+                            return;
+                        }
+                        const user = firestoreDocument.data()
+                        navigation.navigate('Home', {user})
+                    })
+                    .catch(error => {
+                        alert(error)
+                    });
+            })
+            .catch(error => {
+                alert(error)
+            })*/
+  }
   // navigates to registration screen if user clicks "sign up" button
   const onFooterLinkPress = () => {
     props.navigation.navigate("Registration");
