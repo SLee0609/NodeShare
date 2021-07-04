@@ -9,6 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "../constants/Colors";
 
 // Screen where users can log in

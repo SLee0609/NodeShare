@@ -10,6 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "../constants/Colors";
 
 // Screen where users can register an account
@@ -26,7 +27,7 @@ const RegistrationScreen = (props) => {
   };
 
   // saves account information in Firebase when user clicks "Create account" button
-  const onRegisterPress = () => {
+  const onRegisterPress = async () => {
     if (password !== confirmPassword) {
       alert("Passwords don't match.");
       return;
@@ -54,6 +55,15 @@ const RegistrationScreen = (props) => {
         alert(error);
         return;
       });
+
+    // locally storing user ID
+    try {
+      await AsyncStorage.setItem("userId", fullName);
+    } catch (e) {
+      // saving error
+      console.log(e);
+    }
+
     props.navigation.navigate("App");
   };
 
