@@ -36,7 +36,7 @@ const LoginScreen = (props) => {
       >
         <Image
           style={styles.logo}
-          source={require("../assets/cslclogosmall.png")}
+          source={require("../assets/icontransparent.png")}
         />
         <TextInput
           style={styles.input}
@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").width * 0.7,
     width: Dimensions.get("window").width * 0.7,
     alignSelf: "center",
+    margin: 5,
   },
   input: {
     height: 48,
