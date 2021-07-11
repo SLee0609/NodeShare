@@ -7,6 +7,8 @@ import { enableScreens } from "react-native-screens";
 
 // database test imports - remove when ready
 import firebase from 'firebase/app';
+import { imagePickerMediaLibrary } from './io';
+
 import Navigator from "./navigation/Navigator";
 
 // Optimize navigation performances
@@ -29,6 +31,8 @@ const fetchFonts = () => {
     "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
   });
 };
+
+imagePickerMediaLibrary();
 
 export default function App() {
   // State to check if font is loaded

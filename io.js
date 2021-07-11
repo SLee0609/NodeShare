@@ -109,7 +109,7 @@ function getPostData(postID) {
   })
 }
 
-export {imagePickerUserCreation, storeUserData, getDataOnce, storePostData, getPostData};
+export {imagePickerMediaLibrary, storeUserProfilePic, storeUserData, getDataOnce, storePostData, getPostData};
 
 
 /**
