@@ -24,21 +24,27 @@ let imagePickerMediaLibrary = async (userID, firstname, lastname) => {
 
   const pic = await fetch(pickerResult.uri);
   const blob = await pic.blob();
+  
   return blob;
+}
+
+// pic is a blob (generated from imagePickerMediaLibrary())
+function storeUserProfilePic(pic) {
+  firebase.storage().ref().child(userID + '/profilepic.jpg').put(pic);
 }
 
 /**
  * RTDB
  */
 // stores new user data - pic is a blob object with image info
-function storeUserData(userID, firstname, lastname, pic) {
+function storeUserData(userID, firstname, lastname) {
   firebase.database().ref('users/' + userID).set({
     firstname: firstname,
     lastname: lastname,
   });
-  firebase.storage().ref().child(userID + '/profilepic.jpg').put(pic);
 }
 
+// unused for now
 function storePostToUser(userID, postID) {
   return null;
 }
