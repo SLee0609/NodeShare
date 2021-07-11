@@ -27,6 +27,14 @@ const RegistrationScreen = (props) => {
 
   // saves account information in Firebase when user clicks "Create account" button
   const onRegisterPress = () => {
+    if (email.split("@").length-1!=1){
+      alert("Not a valid email");
+      return;
+    }
+    if (!email.endsWith("loomis.org")){
+      alert("Not a Loomis email");
+      return;
+    }
     if (password !== confirmPassword) {
       alert("Passwords don't match.");
       return;
@@ -52,37 +60,29 @@ const RegistrationScreen = (props) => {
 
     console.error(error);
   });
-    /*try {
-      firebase.auth().createUserWithEmailAndPassword(email, password);
-      props.navigation.navigate("App");
-     } catch (e) {
-       console.error(e.message);
-     }
-    
-    /*firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((response) => {
-        const uid = response.user.uid;
-        const data = {
-          id: uid,
-          email,
-          fullName,
-        };
-        const usersRef = firebase.firestore().collection("users");
-        usersRef
-          .doc(uid)
-          .set(data)
-          .catch((error) => {
-            alert(error);
-            return;
-          });
-      })
-      .catch((error) => {
-        alert(error);
-        return;
-      });
-    props.navigation.navigate("App");*/
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      // User is signed in.
+      firebase.auth().currentUser.sendEmailVerification()
+    .then(function() {
+      alert("Verification email sent");
+    })
+    .catch(function(error) {
+      alert(error);
+    });
+    }
+    else {
+      // User is signed out.
+    }
+  });
+    /*firebase.auth().currentUser.sendEmailVerification()
+    .then(function() {
+      alert("Verification email sent");
+    })
+    .catch(function(error) {
+      alert(error);
+    });*/
+    //firebase.auth().currentUser.sendEmailVerification().then(()=>{alert("Verification email sent")}).catch((error)=>{alert(error)});
   };
 
   return (

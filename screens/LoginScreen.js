@@ -27,8 +27,24 @@ const LoginScreen = (props) => {
     firebase.auth()
   .signInWithEmailAndPassword(email, password)
   .then(() => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in.
+        if(!user.emailVerified){
+          alert("Email not verified");
+          firebase.auth().signOut().then(() => {
+            // Sign-out successful.
+          }).catch((error) => {
+            // An error happened.
+          });
+          
+        }else{
+          
     alert('User account signed in!');
     props.navigation.navigate("App");
+        }
+      }
+    })
   })
   .catch(error => {
     if (error.code === 'auth/email-already-in-use') {
@@ -44,30 +60,7 @@ const LoginScreen = (props) => {
 
     console.error(error);
   });
-  /*firebase
-            .auth()
-            .signInWithEmailAndPassword(email, password)
-            .then((response) => {
-                const uid = response.user.uid
-                const usersRef = firebase.firestore().collection('users')
-                usersRef
-                    .doc(uid)
-                    .get()
-                    .then(firestoreDocument => {
-                        if (!firestoreDocument.exists) {
-                            alert("User does not exist anymore.")
-                            return;
-                        }
-                        const user = firestoreDocument.data()
-                        navigation.navigate('Home', {user})
-                    })
-                    .catch(error => {
-                        alert(error)
-                    });
-            })
-            .catch(error => {
-                alert(error)
-            })*/
+  
   }
   // navigates to registration screen if user clicks "sign up" button
   const onFooterLinkPress = () => {
