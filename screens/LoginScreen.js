@@ -34,19 +34,14 @@ const LoginScreen = (props) => {
             // User is signed in.
             if (!user.emailVerified) {
               alert("Email not verified");
-              firebase
-                .auth()
-                .signOut()
-                .then(() => {
-                  // Sign-out successful.
-                })
-                .catch((error) => {
-                  // An error happened.
-                });
+              firebase.auth().signOut();
               return;
             } else {
               // locally storing user ID
-              AsyncStorage.setItem("userId", user.uid);
+              AsyncStorage.setItem("userId", user.uid).then(
+                props.navigation.navigate("App")
+              );
+              return;
             }
           }
         });
@@ -58,10 +53,8 @@ const LoginScreen = (props) => {
         if (error.code === "auth/wrong-password") {
           alert("Wrong password.");
         }
-        console.error(error);
         return;
       });
-    props.navigation.navigate("App");
   };
   // navigates to registration screen if user clicks "sign up" button
   const onFooterLinkPress = () => {

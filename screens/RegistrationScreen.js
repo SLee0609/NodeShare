@@ -59,11 +59,14 @@ const RegistrationScreen = (props) => {
               .auth()
               .currentUser.sendEmailVerification()
               .then(function () {
-                alert("Verification email sent");
-                props.navigation.navigate("Login");
+                alert("Verification email sent").then(
+                  props.navigation.navigate("Login")
+                );
+                return;
               })
-              .catch(function (error) {
+              .catch((error) => {
                 alert(error);
+                return;
               });
           }
         });
@@ -80,8 +83,7 @@ const RegistrationScreen = (props) => {
         if (error.code === "auth/invalid-password") {
           alert("That password is invalid!");
         }
-
-        console.error(error);
+        return;
       });
   };
 
