@@ -45,28 +45,23 @@ const LoginScreen = (props) => {
                 });
               return;
             } else {
-              alert("User account signed in!");
               // locally storing user ID
-              await AsyncStorage.setItem("userId", firstName);
-              props.navigation.navigate("App");
+              AsyncStorage.setItem("userId", user.uid);
             }
           }
         });
       })
       .catch((error) => {
-        if (error.code === "auth/email-already-in-use") {
-          alert("That email address is already in use!");
-        }
-
         if (error.code === "auth/invalid-email") {
           alert("That email address is invalid!");
         }
         if (error.code === "auth/wrong-password") {
           alert("Wrong password.");
         }
-
         console.error(error);
+        return;
       });
+    props.navigation.navigate("App");
   };
   // navigates to registration screen if user clicks "sign up" button
   const onFooterLinkPress = () => {

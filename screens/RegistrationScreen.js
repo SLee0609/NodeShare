@@ -32,24 +32,41 @@ const RegistrationScreen = (props) => {
       alert("Not a valid email");
       return;
     }
-    if (!email.endsWith("loomis.org")) {
-      alert("Not a Loomis email");
+    if (!email.toLowerCase().endsWith("@loomis.org")) {
+      alert("Not a Loomis Chaffee email");
+      return;
+    }
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters");
       return;
     }
     if (password !== confirmPassword) {
-      alert("Passwords don't match.");
+      alert("Passwords don't match");
       return;
     }
     if (!email) {
-      alert("No email provided.");
+      alert("No email provided");
       return;
     }
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
-        alert("User account created & signed in!");
-        props.navigation.navigate("App");
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            // User is signed in.
+            firebase
+              .auth()
+              .currentUser.sendEmailVerification()
+              .then(function () {
+                alert("Verification email sent");
+                props.navigation.navigate("Login");
+              })
+              .catch(function (error) {
+                alert(error);
+              });
+          }
+        });
       })
       .catch((error) => {
         if (error.code === "auth/email-already-in-use") {
@@ -60,24 +77,12 @@ const RegistrationScreen = (props) => {
           alert("That email address is invalid!");
         }
 
+        if (error.code === "auth/invalid-password") {
+          alert("That password is invalid!");
+        }
+
         console.error(error);
       });
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in.
-        firebase
-          .auth()
-          .currentUser.sendEmailVerification()
-          .then(function () {
-            alert("Verification email sent");
-          })
-          .catch(function (error) {
-            alert(error);
-          });
-      } else {
-        // User is signed out.
-      }
-    });
   };
 
   return (

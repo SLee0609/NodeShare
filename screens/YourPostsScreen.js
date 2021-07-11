@@ -12,15 +12,10 @@ const YourPostsScreen = (props) => {
 
   // get locally stored userId
   const getUserId = async () => {
-    try {
-      const userId = await AsyncStorage.getItem("userId");
-      // update userId if not null
-      if (userId !== null) {
-        setUserId(userId);
-      }
-    } catch (e) {
-      // error reading value
-      console.log(e);
+    const userId = await AsyncStorage.getItem("userId");
+    // update userId if not null
+    if (userId !== null) {
+      setUserId(userId);
     }
   };
   getUserId();
