@@ -57,12 +57,7 @@ const RegistrationScreen = (props) => {
       });
 
     // locally storing user ID
-    try {
-      await AsyncStorage.setItem("userId", fullName);
-    } catch (e) {
-      // saving error
-      console.log(e);
-    }
+    await AsyncStorage.setItem("userId", fullName);
 
     props.navigation.navigate("App");
   };

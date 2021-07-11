@@ -1,11 +1,12 @@
 import React from "react";
 import { Dimensions } from "react-native";
-import { createAppContainer, NavigationEvents } from "react-navigation";
+import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { AntDesign } from "@expo/vector-icons";
 
+import LoadingScreen from "../screens/LoadingScreen";
 import RegistrationScreen from "../screens/RegistrationScreen";
 import LoginScreen from "../screens/LoginScreen";
 import YourPostsScreen from "../screens/YourPostsScreen";
@@ -55,6 +56,14 @@ const defaultStackNavOptionsWithoutHeader = {
 };
 
 // Create stack navigators for each screen
+const LoadingNav = createStackNavigator(
+  {
+    Loading: LoadingScreen,
+  },
+  {
+    defaultNavigationOptions: defaultStackNavOptionsWithoutHeader,
+  }
+);
 const LoginNav = createStackNavigator(
   {
     Login: LoginScreen,
@@ -292,14 +301,26 @@ const BottomTabNavigator = createBottomTabNavigator(
   }
 );
 
-const Navigator = createStackNavigator(
+// AuthStackNavigator navigates between login / registration screens
+const AuthStackNavigator = createStackNavigator(
   {
     Registration: RegistrationNav,
     Login: LoginNav,
-    App: BottomTabNavigator,
   },
   {
     defaultNavigationOptions: defaultStackNavOptionsWithoutHeader,
+  }
+);
+
+// Main app navigator
+const Navigator = createSwitchNavigator(
+  {
+    Loading: LoadingNav,
+    App: BottomTabNavigator,
+    Authentication: AuthStackNavigator,
+  },
+  {
+    initialRouteName: "Loading",
   }
 );
 
