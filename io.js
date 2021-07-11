@@ -3,6 +3,7 @@
  * treat this file like a mini library - import these functions
  * to be used wherever they are needed
  * 
+ * !!!!!!!!!!
  * REMEMBER TO CHANGE SECURITY SETTINGS AFTER TESTING AND AUTH IS SET UP
  */
 
@@ -12,7 +13,7 @@ import db from './firebase/config';
 import * as ImagePicker from 'expo-image-picker';
 
 // returns image in form of blob (able to be stored by firebase)
-let imagePickerMediaLibrary = async (userID, firstname, lastname) => {
+let imagePickerMediaLibrary = async () => {
   let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
   if (permissionResult.granted === false) {
