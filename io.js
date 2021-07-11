@@ -1,62 +1,121 @@
-import firebase from 'firebase/app';
-
-/** realtime database sample
- *  realtime database is in the form of a JSON tree
- *  sample database function - write sample data into database on load
- *  use this format and change to wherever needed
- *  this is the function - call when needed
+/**
+ * database io funcs
+ * treat this file like a mini library - import these functions
+ * to be used wherever they are needed
+ * 
+ * REMEMBER TO CHANGE SECURITY SETTINGS AFTER TESTING AND AUTH IS SET UP
  */
 
- function storeData (userID, exampleStr) {
-    // store exampleStr according to the path noted in ref
-    // set() replaces any data at that path
-    firebase.database().ref('users/' + userID).set({string: exampleStr});
-  }
-  
-  // retrieving data every time the data is changed - 'value' is called everytime data changes
-  // function getDataUpdate (userID) {
-  //   // set up path to data
-  //   var user = firebase.database().ref('users/' + userID);
-  //   // retrieve snapshot of the path
-  //   user.on('value', (snapshot) => {
-  //     // val() gets the data
-  //     const exampleStr = snapshot.val().string;
-  //     // output the data of snapshot
-  //     console.log(exampleStr);
-  //     return exampleStr;
-  //   })
-  // }
-  
-  // retreiving data once
-  function getDataOnce(userID) {
-    // sets up path
-    const db = firebase.database().ref();
-    db.child('users').child(userID).get().then((snapshot) =>{
-      // checks if data exists
-      if (snapshot.exists()) {
-        console.log(snapshot.val());
-        return snapshot.val();
-      } else {
-        console.log('No data available');
-      }
-    }).catch((error) => {
-      console.error(error);
-    })
+import firebase from 'firebase/app';
+import db from './firebase/config';
+
+import * as ImagePicker from 'expo-image-picker';
+
+// returns image in form of blob (able to be stored by firebase)
+let imagePickerMediaLibrary = async (userID, firstname, lastname) => {
+  let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+  if (permissionResult.granted === false) {
+    alert("Permission to access camera roll is required!");
+    return;
   }
 
+  let pickerResult = await ImagePicker.launchImageLibraryAsync();
+
+  const pic = await fetch(pickerResult.uri);
+  const blob = await pic.blob();
+  return blob;
+}
+
+/**
+ * RTDB
+ */
+// stores new user data - pic is a blob object with image info
+function storeUserData(userID, firstname, lastname, pic) {
+  firebase.database().ref('users/' + userID).set({
+    firstname: firstname,
+    lastname: lastname,
+  });
+  firebase.storage().ref().child(userID + '/profilepic.jpg').put(pic);
+}
+
+function storePostToUser(userID, postID) {
+  return null;
+}
+
+  
+// retrieving data every time the data is changed - 'value' is called everytime data changes
+// function getDataUpdate (userID) {
+//   // set up path to data
+//   var user = firebase.database().ref('users/' + userID);
+//   // retrieve snapshot of the path
+//   user.on('value', (snapshot) => {
+//     // val() gets the data
+//     const exampleStr = snapshot.val().string;
+//     // output the data of snapshot
+//     console.log(exampleStr);
+//     return exampleStr;
+//   })
+// }
+  
+// retreiving data once
+// use JSON.parse to parse data before return
+function getDataOnce(userID) {
+  // sets up path
+  const db = firebase.database().ref();
+  db.child('users').child(userID).get().then((snapshot) =>{
+    // checks if data exists
+    if (snapshot.exists()) {
+      console.log(snapshot.val());
+      return snapshot.val();
+    } else {
+      console.log('No data available');
+    }
+  }).catch((error) => {
+    console.error(error);
+  })
+}
 
 
-  /**
-   * cloud firestore
-   * firestore is arranged in a collection of documents
-   * (a document is basically a JS object)
-   */
-  // create instance of db
-  // const firestoredb = firebase.firestore()
-  // // set values in the chosen document document
-  // firestoredb.collection("users").doc("user1").set({
-  //     id: 'abcd',
-  //     age: '18'
-  // })
+/**
+ * cloud firestore
+ */
 
-  export {storeData, getDataOnce};
+
+// create instance of db
+// set values in the chosen document document
+function storePostData(postID, postTitle, postContent) {
+  firebase.firestore().collection("post").doc(postID).set({
+      title: postTitle,
+      content: postContent
+  })
+}
+
+function getPostData(postID) {
+  firebase.firestore().collection('post').doc(postID).get().then((doc) => {
+    if(doc.exists) {
+      console.log('Document Data:', doc.data());
+    } else {
+      console.log('invalid');
+    }
+  }).catch((error) => {
+    console.log('error');
+  })
+}
+
+export {imagePickerUserCreation, storeUserData, getDataOnce, storePostData, getPostData};
+
+
+/**
+ * how the data is structured:
+ * 
+ * user data (rtdb):
+ * users/
+ *  -> uid (auto gen)
+ *    -> name
+ *    -> profile pic
+ *    -> posts
+ *      -> post id (auto gen)
+ * 
+ * 
+ */
