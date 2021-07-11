@@ -2260,6 +2260,13 @@
   "resolved" "https://registry.npmjs.org/@protobufjs/utf8/-/utf8-1.1.0.tgz"
   "version" "1.1.0"
 
+"@react-native-async-storage/async-storage@^1.15.5":
+  "integrity" "sha512-4AYehLH39B9a8UXCMf3ieOK+G61wGMP72ikx6/XSMA0DUnvx0PgaeaT2Wyt06kTrDTy8edewKnbrbeqwaM50TQ=="
+  "resolved" "https://registry.npmjs.org/@react-native-async-storage/async-storage/-/async-storage-1.15.5.tgz"
+  "version" "1.15.5"
+  dependencies:
+    "deep-assign" "^3.0.0"
+
 "@react-native-community/cli-debugger-ui@^4.13.1", "@react-native-community/cli-debugger-ui@^4.9.0":
   "integrity" "sha512-UFnkg5RTq3s2X15fSkrWY9+5BKOFjihNSnJjTV2H5PtTUFbd55qnxxPw8CxSfK0bXb1IrSvCESprk2LEpqr5cg=="
   "resolved" "https://registry.npmjs.org/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-4.13.1.tgz"
@@ -11360,7 +11367,7 @@
     "prop-types" "^15.6.0"
     "react-timer-mixin" "^0.13.4"
 
-"react-native@*", "react-native@>=0.48.4", "react-native@https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz":
+"react-native@*", "react-native@^0.60.6 || ^0.61.5 || ^0.62.2 || ^0.63.2 || ^0.64.0 || 1000.0.0", "react-native@>=0.48.4", "react-native@https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz":
   "integrity" "sha512-wYOQJnPj9CHg1db2/xXebxfzJpdwxeQpsqi9HLz5Y6Zv8xY/J7p6O4eeDyenw1FARWbeAPWwzl2y+OYE4CUrPA=="
   "resolved" "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz"
   dependencies:

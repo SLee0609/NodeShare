@@ -10,6 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "../constants/Colors";
 
 // Screen where users can log in
@@ -19,49 +20,54 @@ const LoginScreen = (props) => {
   const [password, setPassword] = useState("");
 
   // checks email and password if user clicks "log in" button
-  const onLoginPress = () => {
-    if (!email){
+  const onLoginPress = async () => {
+    if (!email) {
       alert("No email provided.");
       return;
     }
-    firebase.auth()
-  .signInWithEmailAndPassword(email, password)
-  .then(() => {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        // User is signed in.
-        if(!user.emailVerified){
-          alert("Email not verified");
-          firebase.auth().signOut().then(() => {
-            // Sign-out successful.
-          }).catch((error) => {
-            // An error happened.
-          });
-          
-        }else{
-          
-    alert('User account signed in!');
-    props.navigation.navigate("App");
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            // User is signed in.
+            if (!user.emailVerified) {
+              alert("Email not verified");
+              firebase
+                .auth()
+                .signOut()
+                .then(() => {
+                  // Sign-out successful.
+                })
+                .catch((error) => {
+                  // An error happened.
+                });
+              return;
+            } else {
+              alert("User account signed in!");
+              // locally storing user ID
+              await AsyncStorage.setItem("userId", firstName);
+              props.navigation.navigate("App");
+            }
+          }
+        });
+      })
+      .catch((error) => {
+        if (error.code === "auth/email-already-in-use") {
+          alert("That email address is already in use!");
         }
-      }
-    })
-  })
-  .catch(error => {
-    if (error.code === 'auth/email-already-in-use') {
-      alert('That email address is already in use!');
-    }
 
-    if (error.code === 'auth/invalid-email') {
-      alert('That email address is invalid!');
-    }
-    if (error.code==='auth/wrong-password'){
-      alert('Wrong password.')
-    }
+        if (error.code === "auth/invalid-email") {
+          alert("That email address is invalid!");
+        }
+        if (error.code === "auth/wrong-password") {
+          alert("Wrong password.");
+        }
 
-    console.error(error);
-  });
-  
-  }
+        console.error(error);
+      });
+  };
   // navigates to registration screen if user clicks "sign up" button
   const onFooterLinkPress = () => {
     props.navigation.navigate("Registration");
@@ -75,7 +81,7 @@ const LoginScreen = (props) => {
       >
         <Image
           style={styles.logo}
-          source={require("../assets/cslclogosmall.png")}
+          source={require("../assets/icontransparent.png")}
         />
         <TextInput
           style={styles.input}
@@ -129,6 +135,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").width * 0.7,
     width: Dimensions.get("window").width * 0.7,
     alignSelf: "center",
+    margin: 5,
   },
   input: {
     height: 48,

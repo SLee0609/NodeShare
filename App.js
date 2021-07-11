@@ -43,7 +43,7 @@ export default function App() {
     );
   }
 
-  // Main app starts here - Navigator is the top layer componenet
+  // Main app starts here - Navigator is the top layer component
   return (
     <SafeAreaProvider>
       <Navigator />

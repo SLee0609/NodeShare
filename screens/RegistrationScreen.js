@@ -15,7 +15,8 @@ import Colors from "../constants/Colors";
 // Screen where users can register an account
 const RegistrationScreen = (props) => {
   // states for name, email, and password
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,11 +28,11 @@ const RegistrationScreen = (props) => {
 
   // saves account information in Firebase when user clicks "Create account" button
   const onRegisterPress = () => {
-    if (email.split("@").length-1!=1){
+    if (email.split("@").length - 1 != 1) {
       alert("Not a valid email");
       return;
     }
-    if (!email.endsWith("loomis.org")){
+    if (!email.endsWith("loomis.org")) {
       alert("Not a Loomis email");
       return;
     }
@@ -39,50 +40,44 @@ const RegistrationScreen = (props) => {
       alert("Passwords don't match.");
       return;
     }
-    if (!email){
+    if (!email) {
       alert("No email provided.");
       return;
     }
-    firebase.auth()
-  .createUserWithEmailAndPassword(email, password)
-  .then(() => {
-    alert('User account created & signed in!');
-    props.navigation.navigate("App");
-  })
-  .catch(error => {
-    if (error.code === 'auth/email-already-in-use') {
-      alert('That email address is already in use!');
-    }
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        alert("User account created & signed in!");
+        props.navigation.navigate("App");
+      })
+      .catch((error) => {
+        if (error.code === "auth/email-already-in-use") {
+          alert("That email address is already in use!");
+        }
 
-    if (error.code === 'auth/invalid-email') {
-      alert('That email address is invalid!');
-    }
+        if (error.code === "auth/invalid-email") {
+          alert("That email address is invalid!");
+        }
 
-    console.error(error);
-  });
-  firebase.auth().onAuthStateChanged(user => {
-    if (user) {
-      // User is signed in.
-      firebase.auth().currentUser.sendEmailVerification()
-    .then(function() {
-      alert("Verification email sent");
-    })
-    .catch(function(error) {
-      alert(error);
+        console.error(error);
+      });
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in.
+        firebase
+          .auth()
+          .currentUser.sendEmailVerification()
+          .then(function () {
+            alert("Verification email sent");
+          })
+          .catch(function (error) {
+            alert(error);
+          });
+      } else {
+        // User is signed out.
+      }
     });
-    }
-    else {
-      // User is signed out.
-    }
-  });
-    /*firebase.auth().currentUser.sendEmailVerification()
-    .then(function() {
-      alert("Verification email sent");
-    })
-    .catch(function(error) {
-      alert(error);
-    });*/
-    //firebase.auth().currentUser.sendEmailVerification().then(()=>{alert("Verification email sent")}).catch((error)=>{alert(error)});
   };
 
   return (
@@ -93,17 +88,26 @@ const RegistrationScreen = (props) => {
       >
         <Image
           style={styles.logo}
-          source={require("../assets/cslclogosmall.png")}
+          source={require("../assets/icontransparent.png")}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Full Name"
-          placeholderTextColor="#aaaaaa"
-          onChangeText={(text) => setFullName(text)}
-          value={fullName}
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-        />
+        <View style={styles.nameContainer}>
+          <TextInput
+            style={styles.firstNameInput}
+            placeholder="First Name"
+            placeholderTextColor="#aaaaaa"
+            onChangeText={(text) => setFirstName(text)}
+            value={firstName}
+            underlineColorAndroid="transparent"
+          />
+          <TextInput
+            style={styles.lastNameInput}
+            placeholder="Last Name"
+            placeholderTextColor="#aaaaaa"
+            onChangeText={(text) => setLastName(text)}
+            value={lastName}
+            underlineColorAndroid="transparent"
+          />
+        </View>
         <TextInput
           style={styles.input}
           placeholder="E-mail"
@@ -169,6 +173,34 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").width * 0.7,
     width: Dimensions.get("window").width * 0.7,
     alignSelf: "center",
+    margin: 5,
+  },
+  nameContainer: {
+    flexDirection: "row",
+  },
+  firstNameInput: {
+    flex: 1,
+    height: 48,
+    borderRadius: 5,
+    overflow: "hidden",
+    backgroundColor: "white",
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 30,
+    marginRight: 10,
+    paddingLeft: 16,
+  },
+  lastNameInput: {
+    flex: 1,
+    height: 48,
+    borderRadius: 5,
+    overflow: "hidden",
+    backgroundColor: "white",
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 30,
+    paddingLeft: 16,
   },
   input: {
     height: 48,
