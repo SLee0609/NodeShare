@@ -10,13 +10,13 @@ import {
   Dimensions,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "../constants/Colors";
 
 // Screen where users can register an account
 const RegistrationScreen = (props) => {
   // states for name, email, and password
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,7 +27,7 @@ const RegistrationScreen = (props) => {
   };
 
   // saves account information in Firebase when user clicks "Create account" button
-  const onRegisterPress = async () => {
+  const onRegisterPress = () => {
     if (password !== confirmPassword) {
       alert("Passwords don't match.");
       return;
@@ -40,7 +40,7 @@ const RegistrationScreen = (props) => {
         const data = {
           id: uid,
           email,
-          fullName,
+          firstName,
         };
         const usersRef = firebase.firestore().collection("users");
         usersRef
@@ -56,9 +56,6 @@ const RegistrationScreen = (props) => {
         return;
       });
 
-    // locally storing user ID
-    await AsyncStorage.setItem("userId", fullName);
-
     props.navigation.navigate("App");
   };
 
@@ -72,15 +69,24 @@ const RegistrationScreen = (props) => {
           style={styles.logo}
           source={require("../assets/icontransparent.png")}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Full Name"
-          placeholderTextColor="#aaaaaa"
-          onChangeText={(text) => setFullName(text)}
-          value={fullName}
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-        />
+        <View style={styles.nameContainer}>
+          <TextInput
+            style={styles.firstNameInput}
+            placeholder="First Name"
+            placeholderTextColor="#aaaaaa"
+            onChangeText={(text) => setFirstName(text)}
+            value={firstName}
+            underlineColorAndroid="transparent"
+          />
+          <TextInput
+            style={styles.lastNameInput}
+            placeholder="Last Name"
+            placeholderTextColor="#aaaaaa"
+            onChangeText={(text) => setLastName(text)}
+            value={lastName}
+            underlineColorAndroid="transparent"
+          />
+        </View>
         <TextInput
           style={styles.input}
           placeholder="E-mail"
@@ -147,6 +153,33 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width * 0.7,
     alignSelf: "center",
     margin: 5,
+  },
+  nameContainer: {
+    flexDirection: "row",
+  },
+  firstNameInput: {
+    flex: 1,
+    height: 48,
+    borderRadius: 5,
+    overflow: "hidden",
+    backgroundColor: "white",
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 30,
+    marginRight: 10,
+    paddingLeft: 16,
+  },
+  lastNameInput: {
+    flex: 1,
+    height: 48,
+    borderRadius: 5,
+    overflow: "hidden",
+    backgroundColor: "white",
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 30,
+    paddingLeft: 16,
   },
   input: {
     height: 48,

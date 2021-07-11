@@ -19,7 +19,10 @@ const LoginScreen = (props) => {
   const [password, setPassword] = useState("");
 
   // checks email and password if user clicks "log in" button
-  const onLoginPress = () => {
+  const onLoginPress = async () => {
+    // locally storing user ID
+    await AsyncStorage.setItem("userId", firstName);
+
     props.navigation.navigate("App");
   };
 
