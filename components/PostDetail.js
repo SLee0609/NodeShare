@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Text,
   View,
+  ScrollView,
   StyleSheet,
   Image,
   Dimensions,
@@ -38,6 +39,15 @@ const PostDetail = (props) => {
   // Function called when bookmark icon is pressed
   const onBookmarkPress = () => {
     setIsBookmarked(!isBookmarked);
+  };
+
+  // Function that renders a tag
+  const renderTag = (tag) => {
+    return (
+      <View style={styles.tagContainer}>
+        <DefaultText style={styles.tagText}>{tag}</DefaultText>
+      </View>
+    );
   };
 
   return (
@@ -84,7 +94,6 @@ const PostDetail = (props) => {
           <DefaultText style={styles.titleText}>{post.title}</DefaultText>
         </View>
         <Text>
-          <DefaultText style={styles.usernameText}>{user.name} </DefaultText>
           <DefaultText style={styles.description}>
             {post.description}
           </DefaultText>
@@ -92,6 +101,15 @@ const PostDetail = (props) => {
         <View style={styles.timeContainer}>
           <DefaultText style={styles.description}>{post.time}</DefaultText>
         </View>
+      </View>
+      <View style={styles.tagsContainer}>
+        <ScrollView
+          horizontal={true}
+          scrollEnabled={false}
+          contentContainerStyle={styles.tagList}
+        >
+          {post.categories.map((tag, key) => renderTag(tag))}
+        </ScrollView>
       </View>
     </View>
   );
@@ -149,26 +167,44 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     width: "100%",
-    marginBottom: 10,
+    marginBottom: 5,
   },
   titleText: {
     fontSize: 18,
     fontFamily: "open-sans-bold",
     color: "white",
   },
-  usernameText: {
-    fontSize: 17,
-    fontFamily: "open-sans-bold",
-    color: "white",
-  },
   description: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "open-sans",
     color: "white",
-    marginTop: 10,
+    marginTop: 5,
   },
   timeContainer: {
     alignItems: "flex-end",
+  },
+  tagsContainer: {
+    width: "100%",
+    padding: 10,
+  },
+  tagContainer: {
+    marginTop: 10,
+    marginLeft: 10,
+    marginRight: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    backgroundColor: "white",
+    borderRadius: 10,
+  },
+  tagList: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  tagText: {
+    color: "black",
+    fontSize: 15,
+    fontFamily: "open-sans-bold",
   },
 });
 

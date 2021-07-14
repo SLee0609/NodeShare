@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LogBox } from "react-native";
+import { LogBox, StyleSheet } from "react-native";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -45,8 +45,15 @@ export default function App() {
 
   // Main app starts here - Navigator is the top layer component
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider style={styles.container}>
       <Navigator />
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "black",
+  },
+});

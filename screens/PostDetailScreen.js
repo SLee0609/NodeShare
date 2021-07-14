@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 
 import PostDetail from "../components/PostDetail";
-import { CATEGORIES, USERS, POSTS } from "../data/dummy-data";
+import { POSTS } from "../data/dummy-data";
 
 const PostDetailScreen = (props) => {
   // find post we want to show

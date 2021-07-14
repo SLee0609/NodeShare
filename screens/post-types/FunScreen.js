@@ -8,7 +8,7 @@ import { POSTS } from "../../data/dummy-data";
 // Loads post overview list for fun posts
 const FunScreen = (props) => {
   // get all fun posts
-  const funPosts = POSTS.filter((p) => p.categoryIds.includes("c5"));
+  const funPosts = POSTS.filter((p) => p.categories.includes("Fun"));
 
   // return the PostOverviewList
   return <PostOverviewList listData={funPosts} navigation={props.navigation} />;

@@ -8,7 +8,9 @@ import { POSTS } from "../../data/dummy-data";
 // Loads post overview list for information posts
 const InformationScreen = (props) => {
   // get all information posts
-  const informationPosts = POSTS.filter((p) => p.categoryIds.includes("c1"));
+  const informationPosts = POSTS.filter((p) =>
+    p.categories.includes("Information")
+  );
 
   // return the PostOverviewList
   return (

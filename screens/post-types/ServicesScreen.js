@@ -8,7 +8,7 @@ import { POSTS } from "../../data/dummy-data";
 // Loads post overview list for services posts
 const ServicesScreen = (props) => {
   // get all services posts
-  const servicesPosts = POSTS.filter((p) => p.categoryIds.includes("c2"));
+  const servicesPosts = POSTS.filter((p) => p.categories.includes("Services"));
 
   // return the PostOverviewList
   return (

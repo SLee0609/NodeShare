@@ -8,7 +8,7 @@ import { POSTS } from "../../data/dummy-data";
 // Loads post overview list for other posts
 const OtherScreen = (props) => {
   // get all other posts
-  const otherPosts = POSTS.filter((p) => p.categoryIds.includes("c6"));
+  const otherPosts = POSTS.filter((p) => p.categories.includes("Other"));
 
   // return the PostOverviewList
   return (

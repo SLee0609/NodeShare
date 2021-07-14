@@ -8,7 +8,7 @@ import { POSTS } from "../../data/dummy-data";
 // Loads post overview list for trading posts
 const TradingScreen = (props) => {
   // get all trading posts
-  const tradingPosts = POSTS.filter((p) => p.categoryIds.includes("c4"));
+  const tradingPosts = POSTS.filter((p) => p.categories.includes("Trading"));
 
   // return the PostOverviewList
   return (

@@ -1,15 +1,5 @@
-import PostCategory from "../models/postCategory";
 import Post from "../models/post";
 import User from "../models/user";
-
-export const CATEGORIES = [
-  new PostCategory("c1", "Information"),
-  new PostCategory("c2", "Services"),
-  new PostCategory("c3", "Sales"),
-  new PostCategory("c4", "Trading"),
-  new PostCategory("c5", "Fun"),
-  new PostCategory("c6", "Other"),
-];
 
 export const USERS = [
   new User(
@@ -32,7 +22,7 @@ export const USERS = [
 export const POSTS = [
   new Post(
     "p1",
-    ["c1", "c2", "c5"],
+    ["Information", "Services", "Sales", "Trading", "Fun", "Other"],
     "Looking for a Guitarist",
     "u1",
     "https://cdn.mos.cms.futurecdn.net/CT5CNXjsQLaWrqVg7WYnzR.jpg",
@@ -41,7 +31,7 @@ export const POSTS = [
   ),
   new Post(
     "p2",
-    ["c1", "c3", "c4"],
+    ["Information", "Sales", "Trading"],
     "Selling / Trading Basketball Shoes",
     "u2",
     "https://images.solecollector.com/complex/images/c_fill,dpr_2.0,f_auto,fl_lossy,q_auto,w_680/oarjqvmq9wazwsjvfedd/nike-lebron-15-review",
@@ -50,7 +40,7 @@ export const POSTS = [
   ),
   new Post(
     "p3",
-    ["c1", "c5"],
+    ["Information", "Fun"],
     "Looking for Music Recommendations",
     "u3",
     "https://images.macrumors.com/t/tCPS-yWwAQ_siFOl14cUWLHEw1c=/400x0/filters:quality(90)/article-new/2018/05/apple-music-note-800x420.jpg?lossy",
