@@ -36,7 +36,7 @@ const PostOverviewList = (props) => {
 
   let list = (
     <View style={styles.textContainer}>
-      <DefaultText>No posts found!</DefaultText>
+      <DefaultText style={styles.text}>No Posts Yet</DefaultText>
     </View>
   );
 
@@ -88,9 +88,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textContainer: {
-    flex: 1,
+    height: "55%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  text: {
+    fontSize: 25,
+    fontFamily: "open-sans-bold",
   },
 });
 

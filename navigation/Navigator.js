@@ -10,6 +10,7 @@ import LoadingScreen from "../screens/LoadingScreen";
 import RegistrationScreen from "../screens/RegistrationScreen";
 import LoginScreen from "../screens/LoginScreen";
 import YourPostsScreen from "../screens/YourPostsScreen";
+import SavedPostsScreen from "../screens/SavedPostsScreen";
 import CreatePostsScreen from "../screens/CreatePostsScreen";
 import MessagesScreen from "../screens/MessagesScreen";
 import SettingsScreen from "../screens/SettingsScreen";
@@ -36,10 +37,8 @@ const defaultStackNavOptions = {
     fontFamily: "open-sans-bold",
     fontSize: 25,
   },
-  headerBackTitleStyle: {
-    fontFamily: "open-sans",
-  },
   headerTintColor: Colors.accentColor,
+  headerBack: false,
   headerBackTitle: "",
   cardStyle: { backgroundColor: Colors.gray },
 };
@@ -83,6 +82,14 @@ const RegistrationNav = createStackNavigator(
 const YourPostsNav = createStackNavigator(
   {
     YourPosts: YourPostsScreen,
+  },
+  {
+    defaultNavigationOptions: defaultStackNavOptions,
+  }
+);
+const SavedPostsNav = createStackNavigator(
+  {
+    SavedPosts: SavedPostsScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -233,6 +240,33 @@ const PostFilteringNavigator = createDrawerNavigator(
   }
 );
 
+// Drawer navigation for your posts and saved posts screen
+const YourPostsSavedPostsNavigator = createDrawerNavigator(
+  {
+    YourPosts: {
+      screen: YourPostsNav,
+      navigationOptions: {
+        drawerLabel: "Your Posts",
+      },
+    },
+    SavedPosts: {
+      screen: SavedPostsNav,
+      navigationOptions: {
+        drawerLabel: "Saved Posts",
+      },
+    },
+  },
+  {
+    contentOptions: {
+      activeTintColor: Colors.primaryColor,
+      labelStyle: {
+        fontFamily: "open-sans-bold",
+        fontSize: 20,
+      },
+    },
+  }
+);
+
 // BottomTabNavigator navigator is the bottom tab navigator with 5 icons
 const BottomTabNavigator = createBottomTabNavigator(
   {
@@ -248,11 +282,15 @@ const BottomTabNavigator = createBottomTabNavigator(
         },
       },
     },
-    YourPosts: {
-      screen: YourPostsNav,
+    YourPostsSavedPosts: {
+      screen: YourPostsSavedPostsNavigator,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return <AntDesign name="user" size={25} color={tabInfo.tintColor} />;
+        },
+        tabBarOnPress: (navData) => {
+          navData.navigation.navigate({ routeName: "YourPosts" });
+          navData.defaultHandler();
         },
       },
     },

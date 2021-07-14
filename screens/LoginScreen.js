@@ -108,7 +108,6 @@ const LoginScreen = (props) => {
 
 LoginScreen.navigationOptions = (navData) => {
   return {
-    headerLeft: () => null,
     cardStyle: { backgroundColor: Colors.logoBlue },
   };
 };

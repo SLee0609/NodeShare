@@ -11,7 +11,6 @@ const CreatePostsScreen = (props) => {
 
 CreatePostsScreen.navigationOptions = (navData) => {
   return {
-    headerLeft: () => null,
     headerTitle: "Create Posts",
   };
 };

@@ -7,8 +7,8 @@ import HeaderButton from "../components/HeaderButton";
 import PostOverviewList from "../components/PostOverviewList";
 import { POSTS } from "../data/dummy-data";
 
-// Loads post overview list for only user's posts
-const YourPostsScreen = (props) => {
+// Loads post overview list for only user's saved posts
+const SavedPostsScreen = (props) => {
   // state for userId
   const [userId, setUserId] = useState("");
 
@@ -22,18 +22,13 @@ const YourPostsScreen = (props) => {
   };
   getUserId();
 
-  // get all user posts
-  const userPosts = POSTS.filter((p) => p.userId === userId);
-
-  // return the PostOverviewList for only user's posts
-  return (
-    <PostOverviewList listData={userPosts} navigation={props.navigation} />
-  );
+  // return the PostOverviewList for only user's saved posts
+  return <PostOverviewList listData={[]} navigation={props.navigation} />;
 };
 
-YourPostsScreen.navigationOptions = (navData) => {
+SavedPostsScreen.navigationOptions = (navData) => {
   return {
-    headerTitle: "Your Posts",
+    headerTitle: "Saved Posts",
     headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
@@ -56,4 +51,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default YourPostsScreen;
+export default SavedPostsScreen;

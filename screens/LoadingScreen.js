@@ -17,7 +17,6 @@ const LoadingScreen = (props) => {
 
 LoadingScreen.navigationOptions = (navData) => {
   return {
-    headerLeft: () => null,
     cardStyle: { backgroundColor: Colors.logoBlue },
   };
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet, Button, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SettingsScreen = (props) => {
@@ -22,7 +22,6 @@ const SettingsScreen = (props) => {
 
 SettingsScreen.navigationOptions = (navData) => {
   return {
-    headerLeft: () => null,
     headerTitle: "Settings",
   };
 };
