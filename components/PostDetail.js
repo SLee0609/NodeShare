@@ -6,10 +6,12 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  Platform,
   TouchableOpacity,
   Alert,
 } from "react-native";
 import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 
 import ProfilePic from "../components/ProfilePicture";
 import { USERS } from "../data/dummy-data";
@@ -23,8 +25,8 @@ const PostDetail = (props) => {
   // Get the user information
   const user = USERS.find((u) => u.id === post.userId);
 
-  // State for whether post is bookmarked
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  // State for whether post is saved
+  const [isSaved, setIsSaved] = useState(false);
 
   // Function called when three dots icon is pressed
   const onDotsPress = () => {
@@ -36,15 +38,18 @@ const PostDetail = (props) => {
     Alert.alert("Message Pressed");
   };
 
-  // Function called when bookmark icon is pressed
-  const onBookmarkPress = () => {
-    setIsBookmarked(!isBookmarked);
+  // Function called when save icon is pressed
+  const onSavePress = () => {
+    if (Platform.OS === "ios" && !isSaved) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    setIsSaved(!isSaved);
   };
 
   // Function that renders a tag
   const renderTag = (tag) => {
     return (
-      <View style={styles.tagContainer}>
+      <View key={tag} style={styles.tagContainer}>
         <DefaultText style={styles.tagText}>{tag}</DefaultText>
       </View>
     );
@@ -52,65 +57,67 @@ const PostDetail = (props) => {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.profileContainer}>
-        <View style={styles.profilePictureContainer}>
-          <ProfilePic imgUrl={user.profilePicture} width={45} height={45} />
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.profileContainer}>
+          <View style={styles.profilePictureContainer}>
+            <ProfilePic imgUrl={user.profilePicture} width={45} height={45} />
+          </View>
+          <View style={styles.usernameContainer}>
+            <DefaultText style={styles.username}>{user.name}</DefaultText>
+          </View>
+          <View style={styles.dotsIconContainer}>
+            <TouchableOpacity onPress={onDotsPress}>
+              <Entypo name="dots-three-horizontal" size={25} color={"white"} />
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.usernameContainer}>
-          <DefaultText style={styles.username}>{user.name}</DefaultText>
-        </View>
-        <View style={styles.dotsIconContainer}>
-          <TouchableOpacity onPress={onDotsPress}>
-            <Entypo name="dots-three-horizontal" size={25} color={"white"} />
+        <Image source={{ uri: post.image }} style={styles.image} />
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity onPress={onMessagePress}>
+            <Ionicons
+              name="paper-plane-outline"
+              size={30}
+              color={"white"}
+              style={{
+                transform: [
+                  { translateY: -4 },
+                  { scaleY: 1.15 },
+                  { rotateZ: "20deg" },
+                ],
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onSavePress}>
+            <FontAwesome
+              name={isSaved ? "bookmark" : "bookmark-o"}
+              size={30}
+              color={"white"}
+            />
           </TouchableOpacity>
         </View>
-      </View>
-      <Image source={{ uri: post.image }} style={styles.image} />
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity onPress={onMessagePress}>
-          <Ionicons
-            name="paper-plane-outline"
-            size={30}
-            color={"white"}
-            style={{
-              transform: [
-                { translateY: -4 },
-                { scaleY: 1.15 },
-                { rotateZ: "20deg" },
-              ],
-            }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onBookmarkPress}>
-          <FontAwesome
-            name={isBookmarked ? "bookmark" : "bookmark-o"}
-            size={30}
-            color={"white"}
-          />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.textContainer}>
-        <View style={styles.titleContainer}>
-          <DefaultText style={styles.titleText}>{post.title}</DefaultText>
+        <View style={styles.textContainer}>
+          <View style={styles.titleContainer}>
+            <DefaultText style={styles.titleText}>{post.title}</DefaultText>
+          </View>
+          <View style={styles.descriptionContainer}>
+            <DefaultText style={styles.description}>
+              {post.description}
+            </DefaultText>
+          </View>
+          <View style={styles.timeContainer}>
+            <DefaultText style={styles.description}>{post.time}</DefaultText>
+          </View>
         </View>
-        <Text>
-          <DefaultText style={styles.description}>
-            {post.description}
-          </DefaultText>
-        </Text>
-        <View style={styles.timeContainer}>
-          <DefaultText style={styles.description}>{post.time}</DefaultText>
+        <View style={styles.tagsContainer}>
+          <ScrollView
+            horizontal={true}
+            scrollEnabled={false}
+            contentContainerStyle={styles.tagList}
+          >
+            {post.categories.map((tag) => renderTag(tag))}
+          </ScrollView>
         </View>
-      </View>
-      <View style={styles.tagsContainer}>
-        <ScrollView
-          horizontal={true}
-          scrollEnabled={false}
-          contentContainerStyle={styles.tagList}
-        >
-          {post.categories.map((tag, key) => renderTag(tag))}
-        </ScrollView>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -119,14 +126,15 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: "black",
-    width: "100%",
     justifyContent: "flex-start",
     alignItems: "center",
     borderBottomColor: Colors.gray,
     borderBottomWidth: 0.3,
   },
+  scrollView: {
+    width: Dimensions.get("window").width,
+  },
   profileContainer: {
-    width: "100%",
     paddingVertical: 7,
     paddingLeft: 10,
     paddingRight: 15,
@@ -155,18 +163,15 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flexDirection: "row",
-    width: "100%",
     paddingVertical: 10,
     paddingHorizontal: 20,
     justifyContent: "space-between",
     alignItems: "center",
   },
   textContainer: {
-    width: "100%",
     paddingHorizontal: 20,
   },
   titleContainer: {
-    width: "100%",
     marginBottom: 5,
   },
   titleText: {
@@ -174,17 +179,19 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans-bold",
     color: "white",
   },
+  descriptionContainer: {
+    marginTop: 5,
+  },
   description: {
     fontSize: 16,
     fontFamily: "open-sans",
     color: "white",
-    marginTop: 5,
   },
   timeContainer: {
+    marginTop: 10,
     alignItems: "flex-end",
   },
   tagsContainer: {
-    width: "100%",
     padding: 10,
   },
   tagContainer: {

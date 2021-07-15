@@ -103,6 +103,7 @@ const RegistrationScreen = (props) => {
             placeholder="First Name"
             placeholderTextColor="#aaaaaa"
             onChangeText={(text) => setFirstName(text)}
+            onEndEditing={(e) => setFirstName(e.nativeEvent.text.trim())}
             value={firstName}
             underlineColorAndroid="transparent"
           />
@@ -111,15 +112,16 @@ const RegistrationScreen = (props) => {
             placeholder="Last Name"
             placeholderTextColor="#aaaaaa"
             onChangeText={(text) => setLastName(text)}
+            onEndEditing={(e) => setLastName(e.nativeEvent.text.trim())}
             value={lastName}
             underlineColorAndroid="transparent"
           />
         </View>
         <TextInput
           style={styles.input}
-          placeholder="E-mail"
+          placeholder="School E-mail"
           placeholderTextColor="#aaaaaa"
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={(text) => setEmail(text.replace(" ", ""))}
           value={email}
           underlineColorAndroid="transparent"
           autoCapitalize="none"

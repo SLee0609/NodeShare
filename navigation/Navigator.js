@@ -82,6 +82,7 @@ const RegistrationNav = createStackNavigator(
 const YourPostsNav = createStackNavigator(
   {
     YourPosts: YourPostsScreen,
+    PostDetail: PostDetailScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -90,6 +91,7 @@ const YourPostsNav = createStackNavigator(
 const SavedPostsNav = createStackNavigator(
   {
     SavedPosts: SavedPostsScreen,
+    PostDetail: PostDetailScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -294,7 +296,7 @@ const BottomTabNavigator = createBottomTabNavigator(
         },
       },
     },
-    CreatePosts: {
+    CreatePost: {
       screen: CreatePostsNav,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
@@ -335,6 +337,7 @@ const BottomTabNavigator = createBottomTabNavigator(
         borderTopWidth: 1,
       },
       activeTintColor: "white",
+      keyboardHidesTabBar: true,
     },
   }
 );

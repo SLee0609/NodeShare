@@ -73,9 +73,9 @@ const LoginScreen = (props) => {
         />
         <TextInput
           style={styles.input}
-          placeholder="E-mail"
+          placeholder="School E-mail"
           placeholderTextColor="#aaaaaa"
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={(text) => setEmail(text.replace(" ", ""))}
           value={email}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
