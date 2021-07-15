@@ -13,6 +13,8 @@ import db from './firebase/config';
 import * as ImagePicker from 'expo-image-picker';
 
 // returns image in form of blob (able to be stored by firebase)
+// figure out a way to have event listeners to make sure the picture is actually
+// taken when uploaded, since this is an async func
 let imagePickerMediaLibrary = async () => {
   let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -26,11 +28,31 @@ let imagePickerMediaLibrary = async () => {
   return pickerResult;
 }
 
-// pic is the image object (generated from imagePickerMediaLibrary)
+let imagePickerCamera = async () => {
+  let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+  if (permissionResult.granted === false) {
+    alert("Permission to access camera is required!");
+    return;
+  }
+
+  let pickerResult = await ImagePicker.launchCameraAsync();
+
+  return pickerResult;
+}
+
+// pic is the image object (generated from imagePickerMediaLibrary or imagePickerCamera)
 let storeUserProfilePic = async (userID, pic) => {
   const picuri = await fetch(pic.uri);
   const blob = await picuri.blob();
   firebase.storage().ref().child(userID + '/profilepic.jpg').put(blob);
+}
+
+// not tested
+let retreiveUserProfilePic = async (userID) => {
+  firebase.storage.ref().child(userID + "/profilepic.jpg").getDownloadURL().then((url) => {
+    return(url);
+  })
 }
 
 /**
@@ -46,23 +68,12 @@ function storeUserData(userID, firstname, lastname) {
 
 // unused for now
 function storePostToUser(userID, postID) {
+
   return null;
 }
 
-  
-// retrieving data every time the data is changed - 'value' is called everytime data changes
-// function getDataUpdate (userID) {
-//   // set up path to data
-//   var user = firebase.database().ref('users/' + userID);
-//   // retrieve snapshot of the path
-//   user.on('value', (snapshot) => {
-//     // val() gets the data
-//     const exampleStr = snapshot.val().string;
-//     // output the data of snapshot
-//     console.log(exampleStr);
-//     return exampleStr;
-//   })
-// }
+
+
   
 // retreiving data once
 // use JSON.parse to parse data before return
@@ -86,8 +97,6 @@ function getDataOnce(userID) {
 /**
  * cloud firestore
  */
-
-
 // create instance of db
 // set values in the chosen document document
 function storePostData(postID, postTitle, postContent) {
@@ -109,7 +118,14 @@ function getPostData(postID) {
   })
 }
 
-export {imagePickerMediaLibrary, storeUserProfilePic, storeUserData, getDataOnce, storePostData, getPostData};
+export { imagePickerMediaLibrary,
+  imagePickerCamera,
+  storeUserProfilePic,
+  storeUserData,
+  getDataOnce,
+  storePostData,
+  getPostData
+};
 
 
 /**
