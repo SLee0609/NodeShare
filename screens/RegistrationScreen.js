@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { firebase } from "../firebase/config";
+//import { database } from '@react-native-firebase/database';
+
 import {
   Image,
   Text,
@@ -51,26 +53,6 @@ const RegistrationScreen = (props) => {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        firebase.auth().onAuthStateChanged((user) => {
-          if (user) {
-            // User is signed in.
-            firebase
-              .auth()
-              .currentUser.sendEmailVerification()
-              .then(function () {
-                alert("Verification email sent").then(
-                  props.navigation.navigate("Login")
-                );
-                return;
-              })
-              .catch((error) => {
-                alert(error);
-                return;
-              });
-          }
-        });
-      })
       .catch((error) => {
         if (error.code === "auth/email-already-in-use") {
           alert("That email address is already in use!");
@@ -84,6 +66,28 @@ const RegistrationScreen = (props) => {
           alert("That password is invalid!");
         }
         return;
+      });
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          // User is signed in.
+          firebase
+            .auth()
+            .currentUser.sendEmailVerification()
+            .then(function () {
+              alert("Verification email sent");
+              
+              return;
+            })
+            .catch((error) => {
+              alert(error);
+              return;
+            });
+            firebase.database().ref(`users/${user.uid}`).set({firstName: firstName, lastName: lastName}).catch((error)=>{
+              alert(error);
+              return;
+            })
+            props.navigation.navigate("Login");
+        }
       });
   };
 
