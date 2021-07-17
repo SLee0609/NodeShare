@@ -49,8 +49,7 @@ const CreatePostsScreen = (props) => {
 
   // Funtion called when share button is pressed
   const share = () => {
-    console.log(description);
-    //Alert.alert("Shared!");
+    Alert.alert("Shared!");
   };
 
   // Function that renders a tag
@@ -200,13 +199,13 @@ const styles = StyleSheet.create({
     color: "white",
   },
   textContainer: {
-    marginTop: 15,
+    marginTop: 5,
     paddingHorizontal: 20,
   },
   titleContainer: {
-    paddingBottom: 5,
+    paddingVertical: 5,
     marginBottom: 5,
-    borderBottomColor: "white",
+    borderColor: "white",
     borderBottomWidth: 1,
   },
   titleText: {

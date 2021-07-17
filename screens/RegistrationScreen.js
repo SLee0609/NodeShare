@@ -10,6 +10,8 @@ import {
   View,
   StyleSheet,
   Dimensions,
+  Alert,
+  Platform,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Colors from "../constants/Colors";
@@ -30,65 +32,66 @@ const RegistrationScreen = (props) => {
 
   // saves account information in Firebase when user clicks "Create account" button
   const onRegisterPress = () => {
-    if (email.split("@").length - 1 != 1) {
-      alert("Not a valid email");
-      return;
-    }
-    if (!email.toLowerCase().endsWith("@loomis.org")) {
-      alert("Not a Loomis Chaffee email");
-      return;
-    }
-    if (password.length < 6) {
-      alert("Password must be at least 6 characters");
-      return;
-    }
-    if (password !== confirmPassword) {
-      alert("Passwords don't match");
+    if (!firstName || !lastName) {
+      Alert.alert("Enter first and last names");
       return;
     }
     if (!email) {
-      alert("No email provided");
+      Alert.alert("No email provided");
+      return;
+    }
+    if (email.split("@").length - 1 != 1) {
+      Alert.alert("Not a valid email");
+      return;
+    }
+    if (!email.toLowerCase().endsWith("@loomis.org")) {
+      Alert.alert("Not a Loomis Chaffee email");
+      return;
+    }
+    if (password.length < 6) {
+      Alert.alert("Password must be at least 6 characters");
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert("Passwords don't match");
       return;
     }
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .catch((error) => {
-        if (error.code === "auth/email-already-in-use") {
-          alert("That email address is already in use!");
-        }
-
-        if (error.code === "auth/invalid-email") {
-          alert("That email address is invalid!");
-        }
-
-        if (error.code === "auth/invalid-password") {
-          alert("That password is invalid!");
+        if (Platform.OS === "ios") {
+          Alert.alert(error.message);
+        } else {
+          Alert.alert("", error.message);
         }
         return;
       });
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          // User is signed in.
-          firebase
-            .auth()
-            .currentUser.sendEmailVerification()
-            .then(function () {
-              alert("Verification email sent");
-              
-              return;
-            })
-            .catch((error) => {
-              alert(error);
-              return;
-            });
-            firebase.database().ref(`users/${user.uid}`).set({firstName: firstName, lastName: lastName}).catch((error)=>{
-              alert(error);
-              return;
-            })
-            props.navigation.navigate("Login");
-        }
-      });
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in.
+        firebase
+          .auth()
+          .currentUser.sendEmailVerification()
+          .then(() => {
+            Alert.alert("Verification email sent");
+
+            firebase
+              .database()
+              .ref(`users/${user.uid}`)
+              .set({ firstName: firstName, lastName: lastName })
+              .catch((error) => {
+                Alert.alert(error.message);
+                return;
+              })
+              .then(props.navigation.navigate("Login"));
+          })
+          .catch((error) => {
+            Alert.alert(error.message);
+            return;
+          });
+      }
+    });
   };
 
   return (

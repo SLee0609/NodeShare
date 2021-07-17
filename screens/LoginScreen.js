@@ -8,6 +8,8 @@ import {
   View,
   StyleSheet,
   Dimensions,
+  Alert,
+  Platform,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,10 +23,6 @@ const LoginScreen = (props) => {
 
   // checks email and password if user clicks "log in" button
   const onLoginPress = async () => {
-    if (!email) {
-      alert("No email provided.");
-      return;
-    }
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
@@ -33,7 +31,7 @@ const LoginScreen = (props) => {
           if (user) {
             // User is signed in.
             if (!user.emailVerified) {
-              alert("Email not verified");
+              Alert.alert("Email not verified");
               firebase.auth().signOut();
               return;
             } else {
@@ -47,11 +45,10 @@ const LoginScreen = (props) => {
         });
       })
       .catch((error) => {
-        if (error.code === "auth/invalid-email") {
-          alert("That email address is invalid!");
-        }
-        if (error.code === "auth/wrong-password") {
-          alert("Wrong password.");
+        if (Platform.OS === "ios") {
+          Alert.alert(error.message);
+        } else {
+          Alert.alert("", error.message);
         }
         return;
       });
@@ -109,6 +106,7 @@ const LoginScreen = (props) => {
 LoginScreen.navigationOptions = (navData) => {
   return {
     cardStyle: { backgroundColor: Colors.logoBlue },
+    headerLeft: () => null,
   };
 };
 
