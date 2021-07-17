@@ -6,7 +6,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { enableScreens } from "react-native-screens";
 
 // database test imports - remove when ready
-import firebase from 'firebase/app';
+import firebase from "firebase/app";
 import Navigator from "./navigation/Navigator";
 
 // Optimize navigation performances
@@ -21,6 +21,9 @@ LogBox.ignoreLogs([
 LogBox.ignoreLogs([
   "Your project is accessing the following APIs from a deprecated global rather than a module import: Constants (expo-constants).",
 ]);
+
+// Ignore warning from setting a timer for a long period of time
+LogBox.ignoreLogs(["Setting a timer"]);
 
 // Function to load fonts
 const fetchFonts = () => {
