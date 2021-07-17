@@ -5,6 +5,8 @@ import AppLoading from "expo-app-loading";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { enableScreens } from "react-native-screens";
 
+// database test imports - remove when ready
+import firebase from 'firebase/app';
 import Navigator from "./navigation/Navigator";
 
 // Optimize navigation performances
