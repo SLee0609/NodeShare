@@ -18,6 +18,7 @@ import { CATEGORIES, USERS } from "../data/dummy-data";
 import Colors from "../constants/Colors";
 import DefaultText from "../components/DefaultText";
 import { Alert } from "react-native";
+import { imagePickerMediaLibrary, imagePickerCamera } from "../io.js";
 
 // Screen where users create new posts
 const CreatePostsScreen = (props) => {
@@ -26,6 +27,9 @@ const CreatePostsScreen = (props) => {
 
   // state for list of tags
   const [tags, updateTags] = useState([]);
+
+  // state for image
+  const [image, setImage] = useState("");
 
   // get locally stored userId and find user
   const getUser = async () => {
@@ -36,14 +40,19 @@ const CreatePostsScreen = (props) => {
   getUser();
 
   // Function called to choose image
-  const chooseImage = () => {
-    Alert.alert("Choose Image");
+  const chooseImage = async () => {
+    let result = await imagePickerCamera();
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+    return;
   };
 
   // Funtion called when clear button is pressed
   const clear = () => {
     setTitle("");
     setDescription("");
+    setImage("");
     updateTags([]);
   };
 
@@ -73,6 +82,14 @@ const CreatePostsScreen = (props) => {
     );
   };
 
+  // The text "Choose an Image"
+  let text;
+  if (image == "") {
+    text = <DefaultText style={styles.imageText}>Choose an Image</DefaultText>;
+  } else {
+    text = null;
+  }
+
   // state for title and description
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -90,10 +107,12 @@ const CreatePostsScreen = (props) => {
         </View>
         <TouchableOpacity onPress={chooseImage} style={styles.imageContainer}>
           <Image
-            source={require("../assets/cameraicon.png")}
-            style={styles.image}
+            source={
+              image == "" ? require("../assets/cameraicon.png") : { uri: image }
+            }
+            style={image == "" ? styles.defaultImage : styles.image}
           />
-          <DefaultText style={styles.imageText}>Choose an Image</DefaultText>
+          {text}
         </TouchableOpacity>
         <View style={styles.textContainer}>
           <View style={styles.titleContainer}>
@@ -185,13 +204,18 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height * 0.3,
+    height: Dimensions.get("window").width * 0.7,
     alignItems: "center",
     justifyContent: "space-evenly",
   },
-  image: {
+  defaultImage: {
     height: "70%",
     resizeMode: "contain",
+  },
+  image: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").width * 0.7,
+    resizeMode: "cover",
   },
   imageText: {
     fontFamily: "open-sans-bold",
