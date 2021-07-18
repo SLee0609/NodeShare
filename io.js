@@ -20,7 +20,7 @@ let imagePickerMediaLibrary = async ({ allowsEditing, aspect }) => {
     await ImagePicker.requestMediaLibraryPermissionsAsync();
 
   if (permissionResult.granted === false) {
-    alert("Permission to access camera library is required");
+    alert("Permission to access media library is required");
     return;
   }
 

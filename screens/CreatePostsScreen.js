@@ -41,7 +41,31 @@ const CreatePostsScreen = (props) => {
 
   // Function called to choose image
   const chooseImage = async () => {
+    Alert.alert("Image", "", [
+      { text: "Take a photo", onPress: useCamera },
+      { text: "Choose from media library", onPress: useMediaLibrary },
+      { text: "Cancel", style: "destructive" },
+    ]);
+    return;
+  };
+
+  // Function to get and update image from media library
+  const useMediaLibrary = async () => {
     let result = await imagePickerMediaLibrary({
+      allowsEditing: true,
+      aspect: [1, 1],
+    });
+    if (result != null) {
+      if (!result.cancelled) {
+        setImage(result.uri);
+      }
+    }
+    return;
+  };
+
+  // Function to get and update image from camera
+  const useCamera = async () => {
+    let result = await imagePickerCamera({
       allowsEditing: true,
       aspect: [1, 1],
     });
