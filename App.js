@@ -4,6 +4,7 @@ import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { enableScreens } from "react-native-screens";
+import { Asset } from "expo-asset";
 
 // database test imports - remove when ready
 import firebase from "firebase/app";
@@ -25,24 +26,30 @@ LogBox.ignoreLogs([
 // Ignore warning from setting a timer for a long period of time
 LogBox.ignoreLogs(["Setting a timer"]);
 
-// Function to load fonts
-const fetchFonts = () => {
-  return Font.loadAsync({
+// Function to load assets
+const loadAssets = async () => {
+  const imageAssets = Asset.loadAsync([
+    require("./assets/icontransparent.png"),
+    require("./assets/cameraicon.png"),
+  ]);
+  const fontAssets = Font.loadAsync({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
     "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
   });
+
+  await Promise.all([imageAssets, fontAssets]);
 };
 
 export default function App() {
-  // State to check if font is loaded
-  const [fontLoaded, setFontLoaded] = useState(false);
+  // State to check if assets are loaded
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
 
   // Load fonts
-  if (!fontLoaded) {
+  if (!assetsLoaded) {
     return (
       <AppLoading
-        startAsync={fetchFonts}
-        onFinish={() => setFontLoaded(true)}
+        startAsync={loadAssets}
+        onFinish={() => setAssetsLoaded(true)}
         onError={console.warn}
       />
     );
