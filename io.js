@@ -15,24 +15,24 @@ import * as ImagePicker from "expo-image-picker";
 // returns image in form of blob (able to be stored by firebase)
 // figure out a way to have event listeners to make sure the picture is actually
 // taken when uploaded, since this is an async func
-let imagePickerMediaLibrary = async () => {
+let imagePickerMediaLibrary = async ({ allowsEditing, aspect }) => {
   let permissionResult =
     await ImagePicker.requestMediaLibraryPermissionsAsync();
 
   if (permissionResult.granted === false) {
-    alert("Permission to access camera roll is required");
+    alert("Permission to access camera library is required");
     return;
   }
 
   let pickerResult = await ImagePicker.launchImageLibraryAsync({
-    allowsEditing: true,
-    aspect: [10, 7],
+    allowsEditing: allowsEditing,
+    aspect: aspect,
   });
 
   return pickerResult;
 };
 
-let imagePickerCamera = async () => {
+let imagePickerCamera = async ({ allowsEditing, aspect }) => {
   let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
   if (permissionResult.granted === false) {
@@ -41,8 +41,8 @@ let imagePickerCamera = async () => {
   }
 
   let pickerResult = await ImagePicker.launchCameraAsync({
-    allowsEditing: true,
-    aspect: [10, 7],
+    allowsEditing: allowsEditing,
+    aspect: aspect,
   });
 
   return pickerResult;

@@ -41,9 +41,14 @@ const CreatePostsScreen = (props) => {
 
   // Function called to choose image
   const chooseImage = async () => {
-    let result = await imagePickerCamera();
-    if (!result.cancelled) {
-      setImage(result.uri);
+    let result = await imagePickerMediaLibrary({
+      allowsEditing: true,
+      aspect: [1, 1],
+    });
+    if (result != null) {
+      if (!result.cancelled) {
+        setImage(result.uri);
+      }
     }
     return;
   };
@@ -58,7 +63,24 @@ const CreatePostsScreen = (props) => {
 
   // Funtion called when share button is pressed
   const share = () => {
+    if (image == "") {
+      Alert.alert("No image provided");
+      return;
+    }
+    if (title == "") {
+      Alert.alert("No title provided");
+      return;
+    }
+    if (description == "") {
+      Alert.alert("No description provided");
+      return;
+    }
+    if (tags.length == 0) {
+      Alert.alert("No tags selected");
+      return;
+    }
     Alert.alert("Shared!");
+    return;
   };
 
   // Function that renders a tag
@@ -204,17 +226,17 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").width * 0.7,
+    height: Dimensions.get("window").width,
     alignItems: "center",
     justifyContent: "space-evenly",
   },
   defaultImage: {
-    height: "70%",
+    height: "60%",
     resizeMode: "contain",
   },
   image: {
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").width * 0.7,
+    height: Dimensions.get("window").width,
     resizeMode: "cover",
   },
   imageText: {
