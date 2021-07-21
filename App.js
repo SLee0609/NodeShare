@@ -9,6 +9,7 @@ import { Asset } from "expo-asset";
 // database test imports - remove when ready
 import firebase from "firebase/app";
 import Navigator from "./navigation/Navigator";
+import { retrieveUserProfilePic } from "./io.js";
 
 // Optimize navigation performances
 enableScreens();
@@ -39,6 +40,8 @@ const loadAssets = async () => {
 
   await Promise.all([imageAssets, fontAssets]);
 };
+
+retrieveUserProfilePic('1').then((url) => console.log(url));
 
 export default function App() {
   // State to check if assets are loaded
