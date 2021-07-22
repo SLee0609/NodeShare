@@ -15,6 +15,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 import { DefaultText, normalize } from "../components/DefaultText";
 import Colors from "../constants/Colors";
+import { storeUserData } from "../io";
 
 // Screen where users can register an account
 const RegistrationScreen = (props) => {
@@ -69,18 +70,10 @@ const RegistrationScreen = (props) => {
           if (user) {
             user.sendEmailVerification().then(() => {
               Alert.alert("Verification email sent");
-              firebase
-                .database()
-                .ref(`users/${user.uid}`)
-                .set({ firstName: firstName, lastName: lastName })
-                .catch((error) => {
-                  Alert.alert(error.message);
-                  return;
-                })
-                .then(() => {
-                  firebase.auth().signOut();
-                  props.navigation.navigate("Login");
-                });
+              storeUserData(user.uid, firstName, lastName).then(() => {
+                firebase.auth().signOut();
+                props.navigation.navigate("Login");
+              });
             });
           }
         });

@@ -16,7 +16,7 @@ import { CATEGORIES, USERS } from "../data/dummy-data";
 import Colors from "../constants/Colors";
 import { DefaultText, normalize } from "../components/DefaultText";
 import { Alert } from "react-native";
-import { imagePickerMediaLibrary, imagePickerCamera } from "../io.js";
+import { imagePickerMediaLibrary, imagePickerCamera } from "../io";
 
 // Screen where users create new posts
 const CreatePostsScreen = (props) => {
