@@ -22,6 +22,11 @@ const LoginScreen = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // function called to resend verification email
+  const resendVerification = () => {
+    Alert.alert("Verification email sent");
+  };
+
   // checks email and password if user clicks "log in" button
   const onLoginPress = async () => {
     firebase
@@ -32,8 +37,11 @@ const LoginScreen = (props) => {
           if (user) {
             // User is signed in.
             if (!user.emailVerified) {
-              Alert.alert("Email not verified");
               firebase.auth().signOut();
+              Alert.alert("Email not verified", "Resend verification email?", [
+                { text: "No", style: "destructive" },
+                { text: "Yes", onPress: resendVerification },
+              ]);
               return;
             } else {
               // locally storing user ID

@@ -30,6 +30,11 @@ const RegistrationScreen = (props) => {
     props.navigation.navigate("Login");
   };
 
+  // function called to resend verification email
+  const resendVerification = () => {
+    Alert.alert("Verification email sent");
+  };
+
   // saves account information in Firebase when user clicks "Create account" button
   const onRegisterPress = () => {
     if (!firstName || !lastName) {
@@ -93,14 +98,25 @@ const RegistrationScreen = (props) => {
                     if (user.emailVerified) {
                       Alert.alert("Email already in use");
                     } else {
-                      Alert.alert("Email not verified");
+                      Alert.alert(
+                        "Email not verified",
+                        "Resend verification email?",
+                        [
+                          { text: "No", style: "destructive" },
+                          { text: "Yes", onPress: resendVerification },
+                        ]
+                      );
                     }
                   }
                 });
                 s();
               })
               .catch((error) => {
-                Alert.alert(error.message);
+                if (Platform.OS === "ios") {
+                  Alert.alert(error.message);
+                } else {
+                  Alert.alert("", error.message);
+                }
               });
             break;
           default:
