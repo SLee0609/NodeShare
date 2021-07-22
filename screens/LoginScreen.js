@@ -27,11 +27,11 @@ const LoginScreen = (props) => {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
-        firebase.auth().onAuthStateChanged((user) => {
+        s=firebase.auth().onAuthStateChanged((user) => {
           if (user) {
             // User is signed in.
             if (!user.emailVerified) {
-              Alert.alert("Email not verified");
+              Alert.alert("Email not verified 4");
               firebase.auth().signOut();
               return;
             } else {
@@ -43,6 +43,7 @@ const LoginScreen = (props) => {
             }
           }
         });
+        s();
       })
       .catch((error) => {
         if (Platform.OS === "ios") {

@@ -44,10 +44,10 @@ const RegistrationScreen = (props) => {
       Alert.alert("Not a valid email");
       return;
     }
-    if (!email.toLowerCase().endsWith("@loomis.org")) {
-      Alert.alert("Not a Loomis Chaffee email");
-      return;
-    }
+    // if (!email.toLowerCase().endsWith("@loomis.org")) {
+    //   Alert.alert("Not a Loomis Chaffee email");
+    //   return;
+    // }
     if (password.length < 6) {
       Alert.alert("Password must be at least 6 characters");
       return;
@@ -59,6 +59,152 @@ const RegistrationScreen = (props) => {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
+      .then(()=>{
+        s=firebase.auth().onAuthStateChanged((user)=>{
+          if(user){
+            user.sendEmailVerification()
+              .then(()=>{
+                Alert.alert("Verification email sent");
+                firebase
+                  .database()
+                  .ref(`users/${user.uid}`)
+                  .set({ firstName: firstName, lastName: lastName })
+                  .catch((error) => {
+                    Alert.alert(error.message);
+                    return;
+                  })
+                  .then(()=>{
+                    firebase.auth().signOut();
+                    props.navigation.navigate("Login")
+                  });
+              })
+          }
+        })
+        s();
+      })
+      .catch((error)=>{
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            firebase
+              .auth()
+              .signInWithEmailAndPassword(email, password)
+              .then(()=>{
+                s=firebase.auth().onAuthStateChanged((user) => {
+                  if (user) {
+                    if(user.emailVerified){
+                      Alert.alert("Email already in use");
+                    }else{
+                      Alert.alert("Email not verified 2");
+                    }
+                  }
+                })
+                s();
+              })
+              .catch((error)=>{
+                Alert.alert(error.message);
+              })
+            /*firebase
+              .auth()
+              .getUserByEmail(email)
+              .then((userRecord) => {
+                if(userRecord.emailVerified){
+                  Alert.alert("Email already in use");
+                }else{
+                  Alert.alert("Email not verified. Send again?");
+                }
+              })
+              .catch((error) => {
+                Alert.alert(error.message);
+              });*/
+            break;
+          default:
+            if (Platform.OS === "ios") {
+              Alert.alert(error.message);
+            } else {
+              Alert.alert("", error.message);
+            }
+            break;
+        }
+      });
+    
+    /*firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(()=>{
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            if(user.emailVerified){
+              Alert.alert("Email already in use")
+            }else{
+              Alert.alert("Email not verified, ")
+            }
+          }
+        }
+      })
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .catch((error) => {
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            Alert.alert("Email already in use")
+            break;
+          default:
+            if (Platform.OS === "ios") {
+              Alert.alert(error.message);
+            } else {
+              Alert.alert("", error.message);
+            }
+            break;
+        }
+        /*if (Platform.OS === "ios") {
+          Alert.alert(error.message);
+        } else {
+          Alert.alert("", error.message);
+        }
+      });
+      firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            // User is signed in.
+            if (!user.emailVerified) {
+              firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    firebase
+                    .auth()
+                    .currentUser.sendEmailVerification()
+                    .then(() => {
+                      Alert.alert("Verification email sent");
+                      firebase
+                        .database()
+                        .ref(`users/${user.uid}`)
+                        .set({ firstName: firstName, lastName: lastName })
+                        .catch((error) => {
+                          Alert.alert(error.message);
+                          return;
+                        })
+                        .then(props.navigation.navigate("Login"));
+                    })
+                    .catch((error) => {
+                      Alert.alert(error.message);
+                      return;
+                    });
+                  // User is signed in.
+                }
+              });
+              firebase.auth().signOut();
+              return;
+            } else {
+              // locally storing user ID
+              
+              return;
+            }
+          }
+        });
+      })
       .catch((error) => {
         if (Platform.OS === "ios") {
           Alert.alert(error.message);
@@ -66,32 +212,8 @@ const RegistrationScreen = (props) => {
           Alert.alert("", error.message);
         }
         return;
-      });
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in.
-        firebase
-          .auth()
-          .currentUser.sendEmailVerification()
-          .then(() => {
-            Alert.alert("Verification email sent");
-
-            firebase
-              .database()
-              .ref(`users/${user.uid}`)
-              .set({ firstName: firstName, lastName: lastName })
-              .catch((error) => {
-                Alert.alert(error.message);
-                return;
-              })
-              .then(props.navigation.navigate("Login"));
-          })
-          .catch((error) => {
-            Alert.alert(error.message);
-            return;
-          });
-      }
-    });
+      });*/
+      
   };
 
   return (
