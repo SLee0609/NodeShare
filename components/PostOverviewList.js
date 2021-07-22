@@ -3,7 +3,7 @@ import { View, FlatList, StyleSheet } from "react-native";
 import { SearchBar } from "react-native-elements";
 
 import PostOverview from "../components/PostOverview";
-import DefaultText from "../components/DefaultText";
+import { DefaultText, normalize } from "../components/DefaultText";
 
 // Accepts a list of posts and returns a search bar and flatlist of post overviews
 // Used in post screens (all posts, information, etc.)
@@ -46,7 +46,7 @@ const PostOverviewList = (props) => {
         data={props.listData}
         keyExtractor={(item) => item.id}
         renderItem={renderPostOverview}
-        style={{ width: "100%", padding: 15 }}
+        style={{ width: "100%", padding: normalize(15, "width") }}
       />
     );
   }
@@ -59,6 +59,9 @@ const PostOverviewList = (props) => {
         containerStyle={styles.searchBar}
         inputContainerStyle={styles.inputContainer}
         inputStyle={styles.input}
+        leftIconContainerStyle={styles.leftIconContainer}
+        searchIcon={{ size: normalize(18, "width") }}
+        clearIcon={{ size: normalize(18, "width") }}
         onChangeText={updateSearch}
         value={searchTerm}
       ></SearchBar>
@@ -69,11 +72,12 @@ const PostOverviewList = (props) => {
 
 const styles = StyleSheet.create({
   searchBar: {
-    height: 50,
+    height: normalize(50, "height"),
+    width: "100%",
     justifyContent: "center",
     alignItems: "center",
     borderBottomColor: "black",
-    borderBottomWidth: 2,
+    borderBottomWidth: normalize(2, "height"),
   },
   inputContainer: {
     height: "100%",
@@ -81,6 +85,10 @@ const styles = StyleSheet.create({
   },
   input: {
     color: "white",
+    fontSize: normalize(18, "width"),
+  },
+  leftIconContainer: {
+    paddingRight: normalize(4, "width"),
   },
   list: {
     flex: 1,

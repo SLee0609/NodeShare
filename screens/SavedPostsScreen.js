@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import HeaderButton from "../components/HeaderButton";
 import PostOverviewList from "../components/PostOverviewList";
-import { POSTS } from "../data/dummy-data";
 
 // Loads post overview list for only user's saved posts
 const SavedPostsScreen = (props) => {

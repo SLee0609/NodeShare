@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Text,
   View,
   ScrollView,
   StyleSheet,
@@ -16,7 +15,7 @@ import * as Haptics from "expo-haptics";
 import ProfilePic from "../components/ProfilePicture";
 import { USERS } from "../data/dummy-data";
 import Colors from "../constants/Colors";
-import DefaultText from "./DefaultText";
+import { DefaultText, normalize } from "./DefaultText";
 
 // Accepts a post and returns an individual post detail component; used in PostDetailScreen
 const PostDetail = (props) => {
@@ -60,14 +59,22 @@ const PostDetail = (props) => {
       <ScrollView style={styles.scrollView}>
         <View style={styles.profileContainer}>
           <View style={styles.profilePictureContainer}>
-            <ProfilePic imgUrl={user.profilePicture} width={45} height={45} />
+            <ProfilePic
+              imgUrl={user.profilePicture}
+              width={normalize(45, "width")}
+              height={normalize(45, "width")}
+            />
           </View>
           <View style={styles.usernameContainer}>
             <DefaultText style={styles.username}>{user.name}</DefaultText>
           </View>
           <View style={styles.dotsIconContainer}>
             <TouchableOpacity onPress={onDotsPress}>
-              <Entypo name="dots-three-horizontal" size={25} color={"white"} />
+              <Entypo
+                name="dots-three-horizontal"
+                size={normalize(25, "width")}
+                color={"white"}
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -76,11 +83,11 @@ const PostDetail = (props) => {
           <TouchableOpacity onPress={onMessagePress}>
             <Ionicons
               name="paper-plane-outline"
-              size={30}
+              size={normalize(30, "width")}
               color={"white"}
               style={{
                 transform: [
-                  { translateY: -4 },
+                  { translateY: normalize(-4, "height") },
                   { scaleY: 1.15 },
                   { rotateZ: "20deg" },
                 ],
@@ -90,7 +97,7 @@ const PostDetail = (props) => {
           <TouchableOpacity onPress={onSavePress}>
             <FontAwesome
               name={isSaved ? "bookmark" : "bookmark-o"}
-              size={30}
+              size={normalize(30, "width")}
               color={"white"}
             />
           </TouchableOpacity>
@@ -129,22 +136,22 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     borderBottomColor: Colors.gray,
-    borderBottomWidth: 0.3,
+    borderBottomWidth: normalize(1, "height"),
   },
   scrollView: {
     width: Dimensions.get("window").width,
   },
   profileContainer: {
-    paddingVertical: 7,
-    paddingLeft: 10,
-    paddingRight: 15,
+    paddingVertical: normalize(7, "height"),
+    paddingLeft: normalize(10, "width"),
+    paddingRight: normalize(15, "width"),
     flexDirection: "row",
   },
   profilePictureContainer: {
     justifyContent: "center",
   },
   usernameContainer: {
-    paddingLeft: 15,
+    paddingLeft: normalize(15, "width"),
     justifyContent: "center",
   },
   username: {
@@ -164,16 +171,16 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flexDirection: "row",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: normalize(10, "height"),
+    paddingHorizontal: normalize(20, "width"),
     justifyContent: "space-between",
     alignItems: "center",
   },
   textContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: normalize(20, "width"),
   },
   titleContainer: {
-    marginBottom: 5,
+    marginBottom: normalize(5, "height"),
   },
   titleText: {
     fontSize: 18,
@@ -181,7 +188,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   descriptionContainer: {
-    marginTop: 5,
+    marginTop: normalize(5, "height"),
   },
   description: {
     fontSize: 16,
@@ -189,20 +196,20 @@ const styles = StyleSheet.create({
     color: "white",
   },
   timeContainer: {
-    marginTop: 10,
+    marginTop: normalize(10, "height"),
     alignItems: "flex-end",
   },
   tagsContainer: {
-    padding: 10,
+    padding: normalize(10, "width"),
   },
   tagContainer: {
-    marginTop: 10,
-    marginLeft: 10,
-    marginRight: 5,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    marginTop: normalize(10, "height"),
+    marginLeft: normalize(10, "width"),
+    marginRight: normalize(5, "width"),
+    paddingVertical: normalize(5, "height"),
+    paddingHorizontal: normalize(10, "width"),
     backgroundColor: "white",
-    borderRadius: 10,
+    borderRadius: normalize(10, "width"),
   },
   tagList: {
     flex: 1,

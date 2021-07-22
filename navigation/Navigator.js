@@ -1,11 +1,12 @@
 import React from "react";
-import { Dimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { AntDesign } from "@expo/vector-icons";
 
+import { normalize } from "../components/DefaultText";
 import LoadingScreen from "../screens/LoadingScreen";
 import RegistrationScreen from "../screens/RegistrationScreen";
 import LoginScreen from "../screens/LoginScreen";
@@ -31,15 +32,14 @@ const defaultStackNavOptions = {
     backgroundColor: Colors.primaryColor,
     height: Dimensions.get("window").height * 0.14,
     borderBottomColor: "black",
-    borderBottomWidth: 2,
+    borderBottomWidth: normalize(2, "height"),
   },
   headerTitleStyle: {
     fontFamily: "open-sans-bold",
-    fontSize: 25,
+    fontSize: normalize(25, "width"),
   },
   headerTintColor: Colors.accentColor,
-  headerBack: false,
-  headerBackTitle: "",
+  headerBackTitleVisible: false,
   cardStyle: { backgroundColor: Colors.gray },
 };
 
@@ -48,7 +48,7 @@ const defaultStackNavOptionsWithoutHeader = {
     backgroundColor: Colors.primaryColor,
     height: Dimensions.get("window").height * 0.14,
     borderBottomColor: "black",
-    borderBottomWidth: 2,
+    borderBottomWidth: normalize(2, "height"),
   },
   headerShown: false,
   cardStyle: { backgroundColor: Colors.gray },
@@ -185,6 +185,20 @@ const OtherNav = createStackNavigator(
   }
 );
 
+// Drawer navigation default content options
+const defaultDrawerContentOptions = {
+  activeTintColor: Colors.primaryColor,
+  itemsContainerStyle:
+    Platform.OS === "android"
+      ? { paddingTop: normalize(50, "height") }
+      : { paddingTop: 0 },
+  itemStyle: { marginVertical: normalize(3, "height") },
+  labelStyle: {
+    fontFamily: "open-sans-bold",
+    fontSize: normalize(20, "width"),
+  },
+};
+
 // Drawer navigation for filtering posts
 const PostFilteringNavigator = createDrawerNavigator(
   {
@@ -232,13 +246,8 @@ const PostFilteringNavigator = createDrawerNavigator(
     },
   },
   {
-    contentOptions: {
-      activeTintColor: Colors.primaryColor,
-      labelStyle: {
-        fontFamily: "open-sans-bold",
-        fontSize: 20,
-      },
-    },
+    drawerWidth: Dimensions.get("window").width * 0.75,
+    contentOptions: defaultDrawerContentOptions,
   }
 );
 
@@ -259,13 +268,8 @@ const YourPostsSavedPostsNavigator = createDrawerNavigator(
     },
   },
   {
-    contentOptions: {
-      activeTintColor: Colors.primaryColor,
-      labelStyle: {
-        fontFamily: "open-sans-bold",
-        fontSize: 20,
-      },
-    },
+    drawerWidth: Dimensions.get("window").width * 0.75,
+    contentOptions: defaultDrawerContentOptions,
   }
 );
 
@@ -276,7 +280,17 @@ const BottomTabNavigator = createBottomTabNavigator(
       screen: PostFilteringNavigator,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
-          return <AntDesign name="home" size={25} color={tabInfo.tintColor} />;
+          return (
+            <AntDesign
+              name="home"
+              style={{
+                height: normalize(25, "width"),
+                width: normalize(25, "width"),
+              }}
+              size={normalize(25, "width")}
+              color={tabInfo.tintColor}
+            />
+          );
         },
         tabBarOnPress: (navData) => {
           navData.navigation.navigate({ routeName: "AllPosts" });
@@ -288,7 +302,17 @@ const BottomTabNavigator = createBottomTabNavigator(
       screen: YourPostsSavedPostsNavigator,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
-          return <AntDesign name="user" size={25} color={tabInfo.tintColor} />;
+          return (
+            <AntDesign
+              style={{
+                height: normalize(25, "width"),
+                width: normalize(25, "width"),
+              }}
+              name="user"
+              size={normalize(25, "width")}
+              color={tabInfo.tintColor}
+            />
+          );
         },
         tabBarOnPress: (navData) => {
           navData.navigation.navigate({ routeName: "YourPosts" });
@@ -301,7 +325,15 @@ const BottomTabNavigator = createBottomTabNavigator(
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (
-            <AntDesign name="plussquareo" size={25} color={tabInfo.tintColor} />
+            <AntDesign
+              style={{
+                height: normalize(25, "width"),
+                width: normalize(25, "width"),
+              }}
+              name="plussquareo"
+              size={normalize(25, "width")}
+              color={tabInfo.tintColor}
+            />
           );
         },
       },
@@ -311,7 +343,15 @@ const BottomTabNavigator = createBottomTabNavigator(
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (
-            <AntDesign name="message1" size={25} color={tabInfo.tintColor} />
+            <AntDesign
+              name="message1"
+              style={{
+                height: normalize(25, "width"),
+                width: normalize(25, "width"),
+              }}
+              size={normalize(25, "width")}
+              color={tabInfo.tintColor}
+            />
           );
         },
       },
@@ -321,7 +361,15 @@ const BottomTabNavigator = createBottomTabNavigator(
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (
-            <AntDesign name="setting" size={25} color={tabInfo.tintColor} />
+            <AntDesign
+              name="setting"
+              style={{
+                height: normalize(25, "width"),
+                width: normalize(25, "width"),
+              }}
+              size={normalize(25, "width")}
+              color={tabInfo.tintColor}
+            />
           );
         },
       },
@@ -332,9 +380,10 @@ const BottomTabNavigator = createBottomTabNavigator(
       showLabel: false,
       style: {
         backgroundColor: "black",
-        height: Dimensions.get("window").height * 0.07,
+        height: normalize(25, "width") + normalize(30, "height"),
+        width: "100%",
         borderTopColor: "black",
-        borderTopWidth: 1,
+        borderTopWidth: normalize(1, "height"),
       },
       activeTintColor: "white",
       keyboardHidesTabBar: true,

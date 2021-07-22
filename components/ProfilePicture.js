@@ -2,6 +2,8 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import ProfilePicture from "react-native-profile-picture";
 
+import { normalize } from "../components/DefaultText";
+
 // Accepts an image URL, height, and width and returns a profile picture component
 const ProfilePic = (props) => {
   return (
@@ -18,7 +20,7 @@ const ProfilePic = (props) => {
 const styles = StyleSheet.create({
   picture: {
     borderColor: "black",
-    borderWidth: 2,
+    borderWidth: normalize(2, "width"),
   },
 });
 

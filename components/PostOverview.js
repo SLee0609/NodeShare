@@ -4,7 +4,7 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import ProfilePic from "../components/ProfilePicture";
 import { USERS } from "../data/dummy-data";
 import Colors from "../constants/Colors";
-import DefaultText from "./DefaultText";
+import { DefaultText, normalize } from "./DefaultText";
 
 // Accepts post title, userId, and onSelect function
 // Returns an individual post overview component; used in PostOverviewList
@@ -17,7 +17,11 @@ const PostOverview = (props) => {
       <TouchableOpacity onPress={props.onSelectPost}>
         <View style={styles.mainContainer}>
           <View style={styles.pictureContainer}>
-            <ProfilePic imgUrl={user.profilePicture} width={60} height={60} />
+            <ProfilePic
+              imgUrl={user.profilePicture}
+              width={normalize(60, "width")}
+              height={normalize(60, "width")}
+            />
           </View>
           <View style={styles.textContainer}>
             <DefaultText style={styles.title}>{props.title}</DefaultText>
@@ -33,17 +37,12 @@ const styles = StyleSheet.create({
   postItem: {
     justifyContent: "center",
     backgroundColor: Colors.blue,
-    borderRadius: 10,
-    marginBottom: 15,
-    paddingVertical: 15,
-    paddingLeft: 15,
-    paddingRight: 15,
-    // shadowColor: "black",
-    // shadowOpacity: 0.5,
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowRadius: 15,
+    borderRadius: normalize(10, "width"),
+    marginBottom: normalize(15, "height"),
+    paddingVertical: normalize(15, "height"),
+    paddingHorizontal: normalize(15, "width"),
     borderColor: "black",
-    borderWidth: 3,
+    borderWidth: normalize(3, "width"),
   },
   mainContainer: {
     flexDirection: "row",
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
     justifyContent: "space-evenly",
-    marginHorizontal: 20,
+    marginHorizontal: normalize(20, "width"),
     alignItems: "flex-start",
   },
   title: {

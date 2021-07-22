@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import {
-  Text,
-  Button,
   View,
   TextInput,
   ScrollView,
@@ -16,7 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProfilePic from "../components/ProfilePicture";
 import { CATEGORIES, USERS } from "../data/dummy-data";
 import Colors from "../constants/Colors";
-import DefaultText from "../components/DefaultText";
+import { DefaultText, normalize } from "../components/DefaultText";
 import { Alert } from "react-native";
 import { imagePickerMediaLibrary, imagePickerCamera } from "../io.js";
 
@@ -142,10 +140,17 @@ const CreatePostsScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <KeyboardAwareScrollView style={styles.scrollView} extraScrollHeight={60}>
+      <KeyboardAwareScrollView
+        style={styles.scrollView}
+        extraScrollHeight={normalize(60, "height")}
+      >
         <View style={styles.profileContainer}>
           <View style={styles.profilePictureContainer}>
-            <ProfilePic imgUrl={user.profilePicture} width={45} height={45} />
+            <ProfilePic
+              imgUrl={user.profilePicture}
+              width={normalize(45, "width")}
+              height={normalize(45, "width")}
+            />
           </View>
           <View style={styles.usernameContainer}>
             <DefaultText style={styles.username}>{user.name}</DefaultText>
@@ -225,22 +230,22 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     borderBottomColor: Colors.gray,
-    borderBottomWidth: 0.3,
+    borderBottomWidth: normalize(1, "height"),
   },
   scrollView: {
     width: Dimensions.get("window").width,
   },
   profileContainer: {
-    paddingVertical: 7,
-    paddingLeft: 10,
-    paddingRight: 15,
+    paddingVertical: normalize(7, "height"),
+    paddingLeft: normalize(10, "width"),
+    paddingRight: normalize(15, "width"),
     flexDirection: "row",
   },
   profilePictureContainer: {
     justifyContent: "center",
   },
   usernameContainer: {
-    paddingLeft: 15,
+    paddingLeft: normalize(15, "width"),
     justifyContent: "center",
   },
   username: {
@@ -269,61 +274,61 @@ const styles = StyleSheet.create({
     color: "white",
   },
   textContainer: {
-    marginTop: 5,
-    paddingHorizontal: 20,
+    marginTop: normalize(5, "height"),
+    paddingHorizontal: normalize(20, "width"),
   },
   titleContainer: {
-    paddingVertical: 5,
-    marginBottom: 5,
+    paddingVertical: normalize(5, "height"),
+    marginBottom: normalize(5, "height"),
     borderColor: "white",
-    borderBottomWidth: 1,
+    borderBottomWidth: normalize(1, "height"),
   },
   titleText: {
-    fontSize: 18,
+    fontSize: normalize(18, "width"),
     fontFamily: "open-sans-bold",
     color: "white",
   },
   descriptionContainer: {
-    paddingBottom: 10,
-    marginBottom: 5,
+    paddingBottom: normalize(10, "height"),
+    marginBottom: normalize(5, "height"),
     borderBottomColor: "white",
-    borderBottomWidth: 1,
+    borderBottomWidth: normalize(1, "height"),
   },
   description: {
-    fontSize: 16,
+    fontSize: normalize(16, "width"),
     fontFamily: "open-sans",
     color: "white",
   },
   selectTagTextContainer: {
-    marginLeft: 10,
+    marginLeft: normalize(10, "width"),
   },
   selectTagText: {
     fontSize: 16,
     fontFamily: "open-sans",
     color: "white",
-    marginTop: 5,
+    marginTop: normalize(5, "height"),
   },
   tagsContainer: {
     width: "100%",
-    paddingLeft: 10,
+    paddingLeft: normalize(10, "width"),
   },
   yellowTagContainer: {
-    marginTop: 10,
-    marginLeft: 10,
-    marginRight: 5,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    marginTop: normalize(10, "height"),
+    marginLeft: normalize(10, "width"),
+    marginRight: normalize(5, "width"),
+    paddingVertical: normalize(5, "height"),
+    paddingHorizontal: normalize(10, "width"),
     backgroundColor: "yellow",
-    borderRadius: 10,
+    borderRadius: normalize(10, "width"),
   },
   whiteTagContainer: {
-    marginTop: 10,
-    marginLeft: 10,
-    marginRight: 5,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    marginTop: normalize(10, "height"),
+    marginLeft: normalize(10, "width"),
+    marginRight: normalize(5, "width"),
+    paddingVertical: normalize(5, "height"),
+    paddingHorizontal: normalize(10, "width"),
     backgroundColor: "white",
-    borderRadius: 10,
+    borderRadius: normalize(10, "width"),
   },
   tagList: {
     flex: 1,
@@ -336,15 +341,15 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans-bold",
   },
   buttonsContainer: {
-    marginVertical: 35,
+    marginVertical: normalize(35, "height"),
     flexDirection: "row",
     justifyContent: "space-evenly",
   },
   clearButton: {
     backgroundColor: Colors.primaryColor,
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    borderRadius: 20,
+    paddingHorizontal: normalize(30, "width"),
+    paddingVertical: normalize(10, "height"),
+    borderRadius: normalize(20, "width"),
   },
   clearText: {
     fontFamily: "open-sans-bold",
@@ -353,9 +358,9 @@ const styles = StyleSheet.create({
   },
   shareButton: {
     backgroundColor: Colors.logoBlue,
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    borderRadius: 20,
+    paddingHorizontal: normalize(30, "width"),
+    paddingVertical: normalize(10, "height"),
+    borderRadius: normalize(20, "width"),
   },
   shareText: {
     fontFamily: "open-sans-bold",
