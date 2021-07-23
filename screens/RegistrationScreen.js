@@ -70,7 +70,7 @@ const RegistrationScreen = (props) => {
           if (user) {
             user.sendEmailVerification().then(() => {
               Alert.alert("Verification email sent");
-              storeUserData(user.uid, firstName, lastName).then(() => {
+              storeUserData(user.uid, firstName, lastName, email).then(() => {
                 firebase.auth().signOut();
                 props.navigation.navigate("Login");
               });

@@ -16,22 +16,38 @@ import { CATEGORIES, USERS } from "../data/dummy-data";
 import Colors from "../constants/Colors";
 import { DefaultText, normalize } from "../components/DefaultText";
 import { Alert } from "react-native";
-import { imagePickerMediaLibrary, imagePickerCamera } from "../io";
+import {
+  imagePickerMediaLibrary,
+  imagePickerCamera,
+  storePostData,
+} from "../io";
 
 // Screen where users create new posts
 const CreatePostsScreen = (props) => {
-  // state for user
+  // state for userId and user
+  const [userId, setUserId] = useState("");
   const [user, setUser] = useState("");
 
   // state for list of tags
   const [tags, updateTags] = useState([]);
 
   // state for image
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState();
+
+  // Array used to sort tags (index of each tag is the value used when sorting)
+  const tagsOrder = [
+    "Information",
+    "Services",
+    "Sales",
+    "Trading",
+    "Fun",
+    "Other",
+  ];
 
   // get locally stored userId and find user
   const getUser = async () => {
     const userId = await AsyncStorage.getItem("userId");
+    setUserId(userId);
     // find user using userId
     setUser(USERS.find((u) => u.id === userId));
   };
@@ -55,7 +71,7 @@ const CreatePostsScreen = (props) => {
     });
     if (result != null) {
       if (!result.cancelled) {
-        setImage(result.uri);
+        setImage(result);
       }
     }
     return;
@@ -69,7 +85,7 @@ const CreatePostsScreen = (props) => {
     });
     if (result != null) {
       if (!result.cancelled) {
-        setImage(result.uri);
+        setImage(result);
       }
     }
     return;
@@ -79,12 +95,12 @@ const CreatePostsScreen = (props) => {
   const clear = () => {
     setTitle("");
     setDescription("");
-    setImage("");
+    setImage();
     updateTags([]);
   };
 
   // Funtion called when share button is pressed
-  const share = () => {
+  const share = async () => {
     if (image == "") {
       Alert.alert("No image provided");
       return;
@@ -101,8 +117,20 @@ const CreatePostsScreen = (props) => {
       Alert.alert("No tags selected");
       return;
     }
-    Alert.alert("Shared!");
-    return;
+
+    // order tags array
+    tags.sort((a, b) => {
+      return tagsOrder.indexOf(a) - tagsOrder.indexOf(b);
+    });
+
+    // save the post to database
+    storePostData(userId, title, description, new Date(), tags, image).then(
+      () => {
+        Alert.alert("Shared!");
+        clear();
+        return;
+      }
+    );
   };
 
   // Function that renders a tag
@@ -128,7 +156,7 @@ const CreatePostsScreen = (props) => {
 
   // The text "Choose an Image"
   let text;
-  if (image == "") {
+  if (image == null) {
     text = <DefaultText style={styles.imageText}>Choose an Image</DefaultText>;
   } else {
     text = null;
@@ -159,9 +187,11 @@ const CreatePostsScreen = (props) => {
         <TouchableOpacity onPress={chooseImage} style={styles.imageContainer}>
           <Image
             source={
-              image == "" ? require("../assets/cameraicon.png") : { uri: image }
+              image == null
+                ? require("../assets/cameraicon.png")
+                : { uri: image.uri }
             }
-            style={image == "" ? styles.defaultImage : styles.image}
+            style={image == null ? styles.defaultImage : styles.image}
           />
           {text}
         </TouchableOpacity>
@@ -173,6 +203,7 @@ const CreatePostsScreen = (props) => {
               placeholderTextColor={"white"}
               value={title}
               onChangeText={(t) => setTitle(t)}
+              onEndEditing={(e) => setTitle(e.nativeEvent.text.trim())}
             />
           </View>
           <View style={styles.descriptionContainer}>
@@ -185,6 +216,7 @@ const CreatePostsScreen = (props) => {
               placeholderTextColor={"white"}
               value={description}
               onChangeText={(d) => setDescription(d)}
+              onEndEditing={(e) => setDescription(e.nativeEvent.text.trim())}
             />
           </View>
         </View>

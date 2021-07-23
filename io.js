@@ -90,13 +90,14 @@ let retrievePostPic = async (postID) => {
 };
 
 // stores new user data
-function storeUserData(userID, firstname, lastname) {
+function storeUserData(userID, firstname, lastname, email) {
   firebase
     .database()
     .ref("users/" + userID)
     .set({
       firstname: firstname,
       lastname: lastname,
+      email: email,
     });
 }
 
@@ -122,14 +123,16 @@ function getUserData(userID) {
 }
 
 // stores post data - tested
-function storePostData(
+async function storePostData(
   userID,
   postTitle,
   postDescription,
   postCreationDate,
-  postCategories
+  postCategories,
+  pic
 ) {
-  firebase
+  let postId;
+  await firebase
     .firestore()
     .collection("post")
     .add({
@@ -140,6 +143,7 @@ function storePostData(
       categories: postCategories,
     })
     .then((docRef) => {
+      postId = docRef.id;
       /**
        * slightly confusing -
        * all data in rtdb has to be stored in key-value pairs
@@ -155,7 +159,10 @@ function storePostData(
       firebase
         .database()
         .ref("users/" + userID + "/userPosts")
-        .push(docRef.id);
+        .push(postId);
+    })
+    .then(() => {
+      storePostPic(postId, pic);
     });
 }
 
@@ -182,7 +189,6 @@ export {
   imagePickerMediaLibrary,
   imagePickerCamera,
   storeUserProfilePic,
-  storePostPic,
   retrieveUserProfilePic,
   retrievePostPic,
   // user db funcs
