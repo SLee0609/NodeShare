@@ -100,23 +100,13 @@ function storeUserData(userID, firstname, lastname) {
 
 // retreiving data once
 // use JSON.parse to parse data before return
-function getUserData(userID) {
+let getUserData = async (userID) => {
   // sets up path
   const db = firebase.database().ref();
-  db.child("users")
+  const snapshot = await db.child("users")
     .child(userID)
-    .get()
-    .then((snapshot) => {
-      // checks if data exists
-      if (snapshot.exists()) {
-        return snapshot.val();
-      } else {
-        return null;
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    .get();
+  return snapshot.val();
 }
 
 // stores post data - tested
@@ -124,7 +114,7 @@ function storePostData(userID, postTitle, postDescription, postCreationDate, pos
   firebase.firestore().collection("post").add({
     uid: userID,
     title: postTitle,
-    content: postDescription,
+    description: postDescription,
     date: postCreationDate,
     categories: postCategories
   }).then ((docRef) => {
@@ -142,25 +132,17 @@ function storePostData(userID, postTitle, postDescription, postCreationDate, pos
      */
     firebase.database().ref("users/" + userID +"/userPosts")
     .push(docRef.id);
+    return docRef.id;
   })
 }
 
-function getPostData(postID) {
-  firebase
+let getPostData = async (postID) => {
+  const snapshot = await firebase
     .firestore()
     .collection("post")
     .doc(postID)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        return doc.data();
-      } else {
-        return null;
-      }
-    })
-    .catch((error) => {
-      console.log("error");
-    });
+    .get();
+  return snapshot.data();
 }
 
 export {
