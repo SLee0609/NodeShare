@@ -3,14 +3,25 @@ import { View, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Colors from "../constants/Colors";
+import { getUserData } from "../io";
 
 const LoadingScreen = (props) => {
   const load = async () => {
     // get locally stored userId
     const userId = await AsyncStorage.getItem("userId");
-    // navigate to correct screen depending on whether or not userId is null
-    props.navigation.navigate(userId == null ? "Authentication" : "App");
+
+    // navigate to Authentication if userId is null
+    if (userId == null) {
+      props.navigation.navigate("Authentication");
+    } else if (getUserData(userId) == null) {
+      // also navigate to Authentication if userId does not exist in database
+      props.navigation.navigate("Authentication");
+    } else {
+      // navigate to App if userId exists in the database
+      props.navigation.navigate("App");
+    }
   };
+
   load();
 
   return <View style={styles.screen}></View>;

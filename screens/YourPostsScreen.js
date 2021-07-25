@@ -6,19 +6,26 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import HeaderButton from "../components/HeaderButton";
 import PostOverviewList from "../components/PostOverviewList";
 import { POSTS } from "../data/dummy-data";
+import { getUserData, getPostData, retrievePostPic } from "../io";
 
 // Loads post overview list for only user's posts
 const YourPostsScreen = (props) => {
-  // state for userId
+  // state for userId and user
   const [userId, setUserId] = useState("");
+  const [user, setUser] = useState();
 
-  // get locally stored userId
-  const getUserId = async () => {
+  // get locally stored userId and user from database
+  const getUser = async () => {
     const userId = await AsyncStorage.getItem("userId");
     // update userId
     setUserId(userId);
+    console.log("userId: " + userId);
+    const user = await getUserData(userId);
+    // update user
+    setUser(user);
+    console.log("user: " + user);
   };
-  getUserId();
+  getUser();
 
   // get all user posts
   const userPosts = POSTS.filter((p) => p.userId === userId);

@@ -58,13 +58,11 @@ const PostDetail = (props) => {
     <View style={styles.screen}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.profileContainer}>
-          <View style={styles.profilePictureContainer}>
-            <ProfilePic
-              imgUrl={user.profilePicture}
-              width={normalize(45, "width")}
-              height={normalize(45, "width")}
-            />
-          </View>
+          <ProfilePic
+            imgUrl={user.profilePicture}
+            width={normalize(45, "width")}
+            height={normalize(45, "width")}
+          />
           <View style={styles.usernameContainer}>
             <DefaultText style={styles.username}>{user.name}</DefaultText>
           </View>
@@ -146,9 +144,6 @@ const styles = StyleSheet.create({
     paddingLeft: normalize(10, "width"),
     paddingRight: normalize(15, "width"),
     flexDirection: "row",
-  },
-  profilePictureContainer: {
-    justifyContent: "center",
   },
   usernameContainer: {
     paddingLeft: normalize(15, "width"),
