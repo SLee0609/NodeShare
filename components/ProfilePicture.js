@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
   picture: {
     borderColor: "black",
     borderWidth: normalize(2, "width"),
+    resizeMode: "cover",
   },
 });
 

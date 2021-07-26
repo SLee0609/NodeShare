@@ -29,6 +29,7 @@ const loadAssets = async () => {
   const imageAssets = Asset.loadAsync([
     require("./assets/icontransparent.png"),
     require("./assets/cameraicon.png"),
+    require("./assets/splashtransparent.png"),
   ]);
   const fontAssets = Font.loadAsync({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),

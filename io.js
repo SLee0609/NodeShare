@@ -90,8 +90,8 @@ let retrievePostPic = async (postID) => {
 };
 
 // stores new user data
-function storeUserData(userID, firstname, lastname, email) {
-  firebase
+async function storeUserData(userID, firstname, lastname, email) {
+  await firebase
     .database()
     .ref("users/" + userID)
     .set({
@@ -103,24 +103,12 @@ function storeUserData(userID, firstname, lastname, email) {
 
 // retreiving data once
 // use JSON.parse to parse data before return
-function getUserData(userID) {
+let getUserData = async (userID) => {
   // sets up path
   const db = firebase.database().ref();
-  db.child("users")
-    .child(userID)
-    .get()
-    .then((snapshot) => {
-      // checks if data exists
-      if (snapshot.exists()) {
-        return snapshot.val();
-      } else {
-        return null;
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
+  const snapshot = await db.child("users").child(userID).get();
+  return snapshot.val();
+};
 
 // stores post data - tested
 async function storePostData(
@@ -136,11 +124,11 @@ async function storePostData(
     .firestore()
     .collection("post")
     .add({
-      uid: userID,
+      userId: userID,
       title: postTitle,
-      content: postDescription,
+      description: postDescription,
       date: postCreationDate,
-      categories: postCategories,
+      tags: postCategories,
     })
     .then((docRef) => {
       postId = docRef.id;
@@ -158,7 +146,7 @@ async function storePostData(
        */
       firebase
         .database()
-        .ref("users/" + userID + "/userPosts")
+        .ref("users/" + userID + "/posts")
         .push(postId);
     })
     .then(() => {
@@ -166,23 +154,17 @@ async function storePostData(
     });
 }
 
-function getPostData(postID) {
-  firebase
+let getPostData = async (postID) => {
+  const snapshot = await firebase
     .firestore()
     .collection("post")
     .doc(postID)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        return doc.data();
-      } else {
-        return null;
-      }
-    })
-    .catch((error) => {
-      console.log("error");
-    });
-}
+    .get();
+  let data = snapshot.data();
+  data.id = postID;
+  data.image = await retrievePostPic(postID);
+  return data;
+};
 
 export {
   // image funcs
@@ -190,7 +172,6 @@ export {
   imagePickerCamera,
   storeUserProfilePic,
   retrieveUserProfilePic,
-  retrievePostPic,
   // user db funcs
   storeUserData,
   getUserData,
@@ -217,10 +198,10 @@ export {
  * post (firestore)
  * posts/
  *  -> postid
- *    -> uid
+ *    -> userId
  *    -> title
  *    -> description
  *    -> image
- *    -> [categories]
+ *    -> [tags]
  *    -> creation date
  */

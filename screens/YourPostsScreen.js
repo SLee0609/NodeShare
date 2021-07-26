@@ -1,31 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import HeaderButton from "../components/HeaderButton";
 import PostOverviewList from "../components/PostOverviewList";
-import { POSTS } from "../data/dummy-data";
+import { getUserData, getPostData } from "../io";
 
 // Loads post overview list for only user's posts
 const YourPostsScreen = (props) => {
-  // state for userId
-  const [userId, setUserId] = useState("");
-
-  // get locally stored userId
-  const getUserId = async () => {
+  // function passed to PostOverviewList that is called when refreshing
+  const onRefresh = async () => {
+    // get userId and user
     const userId = await AsyncStorage.getItem("userId");
-    // update userId
-    setUserId(userId);
-  };
-  getUserId();
+    const user = await getUserData(userId);
 
-  // get all user posts
-  const userPosts = POSTS.filter((p) => p.userId === userId);
+    // first create an array of postIds
+    let postIds = [];
+    for (const [key, postId] of Object.entries(user.posts)) {
+      postIds.push(postId);
+    }
+
+    // then return user's posts
+    const userPosts = await Promise.all(
+      postIds.map((postId) => getPostData(postId))
+    );
+    return userPosts;
+  };
 
   // return the PostOverviewList for only user's posts
   return (
-    <PostOverviewList listData={userPosts} navigation={props.navigation} />
+    <PostOverviewList navigation={props.navigation} onRefresh={onRefresh} />
   );
 };
 

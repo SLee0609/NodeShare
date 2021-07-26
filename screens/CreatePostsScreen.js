@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -51,7 +51,10 @@ const CreatePostsScreen = (props) => {
     // find user using userId
     setUser(USERS.find((u) => u.id === userId));
   };
-  getUser();
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   // Function called to choose image
   const chooseImage = async () => {
@@ -154,14 +157,6 @@ const CreatePostsScreen = (props) => {
     );
   };
 
-  // The text "Choose an Image"
-  let text;
-  if (image == null) {
-    text = <DefaultText style={styles.imageText}>Choose an Image</DefaultText>;
-  } else {
-    text = null;
-  }
-
   // state for title and description
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -173,13 +168,11 @@ const CreatePostsScreen = (props) => {
         extraScrollHeight={normalize(60, "height")}
       >
         <View style={styles.profileContainer}>
-          <View style={styles.profilePictureContainer}>
-            <ProfilePic
-              imgUrl={user.profilePicture}
-              width={normalize(45, "width")}
-              height={normalize(45, "width")}
-            />
-          </View>
+          <ProfilePic
+            imgUrl={user.profilePicture}
+            width={normalize(45, "width")}
+            height={normalize(45, "width")}
+          />
           <View style={styles.usernameContainer}>
             <DefaultText style={styles.username}>{user.name}</DefaultText>
           </View>
@@ -193,7 +186,9 @@ const CreatePostsScreen = (props) => {
             }
             style={image == null ? styles.defaultImage : styles.image}
           />
-          {text}
+          {image == null ? (
+            <DefaultText style={styles.imageText}>Choose an Image</DefaultText>
+          ) : null}
         </TouchableOpacity>
         <View style={styles.textContainer}>
           <View style={styles.titleContainer}>
@@ -270,11 +265,7 @@ const styles = StyleSheet.create({
   profileContainer: {
     paddingVertical: normalize(7, "height"),
     paddingLeft: normalize(10, "width"),
-    paddingRight: normalize(15, "width"),
     flexDirection: "row",
-  },
-  profilePictureContainer: {
-    justifyContent: "center",
   },
   usernameContainer: {
     paddingLeft: normalize(15, "width"),

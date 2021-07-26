@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   ScrollView,
@@ -8,24 +8,73 @@ import {
   Platform,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 
 import ProfilePic from "../components/ProfilePicture";
-import { USERS } from "../data/dummy-data";
 import Colors from "../constants/Colors";
 import { DefaultText, normalize } from "./DefaultText";
+import { getUserData } from "../io";
 
 // Accepts a post and returns an individual post detail component; used in PostDetailScreen
 const PostDetail = (props) => {
+  // state for done loading
+  const [doneLoading, setDoneLoading] = useState(false);
+
+  // state for userId device's user
+  const [userId, setUserId] = useState("");
+  // state for post's user data
+  const [user, setUser] = useState();
+
+  // state for date
+  const [date, setDate] = useState();
+
   // Get the post we want to display
   const post = props.post;
-  // Get the user information
-  const user = USERS.find((u) => u.id === post.userId);
+
+  // get locally stored userId and post user from database
+  const getUser = async () => {
+    const userId = await AsyncStorage.getItem("userId");
+    // update userId
+    setUserId(userId);
+
+    const user = await getUserData(post.userId);
+    // update user
+    setUser(user);
+
+    // set up date
+    const newDate = new Date(post.date.seconds * 1000);
+    setDate(newDate);
+
+    // update doneLoading
+    setDoneLoading(true);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, [props.post]);
 
   // State for whether post is saved
   const [isSaved, setIsSaved] = useState(false);
+
+  // array of months to display date
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   // Function called when three dots icon is pressed
   const onDotsPress = () => {
@@ -54,19 +103,23 @@ const PostDetail = (props) => {
     );
   };
 
+  if (!doneLoading) {
+    return <ActivityIndicator size="large" color="white" />;
+  }
+
   return (
     <View style={styles.screen}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.profileContainer}>
-          <View style={styles.profilePictureContainer}>
-            <ProfilePic
-              imgUrl={user.profilePicture}
-              width={normalize(45, "width")}
-              height={normalize(45, "width")}
-            />
-          </View>
+          <ProfilePic
+            imgUrl={post.image}
+            width={normalize(45, "width")}
+            height={normalize(45, "width")}
+          />
           <View style={styles.usernameContainer}>
-            <DefaultText style={styles.username}>{user.name}</DefaultText>
+            <DefaultText style={styles.username}>
+              {user == null ? "" : user.firstname + " " + user.lastname}
+            </DefaultText>
           </View>
           <View style={styles.dotsIconContainer}>
             <TouchableOpacity onPress={onDotsPress}>
@@ -79,29 +132,31 @@ const PostDetail = (props) => {
           </View>
         </View>
         <Image source={{ uri: post.image }} style={styles.image} />
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity onPress={onMessagePress}>
-            <Ionicons
-              name="paper-plane-outline"
-              size={normalize(30, "width")}
-              color={"white"}
-              style={{
-                transform: [
-                  { translateY: normalize(-4, "height") },
-                  { scaleY: 1.15 },
-                  { rotateZ: "20deg" },
-                ],
-              }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onSavePress}>
-            <FontAwesome
-              name={isSaved ? "bookmark" : "bookmark-o"}
-              size={normalize(30, "width")}
-              color={"white"}
-            />
-          </TouchableOpacity>
-        </View>
+        {userId != post.userId ? (
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity onPress={onMessagePress}>
+              <Ionicons
+                name="paper-plane-outline"
+                size={normalize(30, "width")}
+                color={"white"}
+                style={{
+                  transform: [
+                    { translateY: normalize(-4, "height") },
+                    { scaleY: 1.15 },
+                    { rotateZ: "20deg" },
+                  ],
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onSavePress}>
+              <FontAwesome
+                name={isSaved ? "bookmark" : "bookmark-o"}
+                size={normalize(30, "width")}
+                color={"white"}
+              />
+            </TouchableOpacity>
+          </View>
+        ) : null}
         <View style={styles.textContainer}>
           <View style={styles.titleContainer}>
             <DefaultText style={styles.titleText}>{post.title}</DefaultText>
@@ -112,7 +167,13 @@ const PostDetail = (props) => {
             </DefaultText>
           </View>
           <View style={styles.timeContainer}>
-            <DefaultText style={styles.description}>{post.time}</DefaultText>
+            <DefaultText style={styles.description}>
+              {months[date.getMonth()] +
+                " " +
+                date.getDate() +
+                ", " +
+                date.getFullYear()}
+            </DefaultText>
           </View>
         </View>
         <View style={styles.tagsContainer}>
@@ -121,7 +182,7 @@ const PostDetail = (props) => {
             scrollEnabled={false}
             contentContainerStyle={styles.tagList}
           >
-            {post.categories.map((tag) => renderTag(tag))}
+            {post.tags.map((tag) => renderTag(tag))}
           </ScrollView>
         </View>
       </ScrollView>
@@ -147,9 +208,6 @@ const styles = StyleSheet.create({
     paddingRight: normalize(15, "width"),
     flexDirection: "row",
   },
-  profilePictureContainer: {
-    justifyContent: "center",
-  },
   usernameContainer: {
     paddingLeft: normalize(15, "width"),
     justifyContent: "center",
@@ -171,12 +229,13 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flexDirection: "row",
-    paddingVertical: normalize(10, "height"),
+    paddingTop: normalize(10, "height"),
     paddingHorizontal: normalize(20, "width"),
     justifyContent: "space-between",
     alignItems: "center",
   },
   textContainer: {
+    paddingTop: normalize(10, "height"),
     paddingHorizontal: normalize(20, "width"),
   },
   titleContainer: {

@@ -1,16 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 
 import ProfilePic from "../components/ProfilePicture";
-import { USERS } from "../data/dummy-data";
 import Colors from "../constants/Colors";
 import { DefaultText, normalize } from "./DefaultText";
+import { getUserData } from "../io";
 
 // Accepts post title, userId, and onSelect function
 // Returns an individual post overview component; used in PostOverviewList
 const PostOverview = (props) => {
-  // find user
-  const user = USERS.find((u) => u.id === props.userId);
+  // state for user
+  const [user, setUser] = useState();
+
+  // get user data from database
+  const getUser = async () => {
+    const user = await getUserData(props.userId);
+    setUser(user);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, [props.userId]);
 
   return (
     <View style={styles.postItem}>
@@ -18,14 +28,16 @@ const PostOverview = (props) => {
         <View style={styles.mainContainer}>
           <View style={styles.pictureContainer}>
             <ProfilePic
-              imgUrl={user.profilePicture}
+              imgUrl={props.image}
               width={normalize(60, "width")}
               height={normalize(60, "width")}
             />
           </View>
           <View style={styles.textContainer}>
             <DefaultText style={styles.title}>{props.title}</DefaultText>
-            <DefaultText>{user.name}</DefaultText>
+            <DefaultText>
+              {user == null ? "" : user.firstname + " " + user.lastname}
+            </DefaultText>
           </View>
         </View>
       </TouchableOpacity>
