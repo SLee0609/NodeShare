@@ -124,11 +124,11 @@ async function storePostData(
     .firestore()
     .collection("post")
     .add({
-      uid: userID,
+      userId: userID,
       title: postTitle,
-      content: postDescription,
+      description: postDescription,
       date: postCreationDate,
-      categories: postCategories,
+      tags: postCategories,
     })
     .then((docRef) => {
       postId = docRef.id;
@@ -146,7 +146,7 @@ async function storePostData(
        */
       firebase
         .database()
-        .ref("users/" + userID + "/userPosts")
+        .ref("users/" + userID + "/posts")
         .push(postId);
     })
     .then(() => {
@@ -160,7 +160,10 @@ let getPostData = async (postID) => {
     .collection("post")
     .doc(postID)
     .get();
-  return snapshot.data();
+  let data = snapshot.data();
+  data.id = postID;
+  data.image = await retrievePostPic(postID);
+  return data;
 };
 
 export {
@@ -169,7 +172,6 @@ export {
   imagePickerCamera,
   storeUserProfilePic,
   retrieveUserProfilePic,
-  retrievePostPic,
   // user db funcs
   storeUserData,
   getUserData,
@@ -196,10 +198,10 @@ export {
  * post (firestore)
  * posts/
  *  -> postid
- *    -> uid
+ *    -> userId
  *    -> title
  *    -> description
  *    -> image
- *    -> [categories]
+ *    -> [tags]
  *    -> creation date
  */

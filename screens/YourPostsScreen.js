@@ -5,35 +5,32 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import HeaderButton from "../components/HeaderButton";
 import PostOverviewList from "../components/PostOverviewList";
-import { POSTS } from "../data/dummy-data";
-import { getUserData, getPostData, retrievePostPic } from "../io";
+import { getUserData, getPostData } from "../io";
 
 // Loads post overview list for only user's posts
 const YourPostsScreen = (props) => {
-  // state for userId and user
-  const [userId, setUserId] = useState("");
-  const [user, setUser] = useState();
-
-  // get locally stored userId and user from database
-  const getUser = async () => {
+  // function passed to PostOverviewList that is called when refreshing
+  const onRefresh = async () => {
+    // get userId and user
     const userId = await AsyncStorage.getItem("userId");
-    // update userId
-    setUserId(userId);
     const user = await getUserData(userId);
-    // update user
-    setUser(user);
+
+    // first create an array of postIds
+    let postIds = [];
+    for (const [key, postId] of Object.entries(user.posts)) {
+      postIds.push(postId);
+    }
+
+    // then return user's posts
+    const userPosts = await Promise.all(
+      postIds.map((postId) => getPostData(postId))
+    );
+    return userPosts;
   };
-
-  useEffect(() => {
-    getUser();
-  }, []);
-
-  // get all user posts
-  const userPosts = POSTS.filter((p) => p.userId === userId);
 
   // return the PostOverviewList for only user's posts
   return (
-    <PostOverviewList listData={userPosts} navigation={props.navigation} />
+    <PostOverviewList navigation={props.navigation} onRefresh={onRefresh} />
   );
 };
 

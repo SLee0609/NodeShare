@@ -157,14 +157,6 @@ const CreatePostsScreen = (props) => {
     );
   };
 
-  // The text "Choose an Image"
-  let text;
-  if (image == null) {
-    text = <DefaultText style={styles.imageText}>Choose an Image</DefaultText>;
-  } else {
-    text = null;
-  }
-
   // state for title and description
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -194,7 +186,9 @@ const CreatePostsScreen = (props) => {
             }
             style={image == null ? styles.defaultImage : styles.image}
           />
-          {text}
+          {image == null ? (
+            <DefaultText style={styles.imageText}>Choose an Image</DefaultText>
+          ) : null}
         </TouchableOpacity>
         <View style={styles.textContainer}>
           <View style={styles.titleContainer}>

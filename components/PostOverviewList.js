@@ -1,15 +1,38 @@
-import React, { useState } from "react";
-import { View, FlatList, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  RefreshControl,
+  ScrollView,
+} from "react-native";
 import { SearchBar } from "react-native-elements";
 
 import PostOverview from "../components/PostOverview";
 import { DefaultText, normalize } from "../components/DefaultText";
 
-// Accepts a list of posts and returns a search bar and flatlist of post overviews
+// Accepts a list of posts and a refresh function and returns a search bar and flatlist of post overviews
 // Used in post screens (all posts, information, etc.)
 const PostOverviewList = (props) => {
   // searchTerm tracks what is currently in the search bar
   const [searchTerm, setSearchTerm] = useState("");
+  // state for list
+  const [list, setList] = useState([]);
+
+  // state for refreshing
+  const [refreshing, setRefreshing] = useState(true);
+
+  // function called when refreshing
+  const onRefresh = async () => {
+    setRefreshing(true);
+    const newList = await props.onRefresh();
+    setList(newList);
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    onRefresh();
+  }, [props.onRefresh]);
 
   // function that renders each post
   const renderPostOverview = (itemData) => {
@@ -17,6 +40,7 @@ const PostOverviewList = (props) => {
       <PostOverview
         title={itemData.item.title}
         userId={itemData.item.userId}
+        image={itemData.item.image}
         onSelectPost={() => {
           props.navigation.navigate({
             routeName: "PostDetail",
@@ -34,23 +58,6 @@ const PostOverviewList = (props) => {
     setSearchTerm(searchTerm);
   };
 
-  let list = (
-    <View style={styles.textContainer}>
-      <DefaultText style={styles.text}>No Posts Yet</DefaultText>
-    </View>
-  );
-
-  if (props.listData.length != 0) {
-    list = (
-      <FlatList
-        data={props.listData}
-        keyExtractor={(item) => item.id}
-        renderItem={renderPostOverview}
-        style={{ width: "100%", padding: normalize(15, "width") }}
-      />
-    );
-  }
-
   // returns the flatlist of post overviews
   return (
     <View style={styles.list}>
@@ -65,7 +72,27 @@ const PostOverviewList = (props) => {
         onChangeText={updateSearch}
         value={searchTerm}
       ></SearchBar>
-      {list}
+      {list.length != 0 || refreshing ? (
+        <FlatList
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          data={list}
+          keyExtractor={(item) => item.id}
+          renderItem={renderPostOverview}
+          style={{ width: "100%", padding: normalize(15, "width") }}
+        />
+      ) : (
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <View style={styles.textContainer}>
+            <DefaultText style={styles.text}>No Posts Yet</DefaultText>
+          </View>
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -96,7 +123,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textContainer: {
-    height: "55%",
+    height: normalize(350, "height"),
     justifyContent: "center",
     alignItems: "center",
   },
