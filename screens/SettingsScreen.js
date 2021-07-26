@@ -1,13 +1,14 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { firebase } from "../firebase/config";
 
 const SettingsScreen = (props) => {
   // function called when log out is pressed
   const logOut = async () => {
     // remove userId from local storage
     await AsyncStorage.removeItem("userId");
-
+    firebase.auth().signOut();
     // navigate to authentication
     props.navigation.navigate("Authentication");
   };

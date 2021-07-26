@@ -24,7 +24,27 @@ const LoginScreen = (props) => {
 
   // function called to resend verification email
   const resendVerification = () => {
-    Alert.alert("Verification email sent");
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        let s = firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            user.sendEmailVerification().then(()=>{
+              Alert.alert("Verification email sent again");
+            })
+          }
+        });
+        s();
+      })
+      .catch((error) => {
+        if (Platform.OS === "ios") {
+          Alert.alert(error.message);
+        } else {
+          Alert.alert("", error.message);
+        }
+        return;
+      });
   };
 
   // checks email and password if user clicks "log in" button

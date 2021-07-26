@@ -33,7 +33,27 @@ const RegistrationScreen = (props) => {
 
   // function called to resend verification email
   const resendVerification = () => {
-    Alert.alert("Verification email sent");
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        let s = firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            user.sendEmailVerification().then(()=>{
+              Alert.alert("Verification email resent");
+            })
+          }
+        });
+        s();
+      })
+      .catch((error) => {
+        if (Platform.OS === "ios") {
+          Alert.alert(error.message);
+        } else {
+          Alert.alert("", error.message);
+        }
+        return;
+      });
   };
 
   // saves account information in Firebase when user clicks "Create account" button
@@ -70,10 +90,9 @@ const RegistrationScreen = (props) => {
           if (user) {
             user.sendEmailVerification().then(() => {
               Alert.alert("Verification email sent");
-              storeUserData(user.uid, firstName, lastName, email).then(() => {
-                firebase.auth().signOut();
-                props.navigation.navigate("Login");
-              });
+              storeUserData(user.uid, firstName, lastName, email);
+              firebase.auth().signOut();
+              props.navigation.navigate("Login");
             });
           }
         });
@@ -81,7 +100,7 @@ const RegistrationScreen = (props) => {
       })
       .catch((error) => {
         switch (error.code) {
-          case "auth/email-already-in-use":
+          /*case "auth/email-already-in-use":
             firebase
               .auth()
               .signInWithEmailAndPassword(email, password)
@@ -103,6 +122,7 @@ const RegistrationScreen = (props) => {
                   }
                 });
                 s();
+                firebase.auth().signOut();
               })
               .catch((error) => {
                 if (Platform.OS === "ios") {
@@ -111,7 +131,7 @@ const RegistrationScreen = (props) => {
                   Alert.alert("", error.message);
                 }
               });
-            break;
+            break;*/
           default:
             if (Platform.OS === "ios") {
               Alert.alert(error.message);

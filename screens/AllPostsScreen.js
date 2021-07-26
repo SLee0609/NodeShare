@@ -11,6 +11,16 @@ const AllPostsScreen = (props) => {
   return <PostOverviewList listData={POSTS} navigation={props.navigation} />;
 };
 
+
+import { firebase } from "../firebase/config";
+
+firebase.auth().onAuthStateChanged((user) => {
+  if (!user) {
+    firebase.auth().signOut();
+    props.navigation.navigate("Login");
+  }
+});
+
 AllPostsScreen.navigationOptions = (navData) => {
   return {
     headerTitle: "All Posts",
