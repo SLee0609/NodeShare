@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   ScrollView,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 
@@ -19,6 +20,20 @@ import { DefaultText, normalize } from "./DefaultText";
 
 // Accepts a post and returns an individual post detail component; used in PostDetailScreen
 const PostDetail = (props) => {
+  // state for userId
+  const [userId, setUserId] = useState("");
+
+  // get locally stored userId
+  const getUser = async () => {
+    const userId = await AsyncStorage.getItem("userId");
+    // update userId
+    setUserId(userId);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
   // Get the post we want to display
   const post = props.post;
   // Get the user information
@@ -26,6 +41,36 @@ const PostDetail = (props) => {
 
   // State for whether post is saved
   const [isSaved, setIsSaved] = useState(false);
+
+  // message and save buttons only for posts that are not the current user's
+  let buttonComponents = null;
+  if (userId != post.userId) {
+    buttonComponents = (
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity onPress={onMessagePress}>
+          <Ionicons
+            name="paper-plane-outline"
+            size={normalize(30, "width")}
+            color={"white"}
+            style={{
+              transform: [
+                { translateY: normalize(-4, "height") },
+                { scaleY: 1.15 },
+                { rotateZ: "20deg" },
+              ],
+            }}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onSavePress}>
+          <FontAwesome
+            name={isSaved ? "bookmark" : "bookmark-o"}
+            size={normalize(30, "width")}
+            color={"white"}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   // Function called when three dots icon is pressed
   const onDotsPress = () => {
@@ -77,29 +122,7 @@ const PostDetail = (props) => {
           </View>
         </View>
         <Image source={{ uri: post.image }} style={styles.image} />
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity onPress={onMessagePress}>
-            <Ionicons
-              name="paper-plane-outline"
-              size={normalize(30, "width")}
-              color={"white"}
-              style={{
-                transform: [
-                  { translateY: normalize(-4, "height") },
-                  { scaleY: 1.15 },
-                  { rotateZ: "20deg" },
-                ],
-              }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onSavePress}>
-            <FontAwesome
-              name={isSaved ? "bookmark" : "bookmark-o"}
-              size={normalize(30, "width")}
-              color={"white"}
-            />
-          </TouchableOpacity>
-        </View>
+        {buttonComponents}
         <View style={styles.textContainer}>
           <View style={styles.titleContainer}>
             <DefaultText style={styles.titleText}>{post.title}</DefaultText>
@@ -166,12 +189,13 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flexDirection: "row",
-    paddingVertical: normalize(10, "height"),
+    paddingTop: normalize(10, "height"),
     paddingHorizontal: normalize(20, "width"),
     justifyContent: "space-between",
     alignItems: "center",
   },
   textContainer: {
+    paddingTop: normalize(10, "height"),
     paddingHorizontal: normalize(20, "width"),
   },
   titleContainer: {

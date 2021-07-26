@@ -90,8 +90,8 @@ let retrievePostPic = async (postID) => {
 };
 
 // stores new user data
-function storeUserData(userID, firstname, lastname, email) {
-  firebase
+async function storeUserData(userID, firstname, lastname, email) {
+  await firebase
     .database()
     .ref("users/" + userID)
     .set({

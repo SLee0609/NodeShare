@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -19,13 +19,14 @@ const YourPostsScreen = (props) => {
     const userId = await AsyncStorage.getItem("userId");
     // update userId
     setUserId(userId);
-    console.log("userId: " + userId);
     const user = await getUserData(userId);
     // update user
     setUser(user);
-    console.log("user: " + user);
   };
-  getUser();
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   // get all user posts
   const userPosts = POSTS.filter((p) => p.userId === userId);

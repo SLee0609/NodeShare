@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Dimensions, Button, Switch } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,7 +20,10 @@ const SettingsScreen = (props) => {
     // find user using userId
     setUser(USERS.find((u) => u.id === userId));
   };
-  getUser();
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   // function called when log out is pressed
   const logOut = async () => {

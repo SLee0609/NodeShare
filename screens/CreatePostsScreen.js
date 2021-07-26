@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -51,7 +51,10 @@ const CreatePostsScreen = (props) => {
     // find user using userId
     setUser(USERS.find((u) => u.id === userId));
   };
-  getUser();
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   // Function called to choose image
   const chooseImage = async () => {
