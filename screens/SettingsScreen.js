@@ -5,21 +5,22 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { firebase } from "../firebase/config";
 
 import ProfilePic from "../components/ProfilePicture";
-import { USERS } from "../data/dummy-data";
 import Colors from "../constants/Colors";
 import { DefaultText, normalize } from "../components/DefaultText";
+import { getUserData } from "../io";
 
 const SettingsScreen = (props) => {
   // state for userId and user
   const [userId, setUserId] = useState("");
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState();
 
   // get locally stored userId and find user
   const getUser = async () => {
     const userId = await AsyncStorage.getItem("userId");
     setUserId(userId);
     // find user using userId
-    setUser(USERS.find((u) => u.id === userId));
+    const user = await getUserData(userId);
+    setUser(user);
   };
 
   useEffect(() => {
@@ -30,9 +31,7 @@ const SettingsScreen = (props) => {
   const logOut = async () => {
     // remove userId from local storage
     await AsyncStorage.removeItem("userId");
-    firebase.auth().signOut();
-    // navigate to authentication
-    props.navigation.navigate("Authentication");
+    firebase.auth().signOut().then(props.navigation.navigate("Authentication"));
   };
 
   return (
@@ -43,13 +42,17 @@ const SettingsScreen = (props) => {
       >
         <View style={styles.profileContainer}>
           <ProfilePic
-            imgUrl={user.profilePicture}
-            width={normalize(80, "width")}
-            height={normalize(80, "width")}
+            imgUrl={user == null ? null : user.profilePicture}
+            width={normalize(85, "width")}
+            height={normalize(85, "width")}
           />
           <View style={styles.userDataContainer}>
-            <DefaultText style={styles.username}>{user.name}</DefaultText>
-            <DefaultText style={styles.email}>sean_lee@loomis.org</DefaultText>
+            <DefaultText style={styles.username}>
+              {user == null ? "" : user.firstname + " " + user.lastname}
+            </DefaultText>
+            <DefaultText style={styles.email}>
+              {user == null ? "" : user.email}
+            </DefaultText>
             <Button onPress={logOut} title={"Log Out"} />
           </View>
         </View>
@@ -85,12 +88,12 @@ const styles = StyleSheet.create({
     paddingLeft: normalize(15, "width"),
   },
   username: {
-    fontSize: 22,
+    fontSize: 24,
     fontFamily: "open-sans-bold",
     color: "white",
   },
   email: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: "open-sans",
     color: "gray",
   },

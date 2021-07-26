@@ -15,6 +15,10 @@ const YourPostsScreen = (props) => {
     const userId = await AsyncStorage.getItem("userId");
     const user = await getUserData(userId);
 
+    if (user.posts == null) {
+      return [];
+    }
+
     // first create an array of postIds
     let postIds = [];
     for (const [key, postId] of Object.entries(user.posts)) {
@@ -24,7 +28,10 @@ const YourPostsScreen = (props) => {
     // then return user's posts
     const userPosts = await Promise.all(
       postIds.map((postId) => getPostData(postId))
-    );
+    ).catch((error) => {
+      return null;
+    });
+
     return userPosts;
   };
 

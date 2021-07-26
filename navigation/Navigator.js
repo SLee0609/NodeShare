@@ -376,6 +376,7 @@ const BottomTabNavigator = createBottomTabNavigator(
     },
   },
   {
+    initialRouteName: "YourPostsSavedPosts",
     tabBarOptions: {
       showLabel: false,
       style: {

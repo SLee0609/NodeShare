@@ -39,9 +39,9 @@ const RegistrationScreen = (props) => {
       .then(() => {
         let s = firebase.auth().onAuthStateChanged((user) => {
           if (user) {
-            user.sendEmailVerification().then(()=>{
+            user.sendEmailVerification().then(() => {
               Alert.alert("Verification email resent");
-            })
+            });
           }
         });
         s();
@@ -90,9 +90,11 @@ const RegistrationScreen = (props) => {
           if (user) {
             user.sendEmailVerification().then(() => {
               Alert.alert("Verification email sent");
-              storeUserData(user.uid, firstName, lastName, email);
-              firebase.auth().signOut();
-              props.navigation.navigate("Login");
+              storeUserData(user.uid, firstName, lastName, email.toLowerCase());
+              firebase
+                .auth()
+                .signOut()
+                .then(props.navigation.navigate("Login"));
             });
           }
         });

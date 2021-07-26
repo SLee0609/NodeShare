@@ -12,7 +12,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import ProfilePic from "../components/ProfilePicture";
-import { CATEGORIES, USERS } from "../data/dummy-data";
 import Colors from "../constants/Colors";
 import { DefaultText, normalize } from "../components/DefaultText";
 import { Alert } from "react-native";
@@ -20,13 +19,14 @@ import {
   imagePickerMediaLibrary,
   imagePickerCamera,
   storePostData,
+  getUserData,
 } from "../io";
 
 // Screen where users create new posts
 const CreatePostsScreen = (props) => {
   // state for userId and user
   const [userId, setUserId] = useState("");
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState();
 
   // state for list of tags
   const [tags, updateTags] = useState([]);
@@ -49,7 +49,8 @@ const CreatePostsScreen = (props) => {
     const userId = await AsyncStorage.getItem("userId");
     setUserId(userId);
     // find user using userId
-    setUser(USERS.find((u) => u.id === userId));
+    const user = await getUserData(userId);
+    setUser(user);
   };
 
   useEffect(() => {
@@ -169,12 +170,14 @@ const CreatePostsScreen = (props) => {
       >
         <View style={styles.profileContainer}>
           <ProfilePic
-            imgUrl={user.profilePicture}
+            imgUrl={user == null ? null : user.profilePicture}
             width={normalize(45, "width")}
             height={normalize(45, "width")}
           />
           <View style={styles.usernameContainer}>
-            <DefaultText style={styles.username}>{user.name}</DefaultText>
+            <DefaultText style={styles.username}>
+              {user == null ? "" : user.firstname + " " + user.lastname}
+            </DefaultText>
           </View>
         </View>
         <TouchableOpacity onPress={chooseImage} style={styles.imageContainer}>
@@ -224,7 +227,7 @@ const CreatePostsScreen = (props) => {
             scrollEnabled={false}
             contentContainerStyle={styles.tagList}
           >
-            {CATEGORIES.map((tag) => renderTag(tag))}
+            {tagsOrder.map((tag) => renderTag(tag))}
           </ScrollView>
         </View>
         <View style={styles.buttonsContainer}>

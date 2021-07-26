@@ -28,7 +28,7 @@ const PostOverview = (props) => {
         <View style={styles.mainContainer}>
           <View style={styles.pictureContainer}>
             <ProfilePic
-              imgUrl={props.image}
+              imgUrl={user == null ? null : user.profilePicture}
               width={normalize(60, "width")}
               height={normalize(60, "width")}
             />

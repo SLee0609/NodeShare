@@ -26,7 +26,12 @@ const PostOverviewList = (props) => {
   const onRefresh = async () => {
     setRefreshing(true);
     const newList = await props.onRefresh();
-    setList(newList);
+    if (newList != null) {
+      setList(newList);
+    } else {
+      setList(list);
+    }
+    console.log(newList);
     setRefreshing(false);
   };
 

@@ -112,7 +112,7 @@ const PostDetail = (props) => {
       <ScrollView style={styles.scrollView}>
         <View style={styles.profileContainer}>
           <ProfilePic
-            imgUrl={post.image}
+            imgUrl={user.profilePicture}
             width={normalize(45, "width")}
             height={normalize(45, "width")}
           />
@@ -173,6 +173,13 @@ const PostDetail = (props) => {
                 date.getDate() +
                 ", " +
                 date.getFullYear()}
+            </DefaultText>
+            <DefaultText style={styles.description}>
+              {"@ " +
+                (date.getHours() % 12) +
+                ":" +
+                date.getMinutes() +
+                (date.getHours() > 11 ? "pm" : "am")}
             </DefaultText>
           </View>
         </View>
@@ -257,6 +264,7 @@ const styles = StyleSheet.create({
   timeContainer: {
     marginTop: normalize(10, "height"),
     alignItems: "flex-end",
+    justifyContent: "space-evenly",
   },
   tagsContainer: {
     padding: normalize(10, "width"),
