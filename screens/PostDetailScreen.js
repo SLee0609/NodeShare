@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 
 import PostDetail from "../components/PostDetail";
-import { getPostData } from "../io";
+import { getPostData } from "../functions/io";
 
 const PostDetailScreen = (props) => {
   const postId = props.navigation.getParam("postId");
@@ -23,7 +23,9 @@ const PostDetailScreen = (props) => {
   // return the post detail for that particular post
   return (
     <View style={styles.screen}>
-      {post == null ? null : <PostDetail post={post} />}
+      {post == null ? null : (
+        <PostDetail post={post} navigation={props.navigation} />
+      )}
     </View>
   );
 };

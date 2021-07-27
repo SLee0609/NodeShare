@@ -82,6 +82,7 @@ const SavedPostsNav = createStackNavigator(
   {
     SavedPosts: SavedPostsScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -107,6 +108,7 @@ const ProfileNav = createStackNavigator(
   {
     Profile: ProfileScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -116,6 +118,7 @@ const AllPostsNav = createStackNavigator(
   {
     AllPosts: AllPostsScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -125,6 +128,7 @@ const InformationNav = createStackNavigator(
   {
     Information: InformationScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -134,6 +138,7 @@ const ServicesNav = createStackNavigator(
   {
     Services: ServicesScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -143,6 +148,7 @@ const SalesNav = createStackNavigator(
   {
     Sales: SalesScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -152,6 +158,7 @@ const TradingNav = createStackNavigator(
   {
     Trading: TradingScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -161,6 +168,7 @@ const FunNav = createStackNavigator(
   {
     Fun: FunScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -170,6 +178,7 @@ const OtherNav = createStackNavigator(
   {
     Other: OtherScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -261,10 +270,6 @@ const BottomTabNavigator = createBottomTabNavigator(
             />
           );
         },
-        tabBarOnPress: (navData) => {
-          navData.navigation.navigate({ routeName: "AllPosts" });
-          navData.defaultHandler();
-        },
       },
     },
     SavedPosts: {
@@ -342,7 +347,7 @@ const BottomTabNavigator = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: "Profile",
+    initialRouteName: "Posts",
     tabBarOptions: {
       showLabel: false,
       style: {

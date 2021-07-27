@@ -12,8 +12,8 @@ import { SearchBar } from "react-native-elements";
 import PostOverview from "../components/PostOverview";
 import { DefaultText, normalize } from "../components/DefaultText";
 
-// Accepts a refresh function and returns a search bar and flatlist of post overviews
-// Used in post screens (all posts, information, etc.)
+// Accepts a refresh function and userId (whose posts we will display); returns a search bar and flatlist of post overviews
+// Used in post screens
 const PostOverviewList = (props) => {
   // searchTerm tracks what is currently in the search bar
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,7 +26,8 @@ const PostOverviewList = (props) => {
   // function called when refreshing
   const onRefresh = async () => {
     setRefreshing(true);
-    const newList = await props.onRefresh();
+    const userId = props.userId;
+    const newList = await props.onRefresh(userId);
     if (newList != null) {
       setList(newList);
     } else {
@@ -36,8 +37,9 @@ const PostOverviewList = (props) => {
   };
 
   useEffect(() => {
+    setList([]);
     onRefresh();
-  }, [props.onRefresh]);
+  }, [props]);
 
   // function that renders each post
   const renderPostOverview = (itemData) => {
@@ -83,7 +85,6 @@ const PostOverviewList = (props) => {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              colors={"white"}
               tintColor={"white"}
             />
           }
@@ -101,7 +102,6 @@ const PostOverviewList = (props) => {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              colors={"white"}
               tintColor={"white"}
             />
           }

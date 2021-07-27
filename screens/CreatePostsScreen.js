@@ -20,7 +20,7 @@ import {
   imagePickerCamera,
   storePostData,
   getUserData,
-} from "../io";
+} from "../functions/io";
 
 // Screen where users create new posts
 const CreatePostsScreen = (props) => {

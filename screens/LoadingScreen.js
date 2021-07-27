@@ -3,7 +3,7 @@ import { View, StyleSheet, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Colors from "../constants/Colors";
-import { getUserData } from "../io";
+import { getUserData } from "../functions/io";
 
 const LoadingScreen = (props) => {
   const load = async () => {

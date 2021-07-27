@@ -14,26 +14,40 @@ import { AntDesign } from "@expo/vector-icons";
 import ProfilePic from "../components/ProfilePicture";
 import PostOverviewList from "../components/PostOverviewList";
 import { DefaultText, normalize } from "../components/DefaultText";
-import { getUserData, getPostData } from "../io";
+import { getUserData } from "../functions/io";
+import { onRefreshUserPosts } from "../functions/postOverviewListRefresh";
 
 const ProfileScreen = (props) => {
+  // state for userId
+  const [userId, setUserId] = useState();
   // state for user
   const [user, setUser] = useState();
 
   // state for collapse
   const [collapse, setCollapse] = useState(false);
 
-  // get locally stored userId and find user
-  const getUser = async () => {
-    const userId = await AsyncStorage.getItem("userId");
-    // find user using userId
-    const user = await getUserData(userId);
-    setUser(user);
+  // get passed profileUserId and find its user, or get locally stored userId and find user
+  const getUsers = async () => {
+    // first attempt to get profileUserId
+    const profileUserId = props.navigation.getParam("profileUserId");
+    // profileUserId is null only when we are looking at device user's profile
+    if (profileUserId != null) {
+      const profileUser = await getUserData(profileUserId);
+      setUserId(profileUserId);
+      setUser(profileUser);
+    } else {
+      const userId = await AsyncStorage.getItem("userId");
+      // find user using userId
+      const user = await getUserData(userId);
+      setUserId(userId);
+      setUser(user);
+    }
   };
 
   useEffect(() => {
-    getUser();
-  }, []);
+    setCollapse(false);
+    getUsers();
+  }, [props]);
 
   // function called when edit profile is pressed
   const editProfile = () => {
@@ -66,32 +80,6 @@ const ProfileScreen = (props) => {
         },
       },
     ]);
-  };
-
-  // function passed to PostOverviewList that is called when refreshing
-  const onRefresh = async () => {
-    // get userId and user
-    const userId = await AsyncStorage.getItem("userId");
-    const user = await getUserData(userId);
-
-    if (user.posts == null) {
-      return [];
-    }
-
-    // first create an array of postIds
-    let postIds = [];
-    for (const [key, postId] of Object.entries(user.posts)) {
-      postIds.push(postId);
-    }
-
-    // then return user's posts
-    const userPosts = await Promise.all(
-      postIds.map((postId) => getPostData(postId))
-    ).catch((error) => {
-      return null;
-    });
-
-    return userPosts;
   };
 
   return (
@@ -200,7 +188,11 @@ const ProfileScreen = (props) => {
           </View>
         </View>
       </Collapsible>
-      <PostOverviewList navigation={props.navigation} onRefresh={onRefresh} />
+      <PostOverviewList
+        navigation={props.navigation}
+        onRefresh={onRefreshUserPosts}
+        userId={userId}
+      />
     </View>
   );
 };

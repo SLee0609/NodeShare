@@ -15,9 +15,8 @@ import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 
 import ProfilePic from "../components/ProfilePicture";
-import Colors from "../constants/Colors";
 import { DefaultText, normalize } from "./DefaultText";
-import { getUserData } from "../io";
+import { getUserData } from "../functions/io";
 
 // Accepts a post and returns an individual post detail component; used in PostDetailScreen
 const PostDetail = (props) => {
@@ -76,6 +75,16 @@ const PostDetail = (props) => {
     "December",
   ];
 
+  // Function called when username is pressed
+  const onUsernamePress = () => {
+    props.navigation.navigate({
+      routeName: "Profile",
+      params: {
+        profileUserId: post.userId,
+      },
+    });
+  };
+
   // Function called when three dots icon is pressed
   const onDotsPress = () => {
     Alert.alert("Three Dots Pressed");
@@ -117,9 +126,17 @@ const PostDetail = (props) => {
             height={normalize(45, "width")}
           />
           <View style={styles.usernameContainer}>
-            <DefaultText style={styles.username}>
-              {user == null ? "" : user.firstname + " " + user.lastname}
-            </DefaultText>
+            {userId != post.userId ? (
+              <TouchableOpacity onPress={onUsernamePress}>
+                <DefaultText style={styles.username}>
+                  {user == null ? "" : user.firstname + " " + user.lastname}
+                </DefaultText>
+              </TouchableOpacity>
+            ) : (
+              <DefaultText style={styles.username}>
+                {user == null ? "" : user.firstname + " " + user.lastname}
+              </DefaultText>
+            )}
           </View>
           <View style={styles.dotsIconContainer}>
             <TouchableOpacity onPress={onDotsPress}>
@@ -200,11 +217,8 @@ const PostDetail = (props) => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "black",
     justifyContent: "flex-start",
     alignItems: "center",
-    borderBottomColor: Colors.gray,
-    borderBottomWidth: normalize(1, "height"),
   },
   scrollView: {
     width: Dimensions.get("window").width,
@@ -216,7 +230,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   usernameContainer: {
-    paddingLeft: normalize(15, "width"),
+    paddingHorizontal: normalize(15, "width"),
     justifyContent: "center",
   },
   username: {

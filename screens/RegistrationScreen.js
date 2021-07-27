@@ -15,7 +15,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 import { DefaultText, normalize } from "../components/DefaultText";
 import Colors from "../constants/Colors";
-import { storeUserData } from "../io";
+import { storeUserData } from "../functions/io";
 
 // Screen where users can register an account
 const RegistrationScreen = (props) => {

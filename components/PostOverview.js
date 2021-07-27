@@ -4,7 +4,7 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import ProfilePic from "../components/ProfilePicture";
 import Colors from "../constants/Colors";
 import { DefaultText, normalize } from "./DefaultText";
-import { getUserData } from "../io";
+import { getUserData } from "../functions/io";
 
 // Accepts post title, userId, and onSelect function
 // Returns an individual post overview component; used in PostOverviewList
