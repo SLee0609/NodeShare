@@ -30,8 +30,6 @@ const defaultStackNavOptions = {
   headerStyle: {
     backgroundColor: Colors.primaryColor,
     height: Dimensions.get("window").height * 0.14,
-    borderBottomColor: "black",
-    borderBottomWidth: normalize(2, "height"),
   },
   headerTitleStyle: {
     fontFamily: "open-sans-bold",
@@ -46,8 +44,6 @@ const defaultStackNavOptionsWithoutHeader = {
   headerStyle: {
     backgroundColor: Colors.primaryColor,
     height: normalize(114, "height"),
-    borderBottomColor: "black",
-    borderBottomWidth: normalize(2, "height"),
   },
   headerShown: false,
   cardStyle: { backgroundColor: "black" },

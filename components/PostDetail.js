@@ -13,15 +13,19 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import * as Progress from "react-native-progress";
 
+import Colors from "../constants/Colors";
 import ProfilePic from "../components/ProfilePicture";
 import { DefaultText, normalize } from "./DefaultText";
 import { getUserData } from "../functions/io";
 
 // Accepts a post and returns an individual post detail component; used in PostDetailScreen
 const PostDetail = (props) => {
-  // state for done loading
+  // state for done loading user
   const [doneLoading, setDoneLoading] = useState(false);
+  // state for done loading image
+  const [doneLoadingImage, setDoneLoadingImage] = useState(false);
 
   // state for userId device's user
   const [userId, setUserId] = useState("");
@@ -113,7 +117,8 @@ const PostDetail = (props) => {
   };
 
   if (!doneLoading) {
-    return <ActivityIndicator size="large" color="white" />;
+    //return <ActivityIndicator size="large" color="white" />;
+    return null;
   }
 
   return (
@@ -148,7 +153,25 @@ const PostDetail = (props) => {
             </TouchableOpacity>
           </View>
         </View>
-        <Image source={{ uri: post.image }} style={styles.image} />
+        <View>
+          <Image
+            source={{ uri: post.image }}
+            style={styles.image}
+            onLoadEnd={() => {
+              setDoneLoadingImage(true);
+            }}
+          />
+          {doneLoadingImage ? null : (
+            <View style={styles.progressContainer}>
+              <Progress.CircleSnail
+                animating={!doneLoadingImage}
+                hidesWhenStopped={true}
+                color={"white"}
+                size={normalize(100, "width")}
+              />
+            </View>
+          )}
+        </View>
         {userId != post.userId ? (
           <View style={styles.buttonsContainer}>
             <TouchableOpacity onPress={onMessagePress}>
@@ -193,7 +216,7 @@ const PostDetail = (props) => {
             </DefaultText>
             <DefaultText style={styles.description}>
               {"@ " +
-                (date.getHours() % 12) +
+                (date.getHours() % 12 == 0 ? 12 : date.getHours() % 12) +
                 ":" +
                 date.getMinutes() +
                 (date.getHours() > 11 ? "pm" : "am")}
@@ -247,6 +270,14 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").width,
     resizeMode: "cover",
+    backgroundColor: Colors.darkGray,
+  },
+  progressContainer: {
+    position: "absolute",
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").width,
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonsContainer: {
     flexDirection: "row",
