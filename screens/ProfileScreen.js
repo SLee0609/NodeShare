@@ -17,8 +17,7 @@ import { DefaultText, normalize } from "../components/DefaultText";
 import { getUserData, getPostData } from "../io";
 
 const ProfileScreen = (props) => {
-  // state for userId and user
-  const [userId, setUserId] = useState("");
+  // state for user
   const [user, setUser] = useState();
 
   // state for collapse
@@ -27,7 +26,6 @@ const ProfileScreen = (props) => {
   // get locally stored userId and find user
   const getUser = async () => {
     const userId = await AsyncStorage.getItem("userId");
-    setUserId(userId);
     // find user using userId
     const user = await getUserData(userId);
     setUser(user);

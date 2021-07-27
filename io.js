@@ -192,7 +192,7 @@ export {
  *    -> grad year
  *    -> posts
  *      -> postid (auto gen)
- *    -> saved posts
+ *    -> savedPosts
  *      -> postid
  *
  * post (firestore)

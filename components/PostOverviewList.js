@@ -12,7 +12,7 @@ import { SearchBar } from "react-native-elements";
 import PostOverview from "../components/PostOverview";
 import { DefaultText, normalize } from "../components/DefaultText";
 
-// Accepts a list of posts and a refresh function and returns a search bar and flatlist of post overviews
+// Accepts a refresh function and returns a search bar and flatlist of post overviews
 // Used in post screens (all posts, information, etc.)
 const PostOverviewList = (props) => {
   // searchTerm tracks what is currently in the search bar
@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 25,
     fontFamily: "open-sans-bold",
+    color: "white",
   },
 });
 
