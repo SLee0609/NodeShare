@@ -5,12 +5,12 @@ import {
   StyleSheet,
   RefreshControl,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import { SearchBar } from "react-native-elements";
 
 import PostOverview from "../components/PostOverview";
 import { DefaultText, normalize } from "../components/DefaultText";
-import Colors from "../constants/Colors";
 
 // Accepts a list of posts and a refresh function and returns a search bar and flatlist of post overviews
 // Used in post screens (all posts, information, etc.)
@@ -90,7 +90,10 @@ const PostOverviewList = (props) => {
           data={list}
           keyExtractor={(item) => item.id}
           renderItem={renderPostOverview}
-          style={{ width: "100%", padding: normalize(15, "width") }}
+          style={{
+            width: Dimensions.get("window").width,
+            padding: normalize(15, "width"),
+          }}
         />
       ) : (
         <ScrollView

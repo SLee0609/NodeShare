@@ -28,17 +28,6 @@ const SavedPostsScreen = (props) => {
 SavedPostsScreen.navigationOptions = (navData) => {
   return {
     headerTitle: "Saved Posts",
-    headerLeft: () => (
-      <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <Item
-          title="Menu"
-          iconName="ios-menu"
-          onPress={() => {
-            navData.navigation.toggleDrawer();
-          }}
-        />
-      </HeaderButtons>
-    ),
   };
 };
 

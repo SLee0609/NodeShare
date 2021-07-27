@@ -4,17 +4,16 @@ import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createBottomTabNavigator } from "react-navigation-tabs";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 
 import { normalize } from "../components/DefaultText";
 import LoadingScreen from "../screens/LoadingScreen";
 import RegistrationScreen from "../screens/RegistrationScreen";
 import LoginScreen from "../screens/LoginScreen";
-import YourPostsScreen from "../screens/YourPostsScreen";
 import SavedPostsScreen from "../screens/SavedPostsScreen";
 import CreatePostsScreen from "../screens/CreatePostsScreen";
 import MessagesScreen from "../screens/MessagesScreen";
-import SettingsScreen from "../screens/SettingsScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 import PostDetailScreen from "../screens/PostDetailScreen";
 import AllPostsScreen from "../screens/AllPostsScreen";
 import InformationScreen from "../screens/post-types/InformationScreen";
@@ -79,15 +78,6 @@ const RegistrationNav = createStackNavigator(
     defaultNavigationOptions: defaultStackNavOptions,
   }
 );
-const YourPostsNav = createStackNavigator(
-  {
-    YourPosts: YourPostsScreen,
-    PostDetail: PostDetailScreen,
-  },
-  {
-    defaultNavigationOptions: defaultStackNavOptions,
-  }
-);
 const SavedPostsNav = createStackNavigator(
   {
     SavedPosts: SavedPostsScreen,
@@ -113,9 +103,10 @@ const MessagesNav = createStackNavigator(
     defaultNavigationOptions: defaultStackNavOptions,
   }
 );
-const SettingsNav = createStackNavigator(
+const ProfileNav = createStackNavigator(
   {
-    Settings: SettingsScreen,
+    Profile: ProfileScreen,
+    PostDetail: PostDetailScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -251,28 +242,6 @@ const PostFilteringNavigator = createDrawerNavigator(
   }
 );
 
-// Drawer navigation for your posts and saved posts screen
-const YourPostsSavedPostsNavigator = createDrawerNavigator(
-  {
-    YourPosts: {
-      screen: YourPostsNav,
-      navigationOptions: {
-        drawerLabel: "Your Posts",
-      },
-    },
-    SavedPosts: {
-      screen: SavedPostsNav,
-      navigationOptions: {
-        drawerLabel: "Saved Posts",
-      },
-    },
-  },
-  {
-    drawerWidth: Dimensions.get("window").width * 0.75,
-    contentOptions: defaultDrawerContentOptions,
-  }
-);
-
 // BottomTabNavigator navigator is the bottom tab navigator with 5 icons
 const BottomTabNavigator = createBottomTabNavigator(
   {
@@ -298,25 +267,22 @@ const BottomTabNavigator = createBottomTabNavigator(
         },
       },
     },
-    YourPostsSavedPosts: {
-      screen: YourPostsSavedPostsNavigator,
+    SavedPosts: {
+      screen: SavedPostsNav,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (
-            <AntDesign
+            <FontAwesome
               style={{
                 height: normalize(25, "width"),
                 width: normalize(25, "width"),
               }}
-              name="user"
+              name={"bookmark-o"}
               size={normalize(25, "width")}
+              color={"white"}
               color={tabInfo.tintColor}
             />
           );
-        },
-        tabBarOnPress: (navData) => {
-          navData.navigation.navigate({ routeName: "YourPosts" });
-          navData.defaultHandler();
         },
       },
     },
@@ -356,13 +322,13 @@ const BottomTabNavigator = createBottomTabNavigator(
         },
       },
     },
-    Settings: {
-      screen: SettingsNav,
+    Profile: {
+      screen: ProfileNav,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (
             <AntDesign
-              name="setting"
+              name="user"
               style={{
                 height: normalize(25, "width"),
                 width: normalize(25, "width"),
@@ -376,7 +342,7 @@ const BottomTabNavigator = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: "YourPostsSavedPosts",
+    initialRouteName: "Profile",
     tabBarOptions: {
       showLabel: false,
       style: {
