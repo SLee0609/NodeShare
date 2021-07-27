@@ -10,6 +10,7 @@ import { SearchBar } from "react-native-elements";
 
 import PostOverview from "../components/PostOverview";
 import { DefaultText, normalize } from "../components/DefaultText";
+import Colors from "../constants/Colors";
 
 // Accepts a list of posts and a refresh function and returns a search bar and flatlist of post overviews
 // Used in post screens (all posts, information, etc.)
@@ -31,7 +32,6 @@ const PostOverviewList = (props) => {
     } else {
       setList(list);
     }
-    console.log(newList);
     setRefreshing(false);
   };
 
@@ -80,7 +80,12 @@ const PostOverviewList = (props) => {
       {list.length != 0 || refreshing ? (
         <FlatList
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={"white"}
+              tintColor={"white"}
+            />
           }
           data={list}
           keyExtractor={(item) => item.id}
@@ -90,7 +95,12 @@ const PostOverviewList = (props) => {
       ) : (
         <ScrollView
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={"white"}
+              tintColor={"white"}
+            />
           }
         >
           <View style={styles.textContainer}>
@@ -104,12 +114,13 @@ const PostOverviewList = (props) => {
 
 const styles = StyleSheet.create({
   searchBar: {
-    height: normalize(50, "height"),
+    height: normalize(60, "height"),
     width: "100%",
+    paddingHorizontal: normalize(15, "width"),
+    paddingVertical: normalize(10, "height"),
     justifyContent: "center",
     alignItems: "center",
-    borderBottomColor: "black",
-    borderBottomWidth: normalize(2, "height"),
+    backgroundColor: "black",
   },
   inputContainer: {
     height: "100%",

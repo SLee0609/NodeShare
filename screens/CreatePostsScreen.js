@@ -256,11 +256,8 @@ CreatePostsScreen.navigationOptions = (navData) => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "black",
     justifyContent: "flex-start",
     alignItems: "center",
-    borderBottomColor: Colors.gray,
-    borderBottomWidth: normalize(1, "height"),
   },
   scrollView: {
     width: Dimensions.get("window").width,

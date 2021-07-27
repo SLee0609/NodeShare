@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 const MessagesScreen = (props) => {
   return (
     <View style={styles.screen}>
-      <Text>Messages Screen</Text>
+      <Text style={{ color: "white" }}>Messages Screen</Text>
     </View>
   );
 };

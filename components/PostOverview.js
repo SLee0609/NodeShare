@@ -35,7 +35,7 @@ const PostOverview = (props) => {
           </View>
           <View style={styles.textContainer}>
             <DefaultText style={styles.title}>{props.title}</DefaultText>
-            <DefaultText>
+            <DefaultText style={styles.username}>
               {user == null ? "" : user.firstname + " " + user.lastname}
             </DefaultText>
           </View>
@@ -50,11 +50,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: Colors.blue,
     borderRadius: normalize(10, "width"),
-    marginBottom: normalize(15, "height"),
+    marginBottom: normalize(20, "height"),
     paddingVertical: normalize(15, "height"),
     paddingHorizontal: normalize(15, "width"),
-    borderColor: "black",
-    borderWidth: normalize(3, "width"),
   },
   mainContainer: {
     flexDirection: "row",
@@ -71,8 +69,12 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   title: {
-    fontSize: 18,
+    fontSize: 19,
     fontFamily: "open-sans-bold",
+  },
+  username: {
+    fontSize: 16,
+    fontFamily: "open-sans",
   },
 });
 

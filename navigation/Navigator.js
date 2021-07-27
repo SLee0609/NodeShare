@@ -40,18 +40,18 @@ const defaultStackNavOptions = {
   },
   headerTintColor: Colors.accentColor,
   headerBackTitleVisible: false,
-  cardStyle: { backgroundColor: Colors.gray },
+  cardStyle: { backgroundColor: "black" },
 };
 
 const defaultStackNavOptionsWithoutHeader = {
   headerStyle: {
     backgroundColor: Colors.primaryColor,
-    height: Dimensions.get("window").height * 0.14,
+    height: normalize(114, "height"),
     borderBottomColor: "black",
     borderBottomWidth: normalize(2, "height"),
   },
   headerShown: false,
-  cardStyle: { backgroundColor: Colors.gray },
+  cardStyle: { backgroundColor: "black" },
 };
 
 // Create stack navigators for each screen
@@ -383,7 +383,7 @@ const BottomTabNavigator = createBottomTabNavigator(
         backgroundColor: "black",
         height: normalize(25, "width") + normalize(30, "height"),
         width: "100%",
-        borderTopColor: "black",
+        borderTopColor: Colors.gray,
         borderTopWidth: normalize(1, "height"),
       },
       activeTintColor: "white",

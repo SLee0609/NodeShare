@@ -101,47 +101,12 @@ const RegistrationScreen = (props) => {
         s();
       })
       .catch((error) => {
-        switch (error.code) {
-          /*case "auth/email-already-in-use":
-            firebase
-              .auth()
-              .signInWithEmailAndPassword(email, password)
-              .then(() => {
-                let s = firebase.auth().onAuthStateChanged((user) => {
-                  if (user) {
-                    if (user.emailVerified) {
-                      Alert.alert("Email already in use");
-                    } else {
-                      Alert.alert(
-                        "Email not verified",
-                        "Resend verification email?",
-                        [
-                          { text: "No", style: "destructive" },
-                          { text: "Yes", onPress: resendVerification },
-                        ]
-                      );
-                    }
-                  }
-                });
-                s();
-                firebase.auth().signOut();
-              })
-              .catch((error) => {
-                if (Platform.OS === "ios") {
-                  Alert.alert(error.message);
-                } else {
-                  Alert.alert("", error.message);
-                }
-              });
-            break;*/
-          default:
-            if (Platform.OS === "ios") {
-              Alert.alert(error.message);
-            } else {
-              Alert.alert("", error.message);
-            }
-            break;
+        if (Platform.OS === "ios") {
+          Alert.alert(error.message);
+        } else {
+          Alert.alert("", error.message);
         }
+        return;
       });
   };
 
