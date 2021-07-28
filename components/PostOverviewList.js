@@ -37,7 +37,6 @@ const PostOverviewList = (props) => {
   };
 
   useEffect(() => {
-    setList([]);
     onRefresh();
   }, [props]);
 

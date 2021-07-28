@@ -23,6 +23,9 @@ const ProfileScreen = (props) => {
   // state for user
   const [user, setUser] = useState();
 
+  // state for whether device's user is the same as profile's user
+  const [sameUser, setSameUser] = useState(false);
+
   // state for collapse
   const [collapse, setCollapse] = useState(false);
 
@@ -35,12 +38,14 @@ const ProfileScreen = (props) => {
       const profileUser = await getUserData(profileUserId);
       setUserId(profileUserId);
       setUser(profileUser);
+      setSameUser(false);
     } else {
       const userId = await AsyncStorage.getItem("userId");
       // find user using userId
       const user = await getUserData(userId);
       setUserId(userId);
       setUser(user);
+      setSameUser(true);
     }
   };
 
@@ -120,13 +125,15 @@ const ProfileScreen = (props) => {
               </View>
             ) : null}
           </View>
-          <TouchableOpacity onPress={editProfile}>
-            <View style={styles.editProfileButton}>
-              <DefaultText style={styles.editProfileText}>
-                Edit Profile
-              </DefaultText>
-            </View>
-          </TouchableOpacity>
+          {sameUser ? (
+            <TouchableOpacity onPress={editProfile}>
+              <View style={styles.editProfileButton}>
+                <DefaultText style={styles.editProfileText}>
+                  Edit Profile
+                </DefaultText>
+              </View>
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
       <Collapsible collapsed={collapse} style={styles.collapseContainer}>
@@ -165,28 +172,50 @@ const ProfileScreen = (props) => {
               <DefaultText style={styles.bio}>On Campus</DefaultText>
             </View>
           </View>
+          {sameUser ? null : (
+            <View
+              style={{
+                flex: 1,
+                alignItems: "flex-end",
+                paddingRight: normalize(15, "width"),
+                justifyContent: "center",
+              }}
+            >
+              <TouchableOpacity onPress={onUp}>
+                <View style={styles.collapseButton}>
+                  <AntDesign
+                    name="up"
+                    size={normalize(15, "width")}
+                    color="white"
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
-        <View style={styles.buttonsContainer}>
-          <View style={{ flex: 1 }}></View>
-          <View style={{ flex: 2, alignItems: "center" }}>
-            <TouchableOpacity onPress={logOut}>
-              <View style={styles.logOutButton}>
-                <DefaultText style={styles.logOutText}>Log Out</DefaultText>
-              </View>
-            </TouchableOpacity>
+        {sameUser ? (
+          <View style={styles.buttonsContainer}>
+            <View style={{ flex: 1 }}></View>
+            <View style={{ flex: 2, alignItems: "center" }}>
+              <TouchableOpacity onPress={logOut}>
+                <View style={styles.logOutButton}>
+                  <DefaultText style={styles.logOutText}>Log Out</DefaultText>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <TouchableOpacity onPress={onUp}>
+                <View style={styles.collapseButton}>
+                  <AntDesign
+                    name="up"
+                    size={normalize(15, "width")}
+                    color="white"
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={{ flex: 1, alignItems: "center" }}>
-            <TouchableOpacity onPress={onUp}>
-              <View style={styles.collapseButton}>
-                <AntDesign
-                  name="up"
-                  size={normalize(15, "width")}
-                  color="white"
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
+        ) : null}
       </Collapsible>
       <PostOverviewList
         navigation={props.navigation}
@@ -250,7 +279,7 @@ const styles = StyleSheet.create({
   },
   editProfileText: {
     fontSize: 12,
-    fontFamily: "open-sans",
+    fontFamily: "open-sans-bold",
     color: "white",
   },
   userBioContainer: {

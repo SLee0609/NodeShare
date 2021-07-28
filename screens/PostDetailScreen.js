@@ -18,7 +18,7 @@ const PostDetailScreen = (props) => {
 
   useEffect(() => {
     getPost();
-  }, []);
+  }, [postId]);
 
   // return the post detail for that particular post
   return (
