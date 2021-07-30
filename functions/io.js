@@ -5,10 +5,11 @@
  *
  * !!!!!!!!!!
  * REMEMBER TO CHANGE SECURITY SETTINGS AFTER TESTING AND AUTH IS SET UP
+ *
+ * reminder to add catches to errors (no data, offline, etc)
  */
 
 import firebase from "firebase/app";
-
 import * as ImagePicker from "expo-image-picker";
 
 // returns image in form of blob (able to be stored by firebase)
@@ -165,6 +166,109 @@ let getPostData = async (postID) => {
   return data;
 };
 
+// gets all posts from category - pass in a string
+// returns array of post objects
+let getPostFromCategory = async (category) => {
+  var categoryPosts = [];
+  await firebase
+    .firestore()
+    .collection("post")
+    .where("tags", "array-contains", category)
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        categoryPosts.push(doc.data());
+      });
+    });
+  return categoryPosts;
+};
+
+// gets all posts posted from a user - pass in userID as a string
+// returns array of post objects
+let getPostFromUser = async (userID) => {
+  var userPosts = [];
+  await firebase
+    .firestore()
+    .collection("post")
+    .where("userId", "==", userID)
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        userPosts.push(doc.data());
+      });
+    });
+  return userPosts;
+};
+
+// gets all posts - probably shouldn't be used
+let getAllPosts = async () => {
+  var posts = [];
+  await firebase
+    .firestore()
+    .collection("post")
+    .get()
+    .then((allPosts) => {
+      allPosts.forEach((doc) => {
+        posts.push(doc.data());
+      });
+    });
+  return posts;
+};
+
+// get the latest post - input the number of posts you want
+let getLatestPost = async (num) => {
+  var posts = [];
+  await firebase
+    .firestore()
+    .collection("post")
+    .orderBy("date", "desc")
+    .limit(num)
+    .get()
+    .then((newPosts) => {
+      newPosts.forEach((doc) => {
+        posts.push(doc.data());
+      });
+    });
+  return posts;
+};
+
+// lets a user save a post
+let storeUserSavedPost = async (uid, postID) => {
+  // same as before - check storePostData
+  firebase
+    .database()
+    .ref("users/" + uid + "/savedPosts")
+    .push(postID);
+};
+
+// gets a user's saved posts
+let getUserSavedPosts = async (userId) => {
+  if (userId == null) {
+    return null;
+  }
+
+  const user = await getUserData(userId);
+
+  if (user == null || user.savedPosts == null) {
+    return [];
+  }
+
+  // first create an array of postIds
+  let postIds = [];
+  for (const [key, postId] of Object.entries(user.savedPosts)) {
+    postIds.unshift(postId);
+  }
+
+  // then return user's saved posts
+  const savedPosts = await Promise.all(
+    postIds.map((postId) => getPostData(postId))
+  ).catch((error) => {
+    return null;
+  });
+
+  return savedPosts;
+};
+
 export {
   // image funcs
   imagePickerMediaLibrary,
@@ -174,9 +278,15 @@ export {
   // user db funcs
   storeUserData,
   getUserData,
+  storeUserSavedPost,
+  getUserSavedPosts,
   // post db funcs
   storePostData,
   getPostData,
+  getPostFromCategory,
+  getPostFromUser,
+  getAllPosts,
+  getLatestPost,
 };
 
 /**
@@ -188,7 +298,8 @@ export {
  *    -> firstname
  *    -> lastname
  *    -> profile pic
- *    -> grad year
+ *    -> occupation
+ *    -> residency
  *    -> posts
  *      -> postid (auto gen)
  *    -> savedPosts
@@ -202,5 +313,5 @@ export {
  *    -> description
  *    -> image
  *    -> [tags]
- *    -> creation date
+ *    -> date
  */
