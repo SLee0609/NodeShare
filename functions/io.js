@@ -134,6 +134,9 @@ function storePostData(userID, postTitle, postDescription, postCreationDate, pos
      */
     firebase.database().ref("users/" + userID +"/userPosts")
     .push(docRef.id);
+    firebase.firestore.collection("post").doc(docRef.id).set({
+      postId : docRef.id;
+    });
     return docRef.id;
   });
 }
