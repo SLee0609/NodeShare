@@ -9,6 +9,8 @@ import { Asset } from "expo-asset";
 import firebase from "firebase/app";
 import Navigator from "./navigation/Navigator";
 
+import { storeUserSavedPost, getUserSavedPosts } from "./functions/io.js";
+
 // Optimize navigation performances
 enableScreens();
 
@@ -38,6 +40,8 @@ const loadAssets = async () => {
 
   await Promise.all([imageAssets, fontAssets]);
 };
+
+getUserSavedPosts("sYPfH2Dgj0Mtmm4WW06DnPK0AeE3").then((docs) => {console.log(docs)});
 
 export default function App() {
   // State to check if assets are loaded
