@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -27,6 +28,9 @@ const CreatePostsScreen = (props) => {
   // state for userId and user
   const [userId, setUserId] = useState("");
   const [user, setUser] = useState();
+
+  // state for when sharing
+  const [sharing, setSharing] = useState(false);
 
   // state for list of tags
   const [tags, updateTags] = useState([]);
@@ -127,11 +131,16 @@ const CreatePostsScreen = (props) => {
       return tagsOrder.indexOf(a) - tagsOrder.indexOf(b);
     });
 
+    clear();
+    // set sharing to true
+    setSharing(true);
+
     // save the post to database
     storePostData(userId, title, description, new Date(), tags, image).then(
       () => {
         Alert.alert("Shared!");
-        clear();
+        // set sharing to false
+        setSharing(false);
         return;
       }
     );
@@ -162,89 +171,102 @@ const CreatePostsScreen = (props) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  return (
-    <View style={styles.screen}>
-      <KeyboardAwareScrollView
-        style={styles.scrollView}
-        extraScrollHeight={normalize(60, "height")}
-      >
-        <View style={styles.profileContainer}>
-          <ProfilePic
-            imgUrl={user == null ? null : user.profilePicture}
-            width={normalize(45, "width")}
-            height={normalize(45, "width")}
-          />
-          <View style={styles.usernameContainer}>
-            <DefaultText style={styles.username}>
-              {user == null ? "" : user.firstname + " " + user.lastname}
-            </DefaultText>
-          </View>
-        </View>
-        <TouchableOpacity onPress={chooseImage} style={styles.imageContainer}>
-          <Image
-            source={
-              image == null
-                ? require("../assets/cameraicon.png")
-                : { uri: image.uri }
-            }
-            style={image == null ? styles.defaultImage : styles.image}
-          />
-          {image == null ? (
-            <DefaultText style={styles.imageText}>Choose an Image</DefaultText>
-          ) : null}
-        </TouchableOpacity>
-        <View style={styles.textContainer}>
-          <View style={styles.titleContainer}>
-            <TextInput
-              style={styles.titleText}
-              placeholder={"Title"}
-              placeholderTextColor={"white"}
-              value={title}
-              onChangeText={(t) => setTitle(t)}
-              onEndEditing={(e) => setTitle(e.nativeEvent.text.trim())}
+  // render activity indicator when sharing
+  if (sharing) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="white" />
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.screen}>
+        <KeyboardAwareScrollView
+          style={styles.scrollView}
+          extraScrollHeight={normalize(60, "height")}
+        >
+          <View style={styles.profileContainer}>
+            <ProfilePic
+              imgUrl={user == null ? null : user.profilePicture}
+              width={normalize(45, "width")}
+              height={normalize(45, "width")}
             />
+            <View style={styles.usernameContainer}>
+              <DefaultText style={styles.username}>
+                {user == null ? "" : user.firstname + " " + user.lastname}
+              </DefaultText>
+            </View>
           </View>
-          <View style={styles.descriptionContainer}>
-            <TextInput
-              style={styles.description}
-              multiline={true}
-              textAlignVertical={"top"}
-              blurOnSubmit={true}
-              placeholder={"Description\n\n"}
-              placeholderTextColor={"white"}
-              value={description}
-              onChangeText={(d) => setDescription(d)}
-              onEndEditing={(e) => setDescription(e.nativeEvent.text.trim())}
+          <TouchableOpacity onPress={chooseImage} style={styles.imageContainer}>
+            <Image
+              source={
+                image == null
+                  ? require("../assets/cameraicon.png")
+                  : { uri: image.uri }
+              }
+              style={image == null ? styles.defaultImage : styles.image}
             />
-          </View>
-        </View>
-        <View style={styles.tagsContainer}>
-          <View style={styles.selectTagTextContainer}>
-            <DefaultText style={styles.selectTagText}>Select Tags</DefaultText>
-          </View>
-          <ScrollView
-            horizontal={true}
-            scrollEnabled={false}
-            contentContainerStyle={styles.tagList}
-          >
-            {tagsOrder.map((tag) => renderTag(tag))}
-          </ScrollView>
-        </View>
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity onPress={clear}>
-            <View style={styles.clearButton}>
-              <DefaultText style={styles.clearText}>Clear</DefaultText>
-            </View>
+            {image == null ? (
+              <DefaultText style={styles.imageText}>
+                Choose an Image
+              </DefaultText>
+            ) : null}
           </TouchableOpacity>
-          <TouchableOpacity onPress={share}>
-            <View style={styles.shareButton}>
-              <DefaultText style={styles.shareText}>Share</DefaultText>
+          <View style={styles.textContainer}>
+            <View style={styles.titleContainer}>
+              <TextInput
+                style={styles.titleText}
+                placeholder={"Title"}
+                placeholderTextColor={"white"}
+                value={title}
+                onChangeText={(t) => setTitle(t)}
+                onEndEditing={(e) => setTitle(e.nativeEvent.text.trim())}
+              />
             </View>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAwareScrollView>
-    </View>
-  );
+            <View style={styles.descriptionContainer}>
+              <TextInput
+                style={styles.description}
+                multiline={true}
+                textAlignVertical={"top"}
+                blurOnSubmit={true}
+                placeholder={"Description\n\n"}
+                placeholderTextColor={"white"}
+                value={description}
+                onChangeText={(d) => setDescription(d)}
+                onEndEditing={(e) => setDescription(e.nativeEvent.text.trim())}
+              />
+            </View>
+          </View>
+          <View style={styles.tagsContainer}>
+            <View style={styles.selectTagTextContainer}>
+              <DefaultText style={styles.selectTagText}>
+                Select Tags
+              </DefaultText>
+            </View>
+            <ScrollView
+              horizontal={true}
+              scrollEnabled={false}
+              contentContainerStyle={styles.tagList}
+            >
+              {tagsOrder.map((tag) => renderTag(tag))}
+            </ScrollView>
+          </View>
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity onPress={clear}>
+              <View style={styles.clearButton}>
+                <DefaultText style={styles.clearText}>Clear</DefaultText>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={share}>
+              <View style={styles.shareButton}>
+                <DefaultText style={styles.shareText}>Share</DefaultText>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAwareScrollView>
+      </View>
+    );
+  }
 };
 
 CreatePostsScreen.navigationOptions = (navData) => {

@@ -18,7 +18,12 @@ import * as Progress from "react-native-progress";
 import Colors from "../constants/Colors";
 import ProfilePic from "../components/ProfilePicture";
 import { DefaultText, normalize } from "./DefaultText";
-import { getUserData } from "../functions/io";
+import {
+  getUserData,
+  removeUserSavedPost,
+  storeUserSavedPost,
+  isPostSaved,
+} from "../functions/io";
 
 // Accepts a post and returns an individual post detail component; used in PostDetailScreen
 const PostDetail = (props) => {
@@ -34,6 +39,9 @@ const PostDetail = (props) => {
 
   // state for date
   const [date, setDate] = useState();
+
+  // State for whether post is saved
+  const [isSaved, setIsSaved] = useState(false);
 
   // Get the post we want to display
   const post = props.post;
@@ -52,6 +60,9 @@ const PostDetail = (props) => {
     const newDate = new Date(post.date.seconds * 1000);
     setDate(newDate);
 
+    // update isSaved
+    setIsSaved(await isPostSaved(userId, post.postId));
+
     // update doneLoading
     setDoneLoading(true);
   };
@@ -61,9 +72,6 @@ const PostDetail = (props) => {
     setDoneLoadingImage(false);
     getUser();
   }, [props.post]);
-
-  // State for whether post is saved
-  const [isSaved, setIsSaved] = useState(false);
 
   // array of months to display date
   const months = [
@@ -103,8 +111,13 @@ const PostDetail = (props) => {
 
   // Function called when save icon is pressed
   const onSavePress = () => {
-    if (Platform.OS === "ios" && !isSaved) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (!isSaved) {
+      if (Platform.OS === "ios") {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
+      storeUserSavedPost(userId, post.postId);
+    } else {
+      removeUserSavedPost(userId, post.postId);
     }
     setIsSaved(!isSaved);
   };
@@ -119,8 +132,7 @@ const PostDetail = (props) => {
   };
 
   if (!doneLoading) {
-    //return <ActivityIndicator size="large" color="white" />;
-    return null;
+    return <ActivityIndicator size="small" color="white" />;
   }
 
   return (

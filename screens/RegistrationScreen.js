@@ -31,31 +31,6 @@ const RegistrationScreen = (props) => {
     props.navigation.navigate("Login");
   };
 
-  // function called to resend verification email
-  const resendVerification = () => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        let s = firebase.auth().onAuthStateChanged((user) => {
-          if (user) {
-            user.sendEmailVerification().then(() => {
-              Alert.alert("Verification email resent");
-            });
-          }
-        });
-        s();
-      })
-      .catch((error) => {
-        if (Platform.OS === "ios") {
-          Alert.alert(error.message);
-        } else {
-          Alert.alert("", error.message);
-        }
-        return;
-      });
-  };
-
   // saves account information in Firebase when user clicks "Create account" button
   const onRegisterPress = () => {
     if (!firstName || !lastName) {

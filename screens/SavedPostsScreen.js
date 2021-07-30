@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import PostOverviewList from "../components/PostOverviewList";
-import { onRefreshUserSavedPosts } from "../functions/postOverviewListRefresh";
+import { getUserSavedPosts } from "../functions/io";
 
 // Loads post overview list for only user's saved posts
 const SavedPostsScreen = (props) => {
@@ -24,8 +24,8 @@ const SavedPostsScreen = (props) => {
   return (
     <PostOverviewList
       navigation={props.navigation}
-      onRefresh={onRefreshUserSavedPosts}
-      userId={userId}
+      onRefresh={getUserSavedPosts}
+      id={userId}
     />
   );
 };

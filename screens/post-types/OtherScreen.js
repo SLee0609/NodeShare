@@ -3,16 +3,17 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import HeaderButton from "../../components/HeaderButton";
 import PostOverviewList from "../../components/PostOverviewList";
-import { POSTS } from "../../data/dummy-data";
+import { getPostFromCategory } from "../../functions/io";
 
 // Loads post overview list for other posts
 const OtherScreen = (props) => {
-  // get all other posts
-  const otherPosts = POSTS.filter((p) => p.categories.includes("Other"));
-
   // return the PostOverviewList
   return (
-    <PostOverviewList listData={otherPosts} navigation={props.navigation} />
+    <PostOverviewList
+      onRefresh={getPostFromCategory}
+      id={"Other"}
+      navigation={props.navigation}
+    />
   );
 };
 

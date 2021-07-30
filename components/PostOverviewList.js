@@ -12,7 +12,7 @@ import { SearchBar } from "react-native-elements";
 import PostOverview from "../components/PostOverview";
 import { DefaultText, normalize } from "../components/DefaultText";
 
-// Accepts a refresh function and userId (whose posts we will display); returns a search bar and flatlist of post overviews
+// Accepts a refresh function and id (optional - either userId whose posts we will display, or string of tag); returns a search bar and flatlist of post overviews
 // Used in post screens
 const PostOverviewList = (props) => {
   // searchTerm tracks what is currently in the search bar
@@ -22,14 +22,18 @@ const PostOverviewList = (props) => {
 
   // state for refreshing
   const [refreshing, setRefreshing] = useState(true);
+  // state for whether it is first time refreshing
+  const [first, setFirst] = useState(true);
 
   // function called when refreshing
   const onRefresh = async () => {
     setRefreshing(true);
-    const userId = props.userId;
-    const newList = await props.onRefresh(userId);
+    const newList = await (props.id == null
+      ? props.onRefresh()
+      : props.onRefresh(props.id));
     if (newList != null) {
       setList(newList);
+      setFirst(false);
     } else {
       setList(list);
     }
@@ -51,7 +55,7 @@ const PostOverviewList = (props) => {
           props.navigation.navigate({
             routeName: "PostDetail",
             params: {
-              postId: itemData.item.id,
+              postId: itemData.item.postId,
             },
           });
         }}
@@ -88,7 +92,7 @@ const PostOverviewList = (props) => {
             />
           }
           data={list}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.postId}
           renderItem={renderPostOverview}
           style={{
             width: Dimensions.get("window").width,
@@ -106,7 +110,9 @@ const PostOverviewList = (props) => {
           }
         >
           <View style={styles.textContainer}>
-            <DefaultText style={styles.text}>No Posts Yet</DefaultText>
+            {first ? null : (
+              <DefaultText style={styles.text}>No Posts Yet</DefaultText>
+            )}
           </View>
         </ScrollView>
       )}

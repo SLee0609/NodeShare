@@ -14,8 +14,7 @@ import { AntDesign } from "@expo/vector-icons";
 import ProfilePic from "../components/ProfilePicture";
 import PostOverviewList from "../components/PostOverviewList";
 import { DefaultText, normalize } from "../components/DefaultText";
-import { getUserData } from "../functions/io";
-import { onRefreshUserPosts } from "../functions/postOverviewListRefresh";
+import { getUserData, getPostsFromUser } from "../functions/io";
 
 const ProfileScreen = (props) => {
   // state for userId
@@ -219,8 +218,8 @@ const ProfileScreen = (props) => {
       </Collapsible>
       <PostOverviewList
         navigation={props.navigation}
-        onRefresh={onRefreshUserPosts}
-        userId={userId}
+        onRefresh={getPostsFromUser}
+        id={userId}
       />
     </View>
   );

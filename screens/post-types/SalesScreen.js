@@ -3,16 +3,17 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import HeaderButton from "../../components/HeaderButton";
 import PostOverviewList from "../../components/PostOverviewList";
-import { POSTS } from "../../data/dummy-data";
+import { getPostFromCategory } from "../../functions/io";
 
 // Loads post overview list for sales posts
 const SalesScreen = (props) => {
-  // get all sales posts
-  const salesPosts = POSTS.filter((p) => p.categories.includes("Sales"));
-
   // return the PostOverviewList
   return (
-    <PostOverviewList listData={salesPosts} navigation={props.navigation} />
+    <PostOverviewList
+      onRefresh={getPostFromCategory}
+      id={"Sales"}
+      navigation={props.navigation}
+    />
   );
 };
 

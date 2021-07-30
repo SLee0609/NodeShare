@@ -3,17 +3,13 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import HeaderButton from "../components/HeaderButton";
 import PostOverviewList from "../components/PostOverviewList";
-import { onRefreshUserPosts } from "../functions/postOverviewListRefresh";
+import { getAllPosts } from "../functions/io";
 
 // Loads post overview list for all posts
 const AllPostsScreen = (props) => {
   // return the PostOverviewList
   return (
-    <PostOverviewList
-      navigation={props.navigation}
-      onRefresh={onRefreshUserPosts}
-      userId={"eKZOZS1ZhZhjq5DPHCh38279LPy2"}
-    />
+    <PostOverviewList navigation={props.navigation} onRefresh={getAllPosts} />
   );
 };
 
