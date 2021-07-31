@@ -278,8 +278,6 @@ CreatePostsScreen.navigationOptions = (navData) => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
   },
   scrollView: {
     width: Dimensions.get("window").width,
@@ -392,9 +390,10 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     backgroundColor: Colors.primaryColor,
-    paddingHorizontal: normalize(30, "width"),
+    width: normalize(120, "width"),
     paddingVertical: normalize(10, "height"),
     borderRadius: normalize(20, "width"),
+    alignItems: "center",
   },
   clearText: {
     fontFamily: "open-sans-bold",
@@ -403,9 +402,10 @@ const styles = StyleSheet.create({
   },
   shareButton: {
     backgroundColor: Colors.logoBlue,
-    paddingHorizontal: normalize(30, "width"),
+    width: normalize(120, "width"),
     paddingVertical: normalize(10, "height"),
     borderRadius: normalize(20, "width"),
+    alignItems: "center",
   },
   shareText: {
     fontFamily: "open-sans-bold",

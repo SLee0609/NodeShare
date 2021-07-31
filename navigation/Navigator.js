@@ -14,6 +14,7 @@ import SavedPostsScreen from "../screens/SavedPostsScreen";
 import CreatePostsScreen from "../screens/CreatePostsScreen";
 import MessagesScreen from "../screens/MessagesScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import EditProfileScreen from "../screens/EditProfileScreen";
 import PostDetailScreen from "../screens/PostDetailScreen";
 import AllPostsScreen from "../screens/AllPostsScreen";
 import InformationScreen from "../screens/post-types/InformationScreen";
@@ -105,6 +106,7 @@ const ProfileNav = createStackNavigator(
     Profile: ProfileScreen,
     PostDetail: PostDetailScreen,
     Profile: ProfileScreen,
+    EditProfile: EditProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,

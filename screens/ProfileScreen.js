@@ -55,7 +55,13 @@ const ProfileScreen = (props) => {
 
   // function called when edit profile is pressed
   const editProfile = () => {
-    Alert.alert("Editing Profile");
+    props.navigation.navigate({
+      routeName: "EditProfile",
+      params: {
+        userId: userId,
+        user: user,
+      },
+    });
   };
 
   // function called when up button is pressed
@@ -138,25 +144,11 @@ const ProfileScreen = (props) => {
       <Collapsible collapsed={collapse} style={styles.collapseContainer}>
         <View style={styles.userBioContainer}>
           <View>
-            <DefaultText style={styles.bioText}>{"Bio:"}</DefaultText>
-          </View>
-          <View
-            style={{
-              paddingLeft: normalize(6, "width"),
-            }}
-          >
-            <DefaultText style={styles.bioNotBold}>
-              {"YISS '22 —> LC '22"}
-            </DefaultText>
-          </View>
-        </View>
-        <View style={styles.userBioContainer}>
-          <View>
             <View>
-              <DefaultText style={styles.bioText}>{"Occupation:"}</DefaultText>
+              <DefaultText style={styles.bioText}>Occupation:</DefaultText>
             </View>
             <View style={{ marginTop: normalize(6, "height") }}>
-              <DefaultText style={styles.bioText}>{"Residency:"}</DefaultText>
+              <DefaultText style={styles.bioText}>Residency:</DefaultText>
             </View>
           </View>
           <View
@@ -191,6 +183,20 @@ const ProfileScreen = (props) => {
               </TouchableOpacity>
             </View>
           )}
+        </View>
+        <View style={styles.userBioContainer}>
+          <View>
+            <DefaultText style={styles.bioText}>Bio:</DefaultText>
+          </View>
+          <View
+            style={{
+              marginLeft: normalize(6, "width"),
+            }}
+          >
+            <DefaultText style={styles.bioNotBold}>
+              {"YISS '22 —> LC '22"}
+            </DefaultText>
+          </View>
         </View>
         {sameUser ? (
           <View style={styles.buttonsContainer}>
@@ -263,7 +269,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   email: {
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: "open-sans",
     color: "white",
   },
@@ -272,7 +278,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderColor: "gray",
     paddingVertical: normalize(4, "height"),
-    marginTop: normalize(6, "height"),
+    marginTop: normalize(7, "height"),
     borderWidth: normalize(1, "width"),
     borderRadius: normalize(5, "width"),
   },
@@ -288,18 +294,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: normalize(1, "height"),
   },
   bioText: {
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: "open-sans",
     color: "white",
   },
   bio: {
-    fontSize: 14,
+    fontSize: 15,
     marginLeft: normalize(10, "width"),
     fontFamily: "open-sans-bold",
     color: "white",
   },
   bioNotBold: {
-    fontSize: 14,
+    fontSize: 15,
     marginLeft: normalize(10, "width"),
     fontFamily: "open-sans",
     color: "white",
