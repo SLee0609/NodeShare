@@ -283,6 +283,22 @@ let getUserSavedPosts = async (userID) => {
   return savedPosts;
 };
 
+// deletes post data
+let deletePost = async (postID) => {
+  await firebase
+  .firestore()
+  .collection("post")
+  .doc(postID)
+  .delete();
+
+  await await firebase
+  .storage()
+  .ref()
+  .child("posts/" + postID + "/postpic.jpg")
+  .delete();
+}
+
+
 export {
   // image funcs
   imagePickerMediaLibrary,
@@ -303,6 +319,7 @@ export {
   getPostsFromUser,
   getAllPosts,
   getLatestPosts,
+  deletePost
 };
 
 /**
