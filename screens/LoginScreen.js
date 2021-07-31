@@ -46,7 +46,29 @@ const LoginScreen = (props) => {
         return;
       });
   };
-
+  const onForgotPassword = () => {
+    if(!email){
+      Alert.alert("No email provided above");
+      return;
+    }
+    if (email.split("@").length - 1 != 1) {
+      Alert.alert("Not a valid email");
+      return;
+    }
+    if (!email.toLowerCase().endsWith("@loomis.org")) {
+      Alert.alert("Not a Loomis Chaffee email");
+      return;
+    }
+    firebase.auth().sendPasswordResetEmail(
+      email)
+      .then(function() {
+        Alert.alert("Password reset email sent");
+      })
+      .catch(function(error) {
+        Alert.alert(error.message);
+      });
+  
+  }
   // checks email and password if user clicks "log in" button
   const onLoginPress = async () => {
     firebase
@@ -120,6 +142,9 @@ const LoginScreen = (props) => {
         />
         <TouchableOpacity style={styles.button} onPress={() => onLoginPress()}>
           <DefaultText style={styles.buttonTitle}>Log in</DefaultText>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => onForgotPassword()}>
+          <DefaultText style={styles.buttonTitle}>Reset password</DefaultText>
         </TouchableOpacity>
         <View style={styles.footerView}>
           <DefaultText style={styles.footerText}>
