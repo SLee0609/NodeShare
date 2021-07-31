@@ -3,16 +3,17 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import HeaderButton from "../../components/HeaderButton";
 import PostOverviewList from "../../components/PostOverviewList";
-import { POSTS } from "../../data/dummy-data";
+import { getPostFromCategory } from "../../functions/io";
 
 // Loads post overview list for services posts
 const ServicesScreen = (props) => {
-  // get all services posts
-  const servicesPosts = POSTS.filter((p) => p.categories.includes("Services"));
-
   // return the PostOverviewList
   return (
-    <PostOverviewList listData={servicesPosts} navigation={props.navigation} />
+    <PostOverviewList
+      onRefresh={getPostFromCategory}
+      id={"Services"}
+      navigation={props.navigation}
+    />
   );
 };
 

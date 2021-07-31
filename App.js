@@ -6,10 +6,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { enableScreens } from "react-native-screens";
 import { Asset } from "expo-asset";
 
-import firebase from "firebase/app";
 import Navigator from "./navigation/Navigator";
-
-import { storeUserSavedPost, getUserSavedPosts } from "./functions/io.js";
 
 // Optimize navigation performances
 enableScreens();
@@ -32,6 +29,8 @@ const loadAssets = async () => {
   const imageAssets = Asset.loadAsync([
     require("./assets/icontransparent.png"),
     require("./assets/cameraicon.png"),
+    require("./assets/splashtransparent.png"),
+    require("./assets/defaultprofilepicture.png"),
   ]);
   const fontAssets = Font.loadAsync({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
@@ -40,8 +39,6 @@ const loadAssets = async () => {
 
   await Promise.all([imageAssets, fontAssets]);
 };
-
-getUserSavedPosts("sYPfH2Dgj0Mtmm4WW06DnPK0AeE3").then((docs) => {console.log(docs)});
 
 export default function App() {
   // State to check if assets are loaded

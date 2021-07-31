@@ -3,16 +3,17 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import HeaderButton from "../../components/HeaderButton";
 import PostOverviewList from "../../components/PostOverviewList";
-import { POSTS } from "../../data/dummy-data";
+import { getPostFromCategory } from "../../functions/io";
 
 // Loads post overview list for trading posts
 const TradingScreen = (props) => {
-  // get all trading posts
-  const tradingPosts = POSTS.filter((p) => p.categories.includes("Trading"));
-
   // return the PostOverviewList
   return (
-    <PostOverviewList listData={tradingPosts} navigation={props.navigation} />
+    <PostOverviewList
+      onRefresh={getPostFromCategory}
+      id={"Trading"}
+      navigation={props.navigation}
+    />
   );
 };
 

@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Text,
-  Button,
   View,
   TextInput,
   ScrollView,
@@ -9,35 +7,59 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import ProfilePic from "../components/ProfilePicture";
-import { CATEGORIES, USERS } from "../data/dummy-data";
 import Colors from "../constants/Colors";
-import DefaultText from "../components/DefaultText";
+import { DefaultText, normalize } from "../components/DefaultText";
 import { Alert } from "react-native";
-import { imagePickerMediaLibrary, imagePickerCamera } from "../functions/io.js";
+import {
+  imagePickerMediaLibrary,
+  imagePickerCamera,
+  storePostData,
+  getUserData,
+} from "../functions/io";
 
 // Screen where users create new posts
 const CreatePostsScreen = (props) => {
-  // state for user
-  const [user, setUser] = useState("");
+  // state for userId and user
+  const [userId, setUserId] = useState("");
+  const [user, setUser] = useState();
+
+  // state for when sharing
+  const [sharing, setSharing] = useState(false);
 
   // state for list of tags
   const [tags, updateTags] = useState([]);
 
   // state for image
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState();
+
+  // Array used to sort tags (index of each tag is the value used when sorting)
+  const tagsOrder = [
+    "Information",
+    "Services",
+    "Sales",
+    "Trading",
+    "Fun",
+    "Other",
+  ];
 
   // get locally stored userId and find user
   const getUser = async () => {
     const userId = await AsyncStorage.getItem("userId");
+    setUserId(userId);
     // find user using userId
-    setUser(USERS.find((u) => u.id === userId));
+    const user = await getUserData(userId);
+    setUser(user);
   };
-  getUser();
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   // Function called to choose image
   const chooseImage = async () => {
@@ -57,7 +79,7 @@ const CreatePostsScreen = (props) => {
     });
     if (result != null) {
       if (!result.cancelled) {
-        setImage(result.uri);
+        setImage(result);
       }
     }
     return;
@@ -71,7 +93,7 @@ const CreatePostsScreen = (props) => {
     });
     if (result != null) {
       if (!result.cancelled) {
-        setImage(result.uri);
+        setImage(result);
       }
     }
     return;
@@ -81,12 +103,12 @@ const CreatePostsScreen = (props) => {
   const clear = () => {
     setTitle("");
     setDescription("");
-    setImage("");
+    setImage();
     updateTags([]);
   };
 
   // Funtion called when share button is pressed
-  const share = () => {
+  const share = async () => {
     if (image == "") {
       Alert.alert("No image provided");
       return;
@@ -103,8 +125,25 @@ const CreatePostsScreen = (props) => {
       Alert.alert("No tags selected");
       return;
     }
-    Alert.alert("Shared!");
-    return;
+
+    // order tags array
+    tags.sort((a, b) => {
+      return tagsOrder.indexOf(a) - tagsOrder.indexOf(b);
+    });
+
+    clear();
+    // set sharing to true
+    setSharing(true);
+
+    // save the post to database
+    storePostData(userId, title, description, new Date(), tags, image).then(
+      () => {
+        Alert.alert("Shared!");
+        // set sharing to false
+        setSharing(false);
+        return;
+      }
+    );
   };
 
   // Function that renders a tag
@@ -128,88 +167,106 @@ const CreatePostsScreen = (props) => {
     );
   };
 
-  // The text "Choose an Image"
-  let text;
-  if (image == "") {
-    text = <DefaultText style={styles.imageText}>Choose an Image</DefaultText>;
-  } else {
-    text = null;
-  }
-
   // state for title and description
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  return (
-    <View style={styles.screen}>
-      <KeyboardAwareScrollView style={styles.scrollView} extraScrollHeight={60}>
-        <View style={styles.profileContainer}>
-          <View style={styles.profilePictureContainer}>
-            <ProfilePic imgUrl={user.profilePicture} width={45} height={45} />
-          </View>
-          <View style={styles.usernameContainer}>
-            <DefaultText style={styles.username}>{user.name}</DefaultText>
-          </View>
-        </View>
-        <TouchableOpacity onPress={chooseImage} style={styles.imageContainer}>
-          <Image
-            source={
-              image == "" ? require("../assets/cameraicon.png") : { uri: image }
-            }
-            style={image == "" ? styles.defaultImage : styles.image}
-          />
-          {text}
-        </TouchableOpacity>
-        <View style={styles.textContainer}>
-          <View style={styles.titleContainer}>
-            <TextInput
-              style={styles.titleText}
-              placeholder={"Title"}
-              placeholderTextColor={"white"}
-              value={title}
-              onChangeText={(t) => setTitle(t)}
+  // render activity indicator when sharing
+  if (sharing) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="white" />
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.screen}>
+        <KeyboardAwareScrollView
+          style={styles.scrollView}
+          extraScrollHeight={normalize(60, "height")}
+        >
+          <View style={styles.profileContainer}>
+            <ProfilePic
+              imgUrl={user == null ? null : user.profilePicture}
+              width={normalize(45, "width")}
+              height={normalize(45, "width")}
             />
+            <View style={styles.usernameContainer}>
+              <DefaultText style={styles.username}>
+                {user == null ? "" : user.firstname + " " + user.lastname}
+              </DefaultText>
+            </View>
           </View>
-          <View style={styles.descriptionContainer}>
-            <TextInput
-              style={styles.description}
-              multiline={true}
-              textAlignVertical={"top"}
-              blurOnSubmit={true}
-              placeholder={"Description\n\n"}
-              placeholderTextColor={"white"}
-              value={description}
-              onChangeText={(d) => setDescription(d)}
+          <TouchableOpacity onPress={chooseImage} style={styles.imageContainer}>
+            <Image
+              source={
+                image == null
+                  ? require("../assets/cameraicon.png")
+                  : { uri: image.uri }
+              }
+              style={image == null ? styles.defaultImage : styles.image}
             />
-          </View>
-        </View>
-        <View style={styles.tagsContainer}>
-          <View style={styles.selectTagTextContainer}>
-            <DefaultText style={styles.selectTagText}>Select Tags</DefaultText>
-          </View>
-          <ScrollView
-            horizontal={true}
-            scrollEnabled={false}
-            contentContainerStyle={styles.tagList}
-          >
-            {CATEGORIES.map((tag) => renderTag(tag))}
-          </ScrollView>
-        </View>
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity onPress={clear}>
-            <View style={styles.clearButton}>
-              <DefaultText style={styles.clearText}>Clear</DefaultText>
-            </View>
+            {image == null ? (
+              <DefaultText style={styles.imageText}>
+                Choose an Image
+              </DefaultText>
+            ) : null}
           </TouchableOpacity>
-          <TouchableOpacity onPress={share}>
-            <View style={styles.shareButton}>
-              <DefaultText style={styles.shareText}>Share</DefaultText>
+          <View style={styles.textContainer}>
+            <View style={styles.titleContainer}>
+              <TextInput
+                style={styles.titleText}
+                placeholder={"Title"}
+                placeholderTextColor={"white"}
+                value={title}
+                onChangeText={(t) => setTitle(t)}
+                onEndEditing={(e) => setTitle(e.nativeEvent.text.trim())}
+              />
             </View>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAwareScrollView>
-    </View>
-  );
+            <View style={styles.descriptionContainer}>
+              <TextInput
+                style={styles.description}
+                multiline={true}
+                textAlignVertical={"top"}
+                blurOnSubmit={true}
+                placeholder={"Description\n\n"}
+                placeholderTextColor={"white"}
+                value={description}
+                onChangeText={(d) => setDescription(d)}
+                onEndEditing={(e) => setDescription(e.nativeEvent.text.trim())}
+              />
+            </View>
+          </View>
+          <View style={styles.tagsContainer}>
+            <View style={styles.selectTagTextContainer}>
+              <DefaultText style={styles.selectTagText}>
+                Select Tags
+              </DefaultText>
+            </View>
+            <ScrollView
+              horizontal={true}
+              scrollEnabled={false}
+              contentContainerStyle={styles.tagList}
+            >
+              {tagsOrder.map((tag) => renderTag(tag))}
+            </ScrollView>
+          </View>
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity onPress={clear}>
+              <View style={styles.clearButton}>
+                <DefaultText style={styles.clearText}>Clear</DefaultText>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={share}>
+              <View style={styles.shareButton}>
+                <DefaultText style={styles.shareText}>Share</DefaultText>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAwareScrollView>
+      </View>
+    );
+  }
 };
 
 CreatePostsScreen.navigationOptions = (navData) => {
@@ -221,26 +278,19 @@ CreatePostsScreen.navigationOptions = (navData) => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "black",
     justifyContent: "flex-start",
     alignItems: "center",
-    borderBottomColor: Colors.gray,
-    borderBottomWidth: 0.3,
   },
   scrollView: {
     width: Dimensions.get("window").width,
   },
   profileContainer: {
-    paddingVertical: 7,
-    paddingLeft: 10,
-    paddingRight: 15,
+    paddingVertical: normalize(7, "height"),
+    paddingLeft: normalize(10, "width"),
     flexDirection: "row",
   },
-  profilePictureContainer: {
-    justifyContent: "center",
-  },
   usernameContainer: {
-    paddingLeft: 15,
+    paddingLeft: normalize(15, "width"),
     justifyContent: "center",
   },
   username: {
@@ -269,61 +319,61 @@ const styles = StyleSheet.create({
     color: "white",
   },
   textContainer: {
-    marginTop: 5,
-    paddingHorizontal: 20,
+    marginTop: normalize(5, "height"),
+    paddingHorizontal: normalize(20, "width"),
   },
   titleContainer: {
-    paddingVertical: 5,
-    marginBottom: 5,
+    paddingVertical: normalize(5, "height"),
+    marginBottom: normalize(5, "height"),
     borderColor: "white",
-    borderBottomWidth: 1,
+    borderBottomWidth: normalize(1, "height"),
   },
   titleText: {
-    fontSize: 18,
+    fontSize: normalize(18, "width"),
     fontFamily: "open-sans-bold",
     color: "white",
   },
   descriptionContainer: {
-    paddingBottom: 10,
-    marginBottom: 5,
+    paddingBottom: normalize(10, "height"),
+    marginBottom: normalize(5, "height"),
     borderBottomColor: "white",
-    borderBottomWidth: 1,
+    borderBottomWidth: normalize(1, "height"),
   },
   description: {
-    fontSize: 16,
+    fontSize: normalize(16, "width"),
     fontFamily: "open-sans",
     color: "white",
   },
   selectTagTextContainer: {
-    marginLeft: 10,
+    marginLeft: normalize(10, "width"),
   },
   selectTagText: {
     fontSize: 16,
     fontFamily: "open-sans",
     color: "white",
-    marginTop: 5,
+    marginTop: normalize(5, "height"),
   },
   tagsContainer: {
     width: "100%",
-    paddingLeft: 10,
+    paddingLeft: normalize(10, "width"),
   },
   yellowTagContainer: {
-    marginTop: 10,
-    marginLeft: 10,
-    marginRight: 5,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    marginTop: normalize(10, "height"),
+    marginLeft: normalize(10, "width"),
+    marginRight: normalize(5, "width"),
+    paddingVertical: normalize(5, "height"),
+    paddingHorizontal: normalize(10, "width"),
     backgroundColor: "yellow",
-    borderRadius: 10,
+    borderRadius: normalize(10, "width"),
   },
   whiteTagContainer: {
-    marginTop: 10,
-    marginLeft: 10,
-    marginRight: 5,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    marginTop: normalize(10, "height"),
+    marginLeft: normalize(10, "width"),
+    marginRight: normalize(5, "width"),
+    paddingVertical: normalize(5, "height"),
+    paddingHorizontal: normalize(10, "width"),
     backgroundColor: "white",
-    borderRadius: 10,
+    borderRadius: normalize(10, "width"),
   },
   tagList: {
     flex: 1,
@@ -336,15 +386,15 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans-bold",
   },
   buttonsContainer: {
-    marginVertical: 35,
+    marginVertical: normalize(35, "height"),
     flexDirection: "row",
     justifyContent: "space-evenly",
   },
   clearButton: {
     backgroundColor: Colors.primaryColor,
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    borderRadius: 20,
+    paddingHorizontal: normalize(30, "width"),
+    paddingVertical: normalize(10, "height"),
+    borderRadius: normalize(20, "width"),
   },
   clearText: {
     fontFamily: "open-sans-bold",
@@ -353,9 +403,9 @@ const styles = StyleSheet.create({
   },
   shareButton: {
     backgroundColor: Colors.logoBlue,
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    borderRadius: 20,
+    paddingHorizontal: normalize(30, "width"),
+    paddingVertical: normalize(10, "height"),
+    borderRadius: normalize(20, "width"),
   },
   shareText: {
     fontFamily: "open-sans-bold",

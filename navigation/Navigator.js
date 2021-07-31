@@ -1,19 +1,19 @@
 import React from "react";
-import { Dimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createBottomTabNavigator } from "react-navigation-tabs";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 
+import { normalize } from "../components/DefaultText";
 import LoadingScreen from "../screens/LoadingScreen";
 import RegistrationScreen from "../screens/RegistrationScreen";
 import LoginScreen from "../screens/LoginScreen";
-import YourPostsScreen from "../screens/YourPostsScreen";
 import SavedPostsScreen from "../screens/SavedPostsScreen";
 import CreatePostsScreen from "../screens/CreatePostsScreen";
 import MessagesScreen from "../screens/MessagesScreen";
-import SettingsScreen from "../screens/SettingsScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 import PostDetailScreen from "../screens/PostDetailScreen";
 import AllPostsScreen from "../screens/AllPostsScreen";
 import InformationScreen from "../screens/post-types/InformationScreen";
@@ -30,28 +30,23 @@ const defaultStackNavOptions = {
   headerStyle: {
     backgroundColor: Colors.primaryColor,
     height: Dimensions.get("window").height * 0.14,
-    borderBottomColor: "black",
-    borderBottomWidth: 2,
   },
   headerTitleStyle: {
     fontFamily: "open-sans-bold",
-    fontSize: 25,
+    fontSize: normalize(25, "width"),
   },
   headerTintColor: Colors.accentColor,
-  headerBack: false,
-  headerBackTitle: "",
-  cardStyle: { backgroundColor: Colors.gray },
+  headerBackTitleVisible: false,
+  cardStyle: { backgroundColor: "black" },
 };
 
 const defaultStackNavOptionsWithoutHeader = {
   headerStyle: {
     backgroundColor: Colors.primaryColor,
-    height: Dimensions.get("window").height * 0.14,
-    borderBottomColor: "black",
-    borderBottomWidth: 2,
+    height: normalize(114, "height"),
   },
   headerShown: false,
-  cardStyle: { backgroundColor: Colors.gray },
+  cardStyle: { backgroundColor: "black" },
 };
 
 // Create stack navigators for each screen
@@ -79,19 +74,11 @@ const RegistrationNav = createStackNavigator(
     defaultNavigationOptions: defaultStackNavOptions,
   }
 );
-const YourPostsNav = createStackNavigator(
-  {
-    YourPosts: YourPostsScreen,
-    PostDetail: PostDetailScreen,
-  },
-  {
-    defaultNavigationOptions: defaultStackNavOptions,
-  }
-);
 const SavedPostsNav = createStackNavigator(
   {
     SavedPosts: SavedPostsScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -113,9 +100,11 @@ const MessagesNav = createStackNavigator(
     defaultNavigationOptions: defaultStackNavOptions,
   }
 );
-const SettingsNav = createStackNavigator(
+const ProfileNav = createStackNavigator(
   {
-    Settings: SettingsScreen,
+    Profile: ProfileScreen,
+    PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -125,6 +114,7 @@ const AllPostsNav = createStackNavigator(
   {
     AllPosts: AllPostsScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -134,6 +124,7 @@ const InformationNav = createStackNavigator(
   {
     Information: InformationScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -143,6 +134,7 @@ const ServicesNav = createStackNavigator(
   {
     Services: ServicesScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -152,6 +144,7 @@ const SalesNav = createStackNavigator(
   {
     Sales: SalesScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -161,6 +154,7 @@ const TradingNav = createStackNavigator(
   {
     Trading: TradingScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -170,6 +164,7 @@ const FunNav = createStackNavigator(
   {
     Fun: FunScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -179,11 +174,26 @@ const OtherNav = createStackNavigator(
   {
     Other: OtherScreen,
     PostDetail: PostDetailScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
   }
 );
+
+// Drawer navigation default content options
+const defaultDrawerContentOptions = {
+  activeTintColor: Colors.primaryColor,
+  itemsContainerStyle:
+    Platform.OS === "android"
+      ? { paddingTop: normalize(50, "height") }
+      : { paddingTop: 0 },
+  itemStyle: { marginVertical: normalize(3, "height") },
+  labelStyle: {
+    fontFamily: "open-sans-bold",
+    fontSize: normalize(20, "width"),
+  },
+};
 
 // Drawer navigation for filtering posts
 const PostFilteringNavigator = createDrawerNavigator(
@@ -232,40 +242,8 @@ const PostFilteringNavigator = createDrawerNavigator(
     },
   },
   {
-    contentOptions: {
-      activeTintColor: Colors.primaryColor,
-      labelStyle: {
-        fontFamily: "open-sans-bold",
-        fontSize: 20,
-      },
-    },
-  }
-);
-
-// Drawer navigation for your posts and saved posts screen
-const YourPostsSavedPostsNavigator = createDrawerNavigator(
-  {
-    YourPosts: {
-      screen: YourPostsNav,
-      navigationOptions: {
-        drawerLabel: "Your Posts",
-      },
-    },
-    SavedPosts: {
-      screen: SavedPostsNav,
-      navigationOptions: {
-        drawerLabel: "Saved Posts",
-      },
-    },
-  },
-  {
-    contentOptions: {
-      activeTintColor: Colors.primaryColor,
-      labelStyle: {
-        fontFamily: "open-sans-bold",
-        fontSize: 20,
-      },
-    },
+    drawerWidth: Dimensions.get("window").width * 0.75,
+    contentOptions: defaultDrawerContentOptions,
   }
 );
 
@@ -276,23 +254,36 @@ const BottomTabNavigator = createBottomTabNavigator(
       screen: PostFilteringNavigator,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
-          return <AntDesign name="home" size={25} color={tabInfo.tintColor} />;
-        },
-        tabBarOnPress: (navData) => {
-          navData.navigation.navigate({ routeName: "AllPosts" });
-          navData.defaultHandler();
+          return (
+            <AntDesign
+              name="home"
+              style={{
+                height: normalize(25, "width"),
+                width: normalize(25, "width"),
+              }}
+              size={normalize(25, "width")}
+              color={tabInfo.tintColor}
+            />
+          );
         },
       },
     },
-    YourPostsSavedPosts: {
-      screen: YourPostsSavedPostsNavigator,
+    SavedPosts: {
+      screen: SavedPostsNav,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
-          return <AntDesign name="user" size={25} color={tabInfo.tintColor} />;
-        },
-        tabBarOnPress: (navData) => {
-          navData.navigation.navigate({ routeName: "YourPosts" });
-          navData.defaultHandler();
+          return (
+            <FontAwesome
+              style={{
+                height: normalize(25, "width"),
+                width: normalize(25, "width"),
+              }}
+              name={"bookmark-o"}
+              size={normalize(25, "width")}
+              color={"white"}
+              color={tabInfo.tintColor}
+            />
+          );
         },
       },
     },
@@ -301,7 +292,15 @@ const BottomTabNavigator = createBottomTabNavigator(
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (
-            <AntDesign name="plussquareo" size={25} color={tabInfo.tintColor} />
+            <AntDesign
+              style={{
+                height: normalize(25, "width"),
+                width: normalize(25, "width"),
+              }}
+              name="plussquareo"
+              size={normalize(25, "width")}
+              color={tabInfo.tintColor}
+            />
           );
         },
       },
@@ -311,30 +310,48 @@ const BottomTabNavigator = createBottomTabNavigator(
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (
-            <AntDesign name="message1" size={25} color={tabInfo.tintColor} />
+            <AntDesign
+              name="message1"
+              style={{
+                height: normalize(25, "width"),
+                width: normalize(25, "width"),
+              }}
+              size={normalize(25, "width")}
+              color={tabInfo.tintColor}
+            />
           );
         },
       },
     },
-    Settings: {
-      screen: SettingsNav,
+    Profile: {
+      screen: ProfileNav,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (
-            <AntDesign name="setting" size={25} color={tabInfo.tintColor} />
+            <AntDesign
+              name="user"
+              style={{
+                height: normalize(25, "width"),
+                width: normalize(25, "width"),
+              }}
+              size={normalize(25, "width")}
+              color={tabInfo.tintColor}
+            />
           );
         },
       },
     },
   },
   {
+    initialRouteName: "Posts",
     tabBarOptions: {
       showLabel: false,
       style: {
         backgroundColor: "black",
-        height: Dimensions.get("window").height * 0.07,
-        borderTopColor: "black",
-        borderTopWidth: 1,
+        height: normalize(25, "width") + normalize(30, "height"),
+        width: "100%",
+        borderTopColor: Colors.gray,
+        borderTopWidth: normalize(1, "height"),
       },
       activeTintColor: "white",
       keyboardHidesTabBar: true,
