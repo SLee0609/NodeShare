@@ -109,7 +109,7 @@ const CreatePostsScreen = (props) => {
 
   // Funtion called when share button is pressed
   const share = async () => {
-    if (image == "") {
+    if (image == null) {
       Alert.alert("No image provided");
       return;
     }

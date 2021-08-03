@@ -15,6 +15,7 @@ import ProfilePic from "../components/ProfilePicture";
 import PostOverviewList from "../components/PostOverviewList";
 import { DefaultText, normalize } from "../components/DefaultText";
 import { getUserData, getPostsFromUser } from "../functions/io";
+import Colors from "../constants/Colors";
 
 const ProfileScreen = (props) => {
   // state for userId
@@ -157,10 +158,14 @@ const ProfileScreen = (props) => {
             }}
           >
             <View>
-              <DefaultText style={styles.bio}>Student</DefaultText>
+              <DefaultText style={styles.bio}>
+                {user == null ? null : user.occupation}
+              </DefaultText>
             </View>
             <View style={{ marginTop: normalize(6, "height") }}>
-              <DefaultText style={styles.bio}>On Campus</DefaultText>
+              <DefaultText style={styles.bio}>
+                {user == null ? null : user.residency}
+              </DefaultText>
             </View>
           </View>
           {sameUser ? null : (
@@ -184,20 +189,20 @@ const ProfileScreen = (props) => {
             </View>
           )}
         </View>
-        <View style={styles.userBioContainer}>
-          <View>
-            <DefaultText style={styles.bioText}>Bio:</DefaultText>
+        {user == null || user.bio == "" ? null : (
+          <View style={styles.userBioContainer}>
+            <View>
+              <DefaultText style={styles.bioText}>Bio:</DefaultText>
+            </View>
+            <View
+              style={{
+                marginLeft: normalize(6, "width"),
+              }}
+            >
+              <DefaultText style={styles.bioNotBold}>{user.bio}</DefaultText>
+            </View>
           </View>
-          <View
-            style={{
-              marginLeft: normalize(6, "width"),
-            }}
-          >
-            <DefaultText style={styles.bioNotBold}>
-              {"YISS '22 —> LC '22"}
-            </DefaultText>
-          </View>
-        </View>
+        )}
         {sameUser ? (
           <View style={styles.buttonsContainer}>
             <View style={{ flex: 1 }}></View>
@@ -324,7 +329,7 @@ const styles = StyleSheet.create({
     borderWidth: normalize(1, "width"),
   },
   logOutButton: {
-    backgroundColor: "white",
+    backgroundColor: Colors.primaryColor,
     paddingHorizontal: normalize(30, "width"),
     paddingVertical: normalize(10, "height"),
     borderRadius: normalize(20, "width"),
@@ -333,7 +338,7 @@ const styles = StyleSheet.create({
   },
   logOutText: {
     fontFamily: "open-sans-bold",
-    color: "black",
+    color: "white",
     fontSize: 15,
   },
 });

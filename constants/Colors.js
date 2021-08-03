@@ -3,6 +3,8 @@ export default {
   primaryColor: "#800000",
   // white
   accentColor: "#ffffff",
+  // green
+  green: "#0ec978",
   // blue
   blue: "rgb(204, 220, 237)",
   // gray

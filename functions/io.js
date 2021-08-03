@@ -101,6 +101,37 @@ async function storeUserData(userID, firstname, lastname, email) {
     });
 }
 
+// updates user data
+async function updateUserData(
+  userID,
+  firstname,
+  lastname,
+  occupation,
+  residency,
+  bio,
+  image
+) {
+  await firebase
+    .database()
+    .ref("users/" + userID)
+    .update({
+      firstname: firstname,
+      lastname: lastname,
+      occupation: occupation,
+      residency: residency,
+      bio: bio,
+    });
+  if (image != null) {
+    await storeUserProfilePic(userID, image);
+    await firebase
+      .database()
+      .ref("users/" + userID)
+      .update({
+        profilePicture: await retrieveUserProfilePic(userID),
+      });
+  }
+}
+
 // retreiving data once
 // use JSON.parse to parse data before return
 let getUserData = async (userID) => {
@@ -287,10 +318,9 @@ export {
   // image funcs
   imagePickerMediaLibrary,
   imagePickerCamera,
-  storeUserProfilePic,
-  retrieveUserProfilePic,
   // user db funcs
   storeUserData,
+  updateUserData,
   getUserData,
   storeUserSavedPost,
   removeUserSavedPost,
