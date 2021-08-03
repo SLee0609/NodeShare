@@ -30,9 +30,9 @@ const LoginScreen = (props) => {
       .then(() => {
         let s = firebase.auth().onAuthStateChanged((user) => {
           if (user) {
-            user.sendEmailVerification().then(()=>{
+            user.sendEmailVerification().then(() => {
               Alert.alert("Verification email sent again");
-            })
+            });
           }
         });
         s();
@@ -47,8 +47,8 @@ const LoginScreen = (props) => {
       });
   };
   const onForgotPassword = () => {
-    if(!email){
-      Alert.alert("No email provided above");
+    if (!email) {
+      Alert.alert("Enter email above");
       return;
     }
     if (email.split("@").length - 1 != 1) {
@@ -59,16 +59,18 @@ const LoginScreen = (props) => {
       Alert.alert("Not a Loomis Chaffee email");
       return;
     }
-    firebase.auth().sendPasswordResetEmail(
-      email)
-      .then(function() {
-        Alert.alert("Password reset email sent");
-      })
-      .catch(function(error) {
-        Alert.alert(error.message);
+    firebase
+      .auth()
+      .sendPasswordResetEmail(email)
+      .then(Alert.alert("Password reset email sent"))
+      .catch(function (error) {
+        if (Platform.OS === "ios") {
+          Alert.alert(error.message);
+        } else {
+          Alert.alert("", error.message);
+        }
       });
-  
-  }
+  };
   // checks email and password if user clicks "log in" button
   const onLoginPress = async () => {
     firebase
@@ -105,6 +107,7 @@ const LoginScreen = (props) => {
         return;
       });
   };
+
   // navigates to registration screen if user clicks "sign up" button
   const onFooterLinkPress = () => {
     props.navigation.navigate("Registration");
@@ -140,11 +143,8 @@ const LoginScreen = (props) => {
           underlineColorAndroid="transparent"
           autoCapitalize="none"
         />
-        <TouchableOpacity style={styles.button} onPress={() => onLoginPress()}>
+        <TouchableOpacity style={styles.button} onPress={onLoginPress}>
           <DefaultText style={styles.buttonTitle}>Log in</DefaultText>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => onForgotPassword()}>
-          <DefaultText style={styles.buttonTitle}>Reset password</DefaultText>
         </TouchableOpacity>
         <View style={styles.footerView}>
           <DefaultText style={styles.footerText}>
@@ -152,6 +152,9 @@ const LoginScreen = (props) => {
             <DefaultText onPress={onFooterLinkPress} style={styles.footerLink}>
               Sign up
             </DefaultText>
+          </DefaultText>
+          <DefaultText onPress={onForgotPassword} style={styles.footerLink}>
+            Forgot Password?
           </DefaultText>
         </View>
       </KeyboardAwareScrollView>
@@ -213,6 +216,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "System",
     color: "#2e2e2d",
+    marginBottom: normalize(20, "height"),
   },
   footerLink: {
     color: "#5063b3",

@@ -145,10 +145,7 @@ const RegistrationScreen = (props) => {
           underlineColorAndroid="transparent"
           autoCapitalize="none"
         />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => onRegisterPress()}
-        >
+        <TouchableOpacity style={styles.button} onPress={onRegisterPress}>
           <DefaultText style={styles.buttonTitle}>Create account</DefaultText>
         </TouchableOpacity>
         <View style={styles.footerView}>
