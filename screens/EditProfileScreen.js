@@ -11,7 +11,12 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 import ProfilePic from "../components/ProfilePicture";
 import { DefaultText, normalize } from "../components/DefaultText";
-import { getUserData, getPostsFromUser } from "../functions/io";
+import {
+  getUserData,
+  getPostsFromUser,
+  imagePickerMediaLibrary,
+  imagePickerCamera,
+} from "../functions/io";
 import Colors from "../constants/Colors";
 
 const EditProfileScreen = (props) => {

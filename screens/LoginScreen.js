@@ -46,6 +46,7 @@ const LoginScreen = (props) => {
         return;
       });
   };
+
   const onForgotPassword = () => {
     if (!email) {
       Alert.alert("Enter email above");
@@ -59,17 +60,24 @@ const LoginScreen = (props) => {
       Alert.alert("Not a Loomis Chaffee email");
       return;
     }
-    firebase
-      .auth()
-      .sendPasswordResetEmail(email)
-      .then(Alert.alert("Password reset email sent"))
-      .catch(function (error) {
-        if (Platform.OS === "ios") {
-          Alert.alert(error.message);
-        } else {
-          Alert.alert("", error.message);
-        }
-      });
+    Alert.alert("Send password reset email to:", email + "?", [
+      { text: "No", style: "destructive" },
+      {
+        text: "Yes",
+        onPress: async () => {
+          try {
+            await firebase.auth().sendPasswordResetEmail(email);
+            Alert.alert("Password reset email sent");
+          } catch (error) {
+            if (Platform.OS === "ios") {
+              Alert.alert(error.message);
+            } else {
+              Alert.alert("", error.message);
+            }
+          }
+        },
+      },
+    ]);
   };
   // checks email and password if user clicks "log in" button
   const onLoginPress = async () => {
