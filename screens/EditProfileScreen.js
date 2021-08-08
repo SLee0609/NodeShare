@@ -50,6 +50,13 @@ const EditProfileScreen = (props) => {
     Alert.alert("Image", "", [
       { text: "Take a photo", onPress: useCamera },
       { text: "Choose from media library", onPress: useMediaLibrary },
+      {
+        text: "Remove profile photo",
+        onPress: () => {
+          setImage();
+          setImageUri();
+        },
+      },
       { text: "Cancel", style: "destructive" },
     ]);
     return;
@@ -340,21 +347,21 @@ const styles = StyleSheet.create({
     borderBottomWidth: normalize(1, "height"),
   },
   bio: {
-    fontSize: 15,
+    fontSize: normalize(15, "width"),
     paddingBottom: normalize(10, "height"),
     paddingLeft: normalize(10, "width"),
     fontFamily: "open-sans-bold",
     color: "white",
   },
   bioGray: {
-    fontSize: 15,
+    fontSize: normalize(15, "width"),
     paddingBottom: normalize(10, "height"),
     paddingLeft: normalize(10, "width"),
     fontFamily: "open-sans-bold",
     color: "gray",
   },
   bioNotBold: {
-    fontSize: 15,
+    fontSize: normalize(15, "width"),
     paddingBottom: normalize(10, "height"),
     paddingLeft: normalize(10, "width"),
     fontFamily: "open-sans",

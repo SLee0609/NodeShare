@@ -352,6 +352,8 @@ export {
  * posts/
  *  -> postId
  *    -> userId
+ *    -> firstname
+ *    -> lastname
  *    -> postId
  *    -> title
  *    -> description
