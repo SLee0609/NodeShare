@@ -291,7 +291,7 @@ let deletePost = async (postID) => {
   .doc(postID)
   .delete();
 
-  await await firebase
+  await firebase
   .storage()
   .ref()
   .child("posts/" + postID + "/postpic.jpg")
