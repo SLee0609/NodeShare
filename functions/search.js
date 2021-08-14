@@ -3,7 +3,23 @@
 // sort by relevance - currently sorts by date only
 import Post from "../models/post.js";
 
+// assumes that the post array is passed in based on date
 let searchByDate = async (posts, keyword) => {
+    const matchingPosts = await searchPosts(posts, keyword);
+    const postIDs = await findPostIDByDate(matchingPosts, posts);
+    // return the postIDs (could change to returning the post object)
+    return postIDs;
+}
+
+let searchByRelevance = async (posts, keyword) => {
+    // same as search by date
+    const matchingPosts = await searchPosts(posts, keyword);
+    const postIDs = await findPostIDByRelevance(matchingPosts, posts);
+    // return the postIDs (could change to returning the post object)
+    return postIDs;
+}
+
+let searchPosts = async (posts, keyword) => {
     // split the keyword string into individual words
     const keywordArr = keyword.split(" ");
     // lowercase all words so capitalization does not matter
@@ -16,13 +32,7 @@ let searchByDate = async (posts, keyword) => {
     // find which posts contain one or more of the keywords
     const matchingPosts = await findKeywords(lowercaseKeyword, postArr);
     // find the postIDs of the posts
-    const postIDs = await findPostID(matchingPosts, posts);
-    // return the postIDs (could change to returning the post object)
-    return postIDs;
-}
-
-let searchByRelevance = async (posts, keyword) => {
-
+    return matchingPosts;
 }
 
 // make the post content and title into an 2D array of strings (add user later)
@@ -57,7 +67,7 @@ let findKeywords = async (keyword, posts) => {
 
         // if more than 2/3 of the keywords are in the post, return the post
         if (relevance / keyword.length >= 2/3) {
-            postIndex.push(i);
+            postIndex.push([i, relevance / keyword.length]);
         }
     }
     // returns the position of the post in the original post array
@@ -65,10 +75,20 @@ let findKeywords = async (keyword, posts) => {
 }
 
 // use the post index to find the postid
-let findPostID = async (matchingPosts, posts) => {
+let findPostIDByDate = async (matchingPosts, posts) => {
     var postIDs = [];
     matchingPosts.forEach((post) => {
-        postIDs.push(posts[post].id);
+        postIDs.push(posts[post[0]].id);
+    });
+    return postIDs;
+}
+
+let findPostIDByRelevance = async (matchingPosts, posts) => {
+    var postIDs = [];
+    // sort by descending order based on the relevancy value
+    matchingPosts.sort(function(a, b) {return b[1] - a[1]});
+    matchingPosts.forEach((post) => {
+        postIDs.push(posts[post[0]].id);
     });
     return postIDs;
 }
@@ -80,7 +100,7 @@ let test = async () => {
     var post2 = new Post("post2", "categories", "this is the new title", "123uid", "imageuri", "this is the new post description", "some time");
     postArr.push(post1);
     postArr.push(post2);
-    var x = await searchByDate(postArr, "THIS IS");
+    var x = await searchByRelevance(postArr, "THIS IS NEW POST");
     console.log(x);
 }
 
