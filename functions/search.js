@@ -1,6 +1,6 @@
 // search local posts using given keywords
 // improvements to make - removing filler words (e.g. it, is, the, a, etc.)
-// sort by relevance - currently sorts by date only
+// add username into post content to be searched
 import Post from "../models/post.js";
 
 // assumes that the post array is passed in based on date
@@ -12,13 +12,14 @@ let searchByDate = async (posts, keyword) => {
 }
 
 let searchByRelevance = async (posts, keyword) => {
-    // same as search by date
     const matchingPosts = await searchPosts(posts, keyword);
     const postIDs = await findPostIDByRelevance(matchingPosts, posts);
     // return the postIDs (could change to returning the post object)
     return postIDs;
 }
 
+// base search function - used to find all posts that contain more than 2/3 of the words
+// doesnt sort the posts in any particular order - that is done by the two above
 let searchPosts = async (posts, keyword) => {
     // split the keyword string into individual words
     const keywordArr = keyword.split(" ");
@@ -50,6 +51,7 @@ let stringifyPost = async (posts) => {
     return postStr;
 }
 
+// matches search keywords with post content
 let findKeywords = async (keyword, posts) => {
     var postIndex = [];
     // find matching keywords and post content
@@ -75,6 +77,7 @@ let findKeywords = async (keyword, posts) => {
 }
 
 // use the post index to find the postid
+// could add additional sort by date function - not needed for now if input is already sorted
 let findPostIDByDate = async (matchingPosts, posts) => {
     var postIDs = [];
     matchingPosts.forEach((post) => {
@@ -93,7 +96,7 @@ let findPostIDByRelevance = async (matchingPosts, posts) => {
     return postIDs;
 }
 
-// tester
+// tester function
 let test = async () => {
     var postArr = [];
     var post1 = new Post("post1", "categories", "this is the title", "123uid", "imageuri", "this is the post description", "some time");
