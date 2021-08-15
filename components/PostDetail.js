@@ -101,7 +101,28 @@ const PostDetail = (props) => {
 
   // Function called when three dots icon is pressed
   const onDotsPress = () => {
-    Alert.alert("Three Dots Pressed");
+    if (userId != post.userId) {
+      Alert.alert("Post", "", [
+        {
+          text: "Report",
+          onPress: () => {
+            Alert.alert("report?");
+          },
+        },
+        { text: "Cancel", style: "destructive" },
+      ]);
+    } else {
+      Alert.alert("Post", "", [
+        {
+          text: "Delete",
+          onPress: () => {
+            Alert.alert("Are you sure you want to delete this post?");
+          },
+        },
+        { text: "Cancel", style: "destructive" },
+      ]);
+    }
+    return;
   };
 
   // Function called when message icon is pressed

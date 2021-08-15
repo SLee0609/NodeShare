@@ -121,7 +121,7 @@ async function updateUserData(
       residency: residency,
       bio: bio,
     });
-  if (image != null) {
+  if (image != null && image != "") {
     await storeUserProfilePic(userID, image);
     await firebase
       .database()
@@ -129,6 +129,34 @@ async function updateUserData(
       .update({
         profilePicture: await retrieveUserProfilePic(userID),
       });
+  } else if (image != "") {
+    firebase
+      .database()
+      .ref("users/" + userID + "/profilePicture")
+      .once("value")
+      .then(async (snapshot) => {
+        if (snapshot.exists()) {
+          await firebase
+            .database()
+            .ref("users/" + userID + "/profilePicture")
+            .remove();
+        }
+      });
+    firebase
+      .storage()
+      .ref()
+      .child("users/" + userID + "/profilepic.jpg")
+      .getDownloadURL()
+      .then(
+        async () => {
+          await firebase
+            .storage()
+            .ref()
+            .child("users/" + userID + "/profilepic.jpg")
+            .delete();
+        },
+        () => {}
+      );
   }
 }
 
@@ -314,6 +342,17 @@ let getUserSavedPosts = async (userID) => {
   return savedPosts;
 };
 
+// deletes post data
+let deletePost = async (postID) => {
+  await firebase.firestore().collection("post").doc(postID).delete();
+
+  await await firebase
+    .storage()
+    .ref()
+    .child("posts/" + postID + "/postpic.jpg")
+    .delete();
+};
+
 export {
   // image funcs
   imagePickerMediaLibrary,
@@ -333,6 +372,7 @@ export {
   getPostsFromUser,
   getAllPosts,
   getLatestPosts,
+  deletePost,
 };
 
 /**

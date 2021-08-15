@@ -28,8 +28,8 @@ LogBox.ignoreLogs(["Setting a timer"]);
 const loadAssets = async () => {
   const imageAssets = Asset.loadAsync([
     require("./assets/icontransparent.png"),
+    require("./assets/splash.png"),
     require("./assets/cameraicon.png"),
-    require("./assets/splashtransparent.png"),
     require("./assets/defaultprofilepicture.png"),
   ]);
   const fontAssets = Font.loadAsync({

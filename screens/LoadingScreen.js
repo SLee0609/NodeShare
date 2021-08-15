@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Dimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Colors from "../constants/Colors";
@@ -19,9 +19,23 @@ const LoadingScreen = (props) => {
       await AsyncStorage.removeItem("userId");
       props.navigation.navigate("Authentication");
 
-      // navigate to App if userId exists in the database
+      // if userId exists in the database
     } else {
-      props.navigation.navigate("App");
+      let user = await getUserData(userId);
+
+      // if user's occupation is set up already, navigate to App
+      if (user.occupation != null) {
+        props.navigation.navigate("App");
+      } else {
+        // else, navigate to SetUpProfile
+        props.navigation.navigate({
+          routeName: "SetUpProfile",
+          params: {
+            userId: userId,
+            user: user,
+          },
+        });
+      }
     }
   };
 
@@ -29,10 +43,7 @@ const LoadingScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <Image
-        style={styles.image}
-        source={require("../assets/splashtransparent.png")}
-      />
+      <Image style={styles.image} source={require("../assets/splash.png")} />
     </View>
   );
 };
@@ -50,8 +61,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    flex: 1,
-    resizeMode: "contain",
+    height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width,
+    resizeMode: "cover",
   },
 });
 

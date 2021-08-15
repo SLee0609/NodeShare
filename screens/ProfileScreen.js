@@ -50,6 +50,13 @@ const ProfileScreen = (props) => {
   };
 
   useEffect(() => {
+    props.navigation.addListener("didFocus", (payload) => {
+      setCollapse(false);
+      getUsers();
+    });
+  }, []);
+
+  useEffect(() => {
     setCollapse(false);
     getUsers();
   }, [props]);
@@ -189,7 +196,7 @@ const ProfileScreen = (props) => {
             </View>
           )}
         </View>
-        {user == null || user.bio == "" ? null : (
+        {user == null || user.bio == "" || user.bio == null ? null : (
           <View style={styles.userBioContainer}>
             <View>
               <DefaultText style={styles.bioText}>Bio:</DefaultText>

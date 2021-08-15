@@ -15,6 +15,7 @@ import CreatePostsScreen from "../screens/CreatePostsScreen";
 import MessagesScreen from "../screens/MessagesScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import EditProfileScreen from "../screens/EditProfileScreen";
+import SetUpProfileScreen from "../screens/SetUpProfileScreen";
 import PostDetailScreen from "../screens/PostDetailScreen";
 import AllPostsScreen from "../screens/AllPostsScreen";
 import InformationScreen from "../screens/post-types/InformationScreen";
@@ -107,6 +108,14 @@ const ProfileNav = createStackNavigator(
     PostDetail: PostDetailScreen,
     Profile: ProfileScreen,
     EditProfile: EditProfileScreen,
+  },
+  {
+    defaultNavigationOptions: defaultStackNavOptions,
+  }
+);
+const SetUpProfileNav = createStackNavigator(
+  {
+    SetUpProfile: SetUpProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -376,6 +385,7 @@ const AuthStackNavigator = createStackNavigator(
 const Navigator = createSwitchNavigator(
   {
     Loading: LoadingNav,
+    SetUpProfile: SetUpProfileNav,
     App: BottomTabNavigator,
     Authentication: AuthStackNavigator,
   },

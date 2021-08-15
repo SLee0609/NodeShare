@@ -63,7 +63,7 @@ const CreatePostsScreen = (props) => {
 
   // Function called to choose image
   const chooseImage = async () => {
-    Alert.alert("Image", "", [
+    Alert.alert("Post Image", "", [
       { text: "Take a photo", onPress: useCamera },
       { text: "Choose from media library", onPress: useMediaLibrary },
       { text: "Cancel", style: "destructive" },

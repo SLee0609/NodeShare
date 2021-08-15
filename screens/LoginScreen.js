@@ -13,6 +13,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { getUserData } from "../functions/io";
 import { DefaultText, normalize } from "../components/DefaultText";
 import Colors from "../constants/Colors";
 
@@ -97,9 +98,22 @@ const LoginScreen = (props) => {
               return;
             } else {
               // locally storing user ID
-              AsyncStorage.setItem("userId", user.uid).then(
-                props.navigation.navigate("App")
-              );
+              AsyncStorage.setItem("userId", user.uid).then(async () => {
+                let currUser = await getUserData(user.uid);
+                if (currUser.occupation != null) {
+                  // navigate to App if user occupation is already set up
+                  props.navigation.navigate("App");
+                } else {
+                  // else, navigate to SetUpProfile
+                  props.navigation.navigate({
+                    routeName: "SetUpProfile",
+                    params: {
+                      userId: user.uid,
+                      user: currUser,
+                    },
+                  });
+                }
+              });
               return;
             }
           }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -23,11 +23,15 @@ import {
 } from "../functions/io";
 import Colors from "../constants/Colors";
 
-const EditProfileScreen = (props) => {
+const SetUpProfileScreen = (props) => {
   // state for userId
-  const [userId, setUserId] = useState(props.navigation.getParam("userId"));
+  const [userId, setUserId] = useState(
+    props.navigation.dangerouslyGetParent().getParam("userId")
+  );
   // state for user
-  const [user, setUser] = useState(props.navigation.getParam("user"));
+  const [user, setUser] = useState(
+    props.navigation.dangerouslyGetParent().getParam("user")
+  );
 
   // state for saving
   const [saving, setSaving] = useState(false);
@@ -46,16 +50,6 @@ const EditProfileScreen = (props) => {
   const [residency, setResidency] = useState(user.residency);
   // state for bio
   const [bio, setBio] = useState(user.bio);
-
-  useEffect(() => {
-    setImageUri(user.profilePicture);
-    setFirstName(user.firstname);
-    setLastName(user.lastname);
-    setOccupation(user.occupation);
-    setResidency(user.residency);
-    setBio(user.bio);
-    setSaving(false);
-  }, [props]);
 
   // function called when change profile photo button is pressed
   const changeProfilePic = () => {
@@ -170,16 +164,8 @@ const EditProfileScreen = (props) => {
         image
       );
     }
-
     Alert.alert("Saved!");
-    await cancel();
-    props.navigation.navigate({
-      routeName: "EditProfile",
-      params: {
-        userId: userId,
-        user: user,
-      },
-    });
+    props.navigation.navigate("App");
   };
 
   // render activity indicator when saving
@@ -343,9 +329,10 @@ const EditProfileScreen = (props) => {
   }
 };
 
-EditProfileScreen.navigationOptions = (navData) => {
+SetUpProfileScreen.navigationOptions = (navData) => {
   return {
-    headerTitle: "Edit Profile",
+    headerTitle: "Set Up Profile",
+    headerLeft: () => null,
   };
 };
 
@@ -463,4 +450,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditProfileScreen;
+export default SetUpProfileScreen;
