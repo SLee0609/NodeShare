@@ -7,6 +7,7 @@ import { enableScreens } from "react-native-screens";
 import { Asset } from "expo-asset";
 
 import Navigator from "./navigation/Navigator";
+import {test} from "./functions/search";
 
 // Optimize navigation performances
 enableScreens();
@@ -39,6 +40,8 @@ const loadAssets = async () => {
 
   await Promise.all([imageAssets, fontAssets]);
 };
+
+test();
 
 export default function App() {
   // State to check if assets are loaded

@@ -346,7 +346,7 @@ let getUserSavedPosts = async (userID) => {
 let deletePost = async (postID) => {
   await firebase.firestore().collection("post").doc(postID).delete();
 
-  await await firebase
+  await firebase
     .storage()
     .ref()
     .child("posts/" + postID + "/postpic.jpg")
