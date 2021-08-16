@@ -13,6 +13,7 @@ import LoginScreen from "../screens/LoginScreen";
 import SavedPostsScreen from "../screens/SavedPostsScreen";
 import CreatePostsScreen from "../screens/CreatePostsScreen";
 import MessagesScreen from "../screens/MessagesScreen";
+import ChatScreen from "../screens/ChatScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import EditProfileScreen from "../screens/EditProfileScreen";
 import SetUpProfileScreen from "../screens/SetUpProfileScreen";
@@ -97,6 +98,7 @@ const CreatePostsNav = createStackNavigator(
 const MessagesNav = createStackNavigator(
   {
     Messages: MessagesScreen,
+    Chat: ChatScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,

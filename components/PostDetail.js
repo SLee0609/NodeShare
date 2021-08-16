@@ -14,6 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import * as Progress from "react-native-progress";
+import { NavigationActions } from "react-navigation";
 
 import Colors from "../constants/Colors";
 import ProfilePic from "../components/ProfilePicture";
@@ -138,7 +139,13 @@ const PostDetail = (props) => {
 
   // Function called when message icon is pressed
   const onMessagePress = () => {
-    Alert.alert("Message Pressed");
+    props.navigation.navigate({
+      routeName: "Messages",
+      action: NavigationActions.navigate({ routeName: "Chat" }),
+      params: {
+        testKey: "This is a test paramater",
+      },
+    });
   };
 
   // Function called when save icon is pressed
