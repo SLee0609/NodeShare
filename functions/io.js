@@ -353,6 +353,9 @@ let deletePost = async (postID) => {
     .delete();
 };
 
+// adds post and user who reported the post to database
+let reportPost = async (postId, userId) => {};
+
 export {
   // image funcs
   imagePickerMediaLibrary,

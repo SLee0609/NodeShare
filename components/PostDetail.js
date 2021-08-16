@@ -23,6 +23,7 @@ import {
   removeUserSavedPost,
   storeUserSavedPost,
   isPostSaved,
+  deletePost,
 } from "../functions/io";
 
 // Accepts a post and returns an individual post detail component; used in PostDetailScreen
@@ -116,7 +117,17 @@ const PostDetail = (props) => {
         {
           text: "Delete",
           onPress: () => {
-            Alert.alert("Are you sure you want to delete this post?");
+            Alert.alert("Are you sure you want to delete this post?", "", [
+              {
+                text: "Yes",
+                onPress: async () => {
+                  setDoneLoading(false);
+                  await deletePost(post.postId);
+                  props.navigation.goBack();
+                },
+              },
+              { text: "Cancel", style: "destructive" },
+            ]);
           },
         },
         { text: "Cancel", style: "destructive" },
@@ -154,6 +165,19 @@ const PostDetail = (props) => {
 
   if (!doneLoading) {
     return <ActivityIndicator size="small" color="white" />;
+  }
+
+  if (user == null) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <DefaultText style={styles.description}>
+          Post data cannot be fetched
+        </DefaultText>
+        <DefaultText style={styles.description}>
+          Post might have been deleted
+        </DefaultText>
+      </View>
+    );
   }
 
   return (
