@@ -14,13 +14,16 @@ const PostOverview = (props) => {
   const [user, setUser] = useState();
 
   // get user data from database
-  const getUser = async () => {
-    const user = await getUserData(props.userId);
-    setUser(user);
-  };
-
   useEffect(() => {
+    let mounted = true;
+    async function getUser() {
+      const user = await getUserData(props.userId);
+      if (mounted) {
+        setUser(user);
+      }
+    }
     getUser();
+    return () => (mounted = false);
   }, [props]);
 
   return (

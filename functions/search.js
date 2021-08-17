@@ -58,7 +58,7 @@ let findKeywords = async (keyword, posts) => {
     var relevance = 0;
     for (var j = 0; j < keyword.length; j++) {
       for (var k = 0; k < posts[i].length; k++) {
-        if (keyword[j] == posts[i][k]) {
+        if (posts[i][k].includes(keyword[j])) {
           // checks if a single keyword is contained within the post
           relevance++;
           break;
@@ -80,7 +80,7 @@ let findKeywords = async (keyword, posts) => {
 let findPostIDByDate = async (matchingPosts, posts) => {
   var postIDs = [];
   matchingPosts.forEach((post) => {
-    postIDs.push(posts[post[0]].id);
+    postIDs.push(posts[post[0]]);
   });
   return postIDs;
 };
@@ -92,7 +92,7 @@ let findPostIDByRelevance = async (matchingPosts, posts) => {
     return b[1] - a[1];
   });
   matchingPosts.forEach((post) => {
-    postIDs.push(posts[post[0]].id);
+    postIDs.push(posts[post[0]]);
   });
   return postIDs;
 };

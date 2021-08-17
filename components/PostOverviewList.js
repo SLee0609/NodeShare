@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { SearchBar } from "react-native-elements";
 
+import { searchByDate } from "../functions/search";
 import PostOverview from "../components/PostOverview";
 import { DefaultText, normalize } from "../components/DefaultText";
 
@@ -41,7 +42,10 @@ const PostOverviewList = (props) => {
   };
 
   useEffect(() => {
-    onRefresh();
+    async function load() {
+      await onRefresh();
+    }
+    load();
   }, [props]);
 
   // function that renders each post
@@ -63,9 +67,15 @@ const PostOverviewList = (props) => {
     );
   };
 
-  // function that updates search term
-  const updateSearch = (searchTerm) => {
+  // function that updates list based on search
+  const updateSearch = async (text) => {
+    let searchTerm = text.trim();
     setSearchTerm(searchTerm);
+    await onRefresh();
+    if (searchTerm != "") {
+      let newList = await searchByDate(list, searchTerm);
+      setList(newList);
+    }
   };
 
   // returns the flatlist of post overviews
@@ -79,7 +89,11 @@ const PostOverviewList = (props) => {
         leftIconContainerStyle={styles.leftIconContainer}
         searchIcon={{ size: normalize(18, "width") }}
         clearIcon={{ size: normalize(18, "width") }}
-        onChangeText={updateSearch}
+        onChangeText={(searchTerm) => setSearchTerm(searchTerm)}
+        onEndEditing={async (searchTerm) =>
+          await updateSearch(searchTerm.nativeEvent.text)
+        }
+        onClear={async () => await onRefresh()}
         value={searchTerm}
       ></SearchBar>
       {list.length != 0 || refreshing ? (
@@ -87,7 +101,7 @@ const PostOverviewList = (props) => {
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={onRefresh}
+              onRefresh={async () => await updateSearch(searchTerm)}
               tintColor={"white"}
             />
           }
@@ -104,7 +118,7 @@ const PostOverviewList = (props) => {
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={onRefresh}
+              onRefresh={async () => await updateSearch(searchTerm)}
               tintColor={"white"}
             />
           }
