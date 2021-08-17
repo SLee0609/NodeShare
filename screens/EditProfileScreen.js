@@ -59,18 +59,23 @@ const EditProfileScreen = (props) => {
 
   // function called when change profile photo button is pressed
   const changeProfilePic = () => {
-    Alert.alert("Profile Photo", "", [
-      { text: "Take a photo", onPress: useCamera },
-      { text: "Choose from media library", onPress: useMediaLibrary },
-      {
-        text: "Remove profile photo",
-        onPress: () => {
-          setImage();
-          setImageUri();
+    Alert.alert(
+      "Profile Photo",
+      "",
+      [
+        { text: "Take a photo", onPress: useCamera },
+        { text: "Choose from media library", onPress: useMediaLibrary },
+        {
+          text: "Remove profile photo",
+          onPress: () => {
+            setImage();
+            setImageUri();
+          },
         },
-      },
-      { text: "Cancel", style: "destructive" },
-    ]);
+        { text: "Cancel", style: "destructive" },
+      ],
+      { cancelable: true }
+    );
     return;
   };
 
