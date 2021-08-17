@@ -188,6 +188,8 @@ async function storePostData(
       description: postDescription,
       date: postCreationDate,
       tags: postCategories,
+      reports: 0,
+      reportedBy: [],
     })
     .then((docRef) => {
       postId = docRef.id;
@@ -353,24 +355,6 @@ let deletePost = async (postID) => {
     .delete();
 };
 
-// adds post and user who reported the post to database
-let reportPost = async (postId, userId) => {
-  const snapshot = await firebase
-    .firestore()
-    .collection("post")
-    .doc(postId)
-    .get();
-
-  const postData = snapshot.data();
-
-  if (postData) {
-    await firebase
-      .firestore()
-      .collection("reportedPosts")
-      .doc(postId)
-      .set({ ...postData, reportedBy: userId });
-  }
-};
 
 export {
   // image funcs
@@ -392,7 +376,6 @@ export {
   getAllPosts,
   getLatestPosts,
   deletePost,
-  reportPost,
 };
 
 /**

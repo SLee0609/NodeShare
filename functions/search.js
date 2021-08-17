@@ -35,11 +35,11 @@ let searchPosts = async (posts, keyword) => {
   return matchingPosts;
 };
 
-// make the post content and title into an 2D array of strings (add user later)
+// make the post content, username and title into an 2D array of strings (add user later)
 let stringifyPost = async (posts) => {
   var postStr = [];
   posts.forEach((post) => {
-    var str = post.title.split(" ").concat(post.description.split(" "));
+    var str = post.title.split(" ").concat(post.description.split(" "), post.userId.split(" "));
     var lowerStr = [];
     // lowercase all words
     str.forEach((word) => {
@@ -97,4 +97,4 @@ let findPostIDByRelevance = async (matchingPosts, posts) => {
   return postIDs;
 };
 
-export { searchByDate };
+export { searchByDate, searchByRelevance };
