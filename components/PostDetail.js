@@ -25,6 +25,7 @@ import {
   storeUserSavedPost,
   isPostSaved,
   deletePost,
+  reportPost,
 } from "../functions/io";
 
 // Accepts a post and returns an individual post detail component; used in PostDetailScreen
@@ -108,7 +109,18 @@ const PostDetail = (props) => {
         {
           text: "Report",
           onPress: () => {
-            Alert.alert("report?");
+            Alert.alert("Are you sure you want to report this post?", "", [
+              {
+                text: "Yes",
+                onPress: async () => {
+                  setDoneLoading(false);
+                  await reportPost(post.postId, userId);
+                  setDoneLoading(true);
+                  Alert.alert("Post reported");
+                },
+              },
+              { text: "Cancel", style: "destructive" },
+            ]);
           },
         },
         { text: "Cancel", style: "destructive" },

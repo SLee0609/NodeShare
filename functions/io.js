@@ -354,7 +354,23 @@ let deletePost = async (postID) => {
 };
 
 // adds post and user who reported the post to database
-let reportPost = async (postId, userId) => {};
+let reportPost = async (postId, userId) => {
+  const snapshot = await firebase
+    .firestore()
+    .collection("post")
+    .doc(postId)
+    .get();
+
+  const postData = snapshot.data();
+
+  if (postData) {
+    await firebase
+      .firestore()
+      .collection("reportedPosts")
+      .doc(postId)
+      .set({ ...postData, reportedBy: userId });
+  }
+};
 
 export {
   // image funcs
@@ -376,6 +392,7 @@ export {
   getAllPosts,
   getLatestPosts,
   deletePost,
+  reportPost,
 };
 
 /**
