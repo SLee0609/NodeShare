@@ -39,7 +39,7 @@ let searchPosts = async (posts, keyword) => {
 let stringifyPost = async (posts) => {
   var postStr = [];
   posts.forEach((post) => {
-    var str = post.title.split(" ").concat(post.description.split(" "), post.userId.split(" "));
+    var str = post.title.split(" ").concat(post.description.split(" "), post.userName.split(" "));
     var lowerStr = [];
     // lowercase all words
     str.forEach((word) => {

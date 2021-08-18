@@ -1,7 +1,6 @@
 // all security functions - report post, spam detection, etc
 
 import firebase from "firebase/app";
-import {deletePost} from "./io";
 
 // reports a post
 // if a post is reported 3 times or more, remove the post from the main collection
@@ -20,6 +19,9 @@ let reportPost = async (postId, userId) => {
   if (postContent.reports >= 3) {
 
     // move the post to reportedPosts
+    // post should be stored in a separate collection so it isn't seen in the app
+    // but in case there was a wrong report or more investigation is needed
+    // the information should be kept in the database until further review
     await firebase
     .firestore()
     .collection("reportedPosts")
@@ -27,7 +29,7 @@ let reportPost = async (postId, userId) => {
     .set(postContent);
 
     // delete the post from the post database
-    deletePost(postId);
+    await movePost(postId);
 
     // break the function early
     return;
@@ -35,5 +37,10 @@ let reportPost = async (postId, userId) => {
   
   postRef.set(postContent);
 };
+
+// changed so that the image is kept in the database - previously it is deleted
+let movePost = async (postId) => {
+    await firebase.firestore().collection("post").doc(postID).delete();
+}
 
 export {reportPost};

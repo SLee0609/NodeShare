@@ -179,6 +179,7 @@ async function storePostData(
   pic
 ) {
   let postId;
+  const userInfo = await db.child("users").child(userID).get().val();
   await firebase
     .firestore()
     .collection("post")
@@ -190,6 +191,7 @@ async function storePostData(
       tags: postCategories,
       reports: 0,
       reportedBy: [],
+      userName: userInfo.child("firstname").concat(userInfo.child("lastname"));
     })
     .then((docRef) => {
       postId = docRef.id;
