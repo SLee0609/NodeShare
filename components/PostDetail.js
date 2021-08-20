@@ -156,6 +156,7 @@ const PostDetail = (props) => {
       action: NavigationActions.navigate({ routeName: "Chat" }),
       params: {
         testKey: "This is a test paramater",
+        idinfo: post.userId
       },
     });
   };
