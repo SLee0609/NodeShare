@@ -48,7 +48,10 @@ const ChatScreen = (props) => {
           user: {
             _id: postUserId,
             name: pUser.firstname + " " + pUser.lastname,
-            avatar: pUser.profilePicture,
+            avatar:
+              pUser.profilePicture != null
+                ? pUser.profilePicture
+                : require("../assets/defaultprofilepicture.png"),
           },
         },
       ]);
@@ -73,7 +76,10 @@ const ChatScreen = (props) => {
       user={{
         _id: currUserId,
         name: currUser.firstname + " " + currUser.lastname,
-        avatar: currUser.profilePicture,
+        avatar:
+          currUser.profilePicture != null
+            ? currUser.profilePicture
+            : require("../assets/defaultprofilepicture.png"),
       }}
       bottomOffset={insets.bottom}
       showUserAvatar={false}

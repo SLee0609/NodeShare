@@ -314,7 +314,7 @@ const SetUpProfileScreen = (props) => {
           <View style={styles.buttonsContainer}>
             <TouchableOpacity onPress={cancel}>
               <View style={styles.cancelButton}>
-                <DefaultText style={styles.cancelText}>Cancel</DefaultText>
+                <DefaultText style={styles.cancelText}>Revert</DefaultText>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={save}>
