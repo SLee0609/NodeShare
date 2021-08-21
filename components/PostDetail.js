@@ -25,8 +25,8 @@ import {
   storeUserSavedPost,
   isPostSaved,
   deletePost,
-  reportPost,
 } from "../functions/io";
+import {reportPost} from "../functions/security";
 
 // Accepts a post and returns an individual post detail component; used in PostDetailScreen
 const PostDetail = (props) => {

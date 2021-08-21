@@ -7,6 +7,8 @@
  * REMEMBER TO CHANGE SECURITY SETTINGS AFTER TESTING AND AUTH IS SET UP
  *
  * reminder to add catches to errors (no data, offline, etc)
+ * 
+ * update name in post when name is updated in profile
  */
 
 import firebase from "firebase/app";
@@ -59,7 +61,7 @@ let storeUserProfilePic = async (userID, pic) => {
     .put(blob);
 };
 
-// tested - returns download url (not sure how it is used with expo)
+// tested - returns download url
 let retrieveUserProfilePic = async (userID) => {
   const url = await firebase
     .storage()
@@ -79,7 +81,7 @@ let storePostPic = async (postID, pic) => {
     .put(blob);
 };
 
-// tested - returns download url (not sure how it is used with expo)
+// tested - returns download ur (not sure how it is used with expo)
 let retrievePostPic = async (postID) => {
   const url = await firebase
     .storage()
@@ -111,6 +113,19 @@ async function updateUserData(
   bio,
   image
 ) {
+  await firebase
+    .firestore()
+    .collection("post")
+    .where("userId", "==", userID)
+    .get()
+    .then((posts) => {
+      posts.forEach((postSnapshot) => {
+        postSnapshot.update({
+          userName: firstname.concat(' ', lastname)
+        });
+      });
+    });
+
   await firebase
     .database()
     .ref("users/" + userID)
@@ -179,6 +194,7 @@ async function storePostData(
   pic
 ) {
   let postId;
+  const userInfo = await db.child("users").child(userID).get().val();
   await firebase
     .firestore()
     .collection("post")
@@ -188,6 +204,9 @@ async function storePostData(
       description: postDescription,
       date: postCreationDate,
       tags: postCategories,
+      reports: 0,
+      reportedBy: [],
+      userName: userInfo.child("firstname").concat(' ', userInfo.child("lastname"));
     })
     .then((docRef) => {
       postId = docRef.id;
@@ -353,24 +372,6 @@ let deletePost = async (postID) => {
     .delete();
 };
 
-// adds post and user who reported the post to database
-let reportPost = async (postId, userId) => {
-  const snapshot = await firebase
-    .firestore()
-    .collection("post")
-    .doc(postId)
-    .get();
-
-  const postData = snapshot.data();
-
-  if (postData) {
-    await firebase
-      .firestore()
-      .collection("reportedPosts")
-      .doc(postId)
-      .set({ ...postData, reportedBy: userId });
-  }
-};
 
 export {
   // image funcs
@@ -392,7 +393,6 @@ export {
   getAllPosts,
   getLatestPosts,
   deletePost,
-  reportPost,
 };
 
 /**
