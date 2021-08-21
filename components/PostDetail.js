@@ -26,7 +26,7 @@ import {
   isPostSaved,
   deletePost,
 } from "../functions/io";
-import {reportPost} from "../functions/security";
+import { reportPost } from "../functions/security";
 
 // Accepts a post and returns an individual post detail component; used in PostDetailScreen
 const PostDetail = (props) => {
@@ -155,8 +155,8 @@ const PostDetail = (props) => {
       routeName: "Messages",
       action: NavigationActions.navigate({ routeName: "Chat" }),
       params: {
-        testKey: "This is a test paramater",
-        idinfo: post.userId
+        currUserId: userId,
+        postUserId: post.userId,
       },
     });
   };

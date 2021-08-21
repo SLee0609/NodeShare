@@ -7,7 +7,7 @@
  * REMEMBER TO CHANGE SECURITY SETTINGS AFTER TESTING AND AUTH IS SET UP
  *
  * reminder to add catches to errors (no data, offline, etc)
- * 
+ *
  * update name in post when name is updated in profile
  */
 
@@ -81,7 +81,7 @@ let storePostPic = async (postID, pic) => {
     .put(blob);
 };
 
-// tested - returns download ur (not sure how it is used with expo)
+// tested - returns download url
 let retrievePostPic = async (postID) => {
   const url = await firebase
     .storage()
@@ -121,7 +121,7 @@ async function updateUserData(
     .then((posts) => {
       posts.forEach((postSnapshot) => {
         postSnapshot.update({
-          userName: firstname.concat(' ', lastname)
+          userName: firstname.concat(" ", lastname),
         });
       });
     });
@@ -194,7 +194,9 @@ async function storePostData(
   pic
 ) {
   let postId;
-  const userInfo = await db.child("users").child(userID).get().val();
+  const db = firebase.database().ref();
+  const snapshot = await db.child("users").child(userID).get();
+  const userInfo = snapshot.val();
   await firebase
     .firestore()
     .collection("post")
@@ -206,7 +208,7 @@ async function storePostData(
       tags: postCategories,
       reports: 0,
       reportedBy: [],
-      userName: userInfo.child("firstname").concat(' ', userInfo.child("lastname"));
+      userName: userInfo.firstname.concat(" ", userInfo.lastname),
     })
     .then((docRef) => {
       postId = docRef.id;
@@ -371,7 +373,6 @@ let deletePost = async (postID) => {
     .child("posts/" + postID + "/postpic.jpg")
     .delete();
 };
-
 
 export {
   // image funcs

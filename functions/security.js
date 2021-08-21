@@ -12,21 +12,20 @@ let reportPost = async (postId, userId) => {
   var postContent = await postRefGet.data();
 
   // increase the number of reports in the post database and store the uid who reported it
-  postContent.reports ++;
+  postContent.reports++;
   postContent.reportedBy.push(userId);
 
   // check if the post has been reported 3 times or more
   if (postContent.reports >= 3) {
-
     // move the post to reportedPosts
     // post should be stored in a separate collection so it isn't seen in the app
     // but in case there was a wrong report or more investigation is needed
     // the information should be kept in the database until further review
     await firebase
-    .firestore()
-    .collection("reportedPosts")
-    .doc(postId)
-    .set(postContent);
+      .firestore()
+      .collection("reportedPosts")
+      .doc(postId)
+      .set(postContent);
 
     // delete the post from the post database
     await movePost(postId);
@@ -34,13 +33,13 @@ let reportPost = async (postId, userId) => {
     // break the function early
     return;
   }
-  
+
   postRef.set(postContent);
 };
 
 // changed so that the image is kept in the database - previously it is deleted
 let movePost = async (postId) => {
-    await firebase.firestore().collection("post").doc(postID).delete();
-}
+  await firebase.firestore().collection("post").doc(postID).delete();
+};
 
-export {reportPost};
+export { reportPost };
