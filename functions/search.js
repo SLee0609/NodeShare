@@ -5,16 +5,16 @@
 // assumes that the post array is passed in based on date
 let searchByDate = async (posts, keyword) => {
   const matchingPosts = await searchPosts(posts, keyword);
-  const postIDs = await findPostIDByDate(matchingPosts, posts);
+  const postsList = await findPostByDate(matchingPosts, posts);
   // return the postIDs (could change to returning the post object)
-  return postIDs;
+  return postsList;
 };
 
 let searchByRelevance = async (posts, keyword) => {
   const matchingPosts = await searchPosts(posts, keyword);
-  const postIDs = await findPostIDByRelevance(matchingPosts, posts);
+  const postsList = await findPostByRelevance(matchingPosts, posts);
   // return the postIDs (could change to returning the post object)
-  return postIDs;
+  return postsList;
 };
 
 // base search function - used to find all posts that contain more than 2/3 of the words
@@ -77,24 +77,24 @@ let findKeywords = async (keyword, posts) => {
 
 // use the post index to find the postid
 // could add additional sort by date function - not needed for now if input is already sorted
-let findPostIDByDate = async (matchingPosts, posts) => {
-  var postIDs = [];
+let findPostByDate = async (matchingPosts, posts) => {
+  var postsList = [];
   matchingPosts.forEach((post) => {
-    postIDs.push(posts[post[0]]);
+    postsList.push(posts[post[0]]);
   });
-  return postIDs;
+  return postsList;
 };
 
-let findPostIDByRelevance = async (matchingPosts, posts) => {
-  var postIDs = [];
+let findPostByRelevance = async (matchingPosts, posts) => {
+  var postsList = [];
   // sort by descending order based on the relevancy value
   matchingPosts.sort(function (a, b) {
     return b[1] - a[1];
   });
   matchingPosts.forEach((post) => {
-    postIDs.push(posts[post[0]]);
+    postsList.push(posts[post[0]]);
   });
-  return postIDs;
+  return postsList;
 };
 
 export { searchByDate, searchByRelevance };
