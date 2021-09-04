@@ -7,52 +7,72 @@ import {
   Dimensions,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import firebase from "firebase/app";
 import Chat from "../components/Chat";
 import { normalize } from "../components/DefaultText";
 
-const chats = [
-  {
-    mostRecentMessage: {
-      _id: "lkajsdflkasjdflkjasdf",
-      createdAt: new Date(),
-      text: "Do you want to go play ball rn?",
-      user: {
-        _id: "flfkfeoklkal",
-        avatar:
-          "https://firebasestorage.googleapis.com/v0/b/lclink.appspot.com/o/users%2FAzzRjDFEPXdyiLgL5jgs8hufXu93%2Fprofilepic.jpg?alt=media&token=b6681526-c15c-480e-922b-c8781f622954",
-        name: "Derek Yuan",
-      },
-    },
-    userIds: ["sYPfH2Dgj0Mtmm4WW06DnPK0AeE3", "AzzRjDFEPXdyiLgL5jgs8hufXu93"],
-  },
-  {
-    mostRecentMessage: {
-      _id: "lkajsdflkasjdflkjasdf2",
-      createdAt: new Date(),
-      text: "Let's go",
-      user: {
-        _id: "flfkfeoklkal",
-        avatar:
-          "https://firebasestorage.googleapis.com/v0/b/lclink.appspot.com/o/users%2FAzzRjDFEPXdyiLgL5jgs8hufXu93%2Fprofilepic.jpg?alt=media&token=b6681526-c15c-480e-922b-c8781f622954",
-        name: "Derek Yuan",
-      },
-    },
-    userIds: ["eKZOZS1ZhZhjq5DPHCh38279LPy2", "sYPfH2Dgj0Mtmm4WW06DnPK0AeE3"],
-  },
-];
+// const chats = [
+//   {
+//     mostRecentMessage: {
+//       _id: "lkajsdflkasjdflkjasdf",
+//       createdAt: new Date(),
+//       text: "Do you want to go play ball rn?",
+//       user: {
+//         _id: "flfkfeoklkal",
+//         avatar:
+//           "https://firebasestorage.googleapis.com/v0/b/lclink.appspot.com/o/users%2FAzzRjDFEPXdyiLgL5jgs8hufXu93%2Fprofilepic.jpg?alt=media&token=b6681526-c15c-480e-922b-c8781f622954",
+//         name: "Derek Yuan",
+//       },
+//     },
+//     userIds: ["sYPfH2Dgj0Mtmm4WW06DnPK0AeE3", "AzzRjDFEPXdyiLgL5jgs8hufXu93"],
+//   },
+//   {
+//     mostRecentMessage: {
+//       _id: "lkajsdflkasjdflkjasdf2",
+//       createdAt: new Date(),
+//       text: "Let's go",
+//       user: {
+//         _id: "flfkfeoklkal",
+//         avatar:
+//           "https://firebasestorage.googleapis.com/v0/b/lclink.appspot.com/o/users%2FAzzRjDFEPXdyiLgL5jgs8hufXu93%2Fprofilepic.jpg?alt=media&token=b6681526-c15c-480e-922b-c8781f622954",
+//         name: "Derek Yuan",
+//       },
+//     },
+//     userIds: ["eKZOZS1ZhZhjq5DPHCh38279LPy2", "sYPfH2Dgj0Mtmm4WW06DnPK0AeE3"],
+//   },
+// ];
 
 const MessagesScreen = (props) => {
   const [userId, setUserId] = useState();
+  const [chats, setChats] = useState([]);
 
   // get locally stored userId
   useEffect(() => {
     updateChats();
     async function load() {
-      setUserId(await AsyncStorage.getItem("userId"));
+      const uid = await AsyncStorage.getItem("userId");
+      setUserId(uid);
+      let y = [];
+      const unsubscribe = firebase
+        .firestore()
+        .collection("chats")
+        .where("users", "array-contains", uid)
+        .orderBy("lasttime", "desc")
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            let ob = {
+              mostRecentMessage: doc.get("lastmessage"),
+              userIds: doc.get("users"),
+            };
+            y.push(ob);
+          });
+        });
+      setChats(y);
+      return unsubscribe;
     }
-    load();
     setRefreshing(false);
+    return load();
   }, []);
 
   // state for current time
@@ -63,6 +83,18 @@ const MessagesScreen = (props) => {
 
   const updateChats = () => {
     setRefreshing(true);
+
+    // await firebase
+    // .firestore()
+    // .collection("post")
+    // .where("savedUsers", "array-contains", userID)
+    // .orderBy("date", "desc")
+    // .get()
+    // .then((querySnapshot) => {
+    //   querySnapshot.forEach((doc) => {
+    //     savedPosts.push(doc.data());
+    //   });
+    // });
     setCurrTime(new Date());
     setRefreshing(false);
   };

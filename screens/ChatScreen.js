@@ -65,7 +65,8 @@ const ChatScreen = (props) => {
         );
       return unsubscribe;
     }
-    load();
+
+    return load();
   }, []);
 
   const onSend = useCallback((messages = []) => {
