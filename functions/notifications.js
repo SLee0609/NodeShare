@@ -95,25 +95,31 @@ let removeToken = async (userId) => {
 
 // takes in userId and message, and sends the notification to the devices of the userId
 // in the format of (name, message)
-let sendChatNotificationMessage = async (userId, messageContent) => {
-  var userRef = await (
+let sendChatNotificationMessage = async (sendUserId, userId, messageObj) => {
+  var messageText = messageObj.text;
+
+  // name of the user who sent the message
+  var sendUserRef = await (
     await firebase
       .database()
-      .ref("users/" + userId)
+      .ref("users/" + sendUserId)
       .get()
   ).val();
-  var userName = userRef.firstname.concat(" ", userRef.lastname);
+  var userName = sendUserRef.firstname.concat(" ", sendUserRef.lastname);
 
   var tokens = await firebase
     .database()
     .ref("users/" + userId + "/pushTokens")
     .get();
   tokens.forEach((pushToken) => {
-    const message = {
-      to: pushToken,
+    var dbtokenString = JSON.stringify(pushToken);
+    dbtokenString = dbtokenString.substring(1, dbtokenString.length - 1);
+
+    var message = {
+      to: dbtokenString,
       sound: "default",
       title: userName,
-      body: messageContent,
+      body: messageText,
       // data: { someData: 'goes here' },
     };
 
