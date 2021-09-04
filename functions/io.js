@@ -206,7 +206,7 @@ async function storePostData(
       tags: postCategories,
       reports: 0,
       reportedBy: [],
-      userName: userInfo.child("firstname").concat(' ', userInfo.child("lastname"));
+      userName: userInfo.child("firstname").concat(' ', userInfo.child("lastname")),
     })
     .then((docRef) => {
       postId = docRef.id;
