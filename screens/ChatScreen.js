@@ -49,7 +49,7 @@ const ChatScreen = (props) => {
       setCurrUser(cUser);
       setPostUser(pUser);
       const unsubscribe = firebase.firestore()
-        .collection("messaging").doc(chatId).collection("messages")
+        .collection("chats").doc(chatId).collection("messages")
         .orderBy("createdAt", "desc")
         .onSnapshot((snapshot) =>
           setMessages(
@@ -91,7 +91,7 @@ const ChatScreen = (props) => {
       chatId = postUserId + currUserId;
     }
     for (const message of messages) {
-      storeMessage(chatId, message);
+      storeMessage(chatId, currUserId, postUserId, message);
     }
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
