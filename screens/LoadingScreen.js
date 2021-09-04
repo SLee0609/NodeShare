@@ -4,6 +4,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Colors from "../constants/Colors";
 import { getUserData } from "../functions/io";
+import firebase from "firebase/app";
+import { storeToken } from "../functions/notifications";
 
 const LoadingScreen = (props) => {
   const load = async () => {
@@ -22,6 +24,8 @@ const LoadingScreen = (props) => {
       // if userId exists in the database
     } else {
       let user = await getUserData(userId);
+      
+      await storeToken(userId);
 
       // if user's occupation is set up already, navigate to App
       if (user.occupation != null) {

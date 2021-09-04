@@ -16,6 +16,7 @@ import PostOverviewList from "../components/PostOverviewList";
 import { DefaultText, normalize } from "../components/DefaultText";
 import { getUserData, getPostsFromUser } from "../functions/io";
 import Colors from "../constants/Colors";
+import { removeToken } from "../functions/notifications";
 
 const ProfileScreen = (props) => {
   // state for userId
@@ -89,8 +90,11 @@ const ProfileScreen = (props) => {
       {
         text: "Yes",
         onPress: async () => {
-          // remove userId from local storage
+          // remove userId and push token from local storage
+          var userId = await AsyncStorage.getItem("userId");
+          await removeToken(userId);
           await AsyncStorage.removeItem("userId");
+          
           firebase
             .auth()
             .signOut()

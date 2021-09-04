@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { LogBox, StyleSheet } from "react-native";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { enableScreens } from "react-native-screens";
 import { Asset } from "expo-asset";
+import * as Notifications from 'expo-notifications';
+import { setHandler, registerNotifications, sendNotificationMessage } from "./functions/notifications";
 
 import Navigator from "./navigation/Navigator";
 
@@ -40,9 +42,45 @@ const loadAssets = async () => {
   await Promise.all([imageAssets, fontAssets]);
 };
 
+// notification setup stuff
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+  shouldShowAlert: true,
+  shouldPlaySound: false,
+  shouldSetBadge: false,
+  }),
+});
+
 export default function App() {
   // State to check if assets are loaded
   const [assetsLoaded, setAssetsLoaded] = useState(false);
+
+  // notification setup
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  // more notifications setup
+  useEffect(() => {
+    registerNotifications().then(token => setExpoPushToken(token));
+
+    // This listener is fired whenever a notification is received while the app is foregrounded
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+    setNotification(notification);
+    });
+
+    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    }
+  }, []);
+
 
   // Load fonts
   if (!assetsLoaded) {

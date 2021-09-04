@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getUserData } from "../functions/io";
 import { DefaultText, normalize } from "../components/DefaultText";
 import Colors from "../constants/Colors";
+import { storeToken } from "../functions/notifications";
 
 // Screen where users can log in
 const LoginScreen = (props) => {
@@ -97,6 +98,8 @@ const LoginScreen = (props) => {
               ]);
               return;
             } else {
+              // notification setup
+              storeToken(user.uid);
               // locally storing user ID
               AsyncStorage.setItem("userId", user.uid).then(async () => {
                 let currUser = await getUserData(user.uid);
