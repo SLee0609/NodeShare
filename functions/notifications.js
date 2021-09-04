@@ -19,7 +19,7 @@ let registerNotifications = async () => {
         if (finalStatus !== 'granted') {
 
         
-            alert('Failed to get push token for push notification!');
+            alert('Notifications are not enabled. Enable them in settings if you want to receive notifications.');
             return;
         }
         token = (await Notifications.getExpoPushTokenAsync()).data;
@@ -61,8 +61,28 @@ let storeToken = async (userId) => {
     // if the token has not been stored yet, store it
     if (!tokenExists) {
         await tokenRef.push(token);
-        console.log("token stored in db");
     }
+}
+
+// removes the push token from db when user is logged out
+let removeToken = async (userId) => {
+    var token = await AsyncStorage.getItem("expoPushToken");
+    var tokenRef = await firebase.database().ref("users/" + userId + "/pushTokens").get();
+    var tokenRefValue = tokenRef.val();
+
+    // loops through the object using the keys
+    Object.keys(tokenRefValue).forEach((key) => {
+        // stringify object retrieved from db then remove ""
+        var dbtokenString = JSON.stringify(tokenRefValue[key]);
+        dbtokenString = dbtokenString.substring(1, dbtokenString.length - 1);
+        // checks which token in db matches the token stored locally
+        if (dbtokenString == token) {
+            // remove the db token
+            firebase.database().ref("users/" + userId + "/pushTokens/" + key).remove();
+        }
+    });
+    // remove the local token
+    AsyncStorage.removeItem("expoPushToken");
 }
 
 // takes in userId and message, and sends the notification to the devices of the userId
@@ -93,4 +113,4 @@ let sendChatNotificationMessage = async (userId, messageContent) => {
     });
 }
 
-export { registerNotifications, sendChatNotificationMessage, storeToken };
+export { registerNotifications, sendChatNotificationMessage, storeToken, removeToken };

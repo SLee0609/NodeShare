@@ -20,11 +20,20 @@ let searchByRelevance = async (posts, keyword) => {
 // base search function - used to find all posts that contain more than 2/3 of the words
 // doesnt sort the posts in any particular order - that is done by the two above
 let searchPosts = async (posts, keyword) => {
+  String.prototype.replaceAll = function(str1, str2, ignore) 
+  { 
+    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
+  } 
   // split the keyword string into individual words
   const keywordArr = keyword.split(" ");
   // lowercase all words so capitalization does not matter
   var lowercaseKeyword = [];
   keywordArr.forEach((word) => {
+    // removes punctuation
+    word = word.replaceAll(".", "");
+    word = word.replaceAll(",", "");
+    word = word.replaceAll(";", "");
+    word = word.replaceAll("!", "");
     lowercaseKeyword.push(word.toLowerCase());
   });
   // make the post content into strings
