@@ -18,18 +18,19 @@ import Colors from "../constants/Colors";
 import { normalize } from "../components/DefaultText";
 import { getUserData } from "../functions/io";
 import { storeMessage } from "../functions/chatio";
-import { Alert } from "react-native";
 import firebase from "firebase/app";
 
 const ChatScreen = (props) => {
   const insets = useSafeAreaInsets();
 
-  let currUserId = props.navigation
-    .dangerouslyGetParent()
-    .getParam("currUserId");
-  let postUserId = props.navigation
-    .dangerouslyGetParent()
-    .getParam("postUserId");
+  let currUserId =
+    props.navigation.getParam("currUserId") == null
+      ? props.navigation.dangerouslyGetParent().getParam("currUserId")
+      : props.navigation.getParam("currUserId");
+  let postUserId =
+    props.navigation.getParam("postUserId") == null
+      ? props.navigation.dangerouslyGetParent().getParam("postUserId")
+      : props.navigation.getParam("postUserId");
 
   const [messages, setMessages] = useState([]);
   const [currUser, setCurrUser] = useState();
@@ -65,8 +66,7 @@ const ChatScreen = (props) => {
         );
       return unsubscribe;
     }
-
-    return load();
+    load();
   }, []);
 
   const onSend = useCallback((messages = []) => {

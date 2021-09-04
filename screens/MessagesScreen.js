@@ -1,46 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  FlatList,
-  RefreshControl,
-  View,
-  StyleSheet,
-  Dimensions,
-} from "react-native";
+import { FlatList, RefreshControl, StyleSheet, Dimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "firebase/app";
 import Chat from "../components/Chat";
 import { normalize } from "../components/DefaultText";
-
-// const chats = [
-//   {
-//     mostRecentMessage: {
-//       _id: "lkajsdflkasjdflkjasdf",
-//       createdAt: new Date(),
-//       text: "Do you want to go play ball rn?",
-//       user: {
-//         _id: "flfkfeoklkal",
-//         avatar:
-//           "https://firebasestorage.googleapis.com/v0/b/lclink.appspot.com/o/users%2FAzzRjDFEPXdyiLgL5jgs8hufXu93%2Fprofilepic.jpg?alt=media&token=b6681526-c15c-480e-922b-c8781f622954",
-//         name: "Derek Yuan",
-//       },
-//     },
-//     userIds: ["sYPfH2Dgj0Mtmm4WW06DnPK0AeE3", "AzzRjDFEPXdyiLgL5jgs8hufXu93"],
-//   },
-//   {
-//     mostRecentMessage: {
-//       _id: "lkajsdflkasjdflkjasdf2",
-//       createdAt: new Date(),
-//       text: "Let's go",
-//       user: {
-//         _id: "flfkfeoklkal",
-//         avatar:
-//           "https://firebasestorage.googleapis.com/v0/b/lclink.appspot.com/o/users%2FAzzRjDFEPXdyiLgL5jgs8hufXu93%2Fprofilepic.jpg?alt=media&token=b6681526-c15c-480e-922b-c8781f622954",
-//         name: "Derek Yuan",
-//       },
-//     },
-//     userIds: ["eKZOZS1ZhZhjq5DPHCh38279LPy2", "sYPfH2Dgj0Mtmm4WW06DnPK0AeE3"],
-//   },
-// ];
 
 const MessagesScreen = (props) => {
   const [userId, setUserId] = useState();
@@ -48,54 +11,37 @@ const MessagesScreen = (props) => {
 
   // get locally stored userId
   useEffect(() => {
-    updateChats();
     async function load() {
       const uid = await AsyncStorage.getItem("userId");
       setUserId(uid);
-      let y = [];
-      const unsubscribe = firebase
-        .firestore()
-        .collection("chats")
-        .where("users", "array-contains", uid)
-        .orderBy("lasttime", "desc")
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            let ob = {
-              mostRecentMessage: doc.get("lastmessage"),
-              userIds: doc.get("users"),
-            };
-            y.push(ob);
-          });
-        });
-      setChats(y);
-      return unsubscribe;
+      await updateChats(uid);
     }
+    load();
     setRefreshing(false);
-    return load();
   }, []);
-
-  // state for current time
-  const [currTime, setCurrTime] = useState();
 
   // state for refreshing
   const [refreshing, setRefreshing] = useState(true);
 
-  const updateChats = () => {
+  const updateChats = async (uid) => {
     setRefreshing(true);
-
-    // await firebase
-    // .firestore()
-    // .collection("post")
-    // .where("savedUsers", "array-contains", userID)
-    // .orderBy("date", "desc")
-    // .get()
-    // .then((querySnapshot) => {
-    //   querySnapshot.forEach((doc) => {
-    //     savedPosts.push(doc.data());
-    //   });
-    // });
-    setCurrTime(new Date());
+    let y = [];
+    firebase
+      .firestore()
+      .collection("chats")
+      .where("users", "array-contains", uid)
+      .orderBy("lasttime", "desc")
+      .onSnapshot((querySnapshot) => {
+        y = [];
+        querySnapshot.forEach((doc) => {
+          let ob = {
+            mostRecentMessage: doc.get("lastmessage"),
+            userIds: doc.get("users"),
+          };
+          y.push(ob);
+        });
+        setChats(y);
+      });
     setRefreshing(false);
   };
 
@@ -112,7 +58,7 @@ const MessagesScreen = (props) => {
         postUserId={postUserId}
         recentMessage={itemData.item.mostRecentMessage.text}
         timestamp={timeDifference(
-          currTime,
+          new Date(),
           itemData.item.mostRecentMessage.createdAt
         )}
         onSelectChat={() => {
@@ -129,6 +75,8 @@ const MessagesScreen = (props) => {
   };
 
   function timeDifference(current, previous) {
+    var previous = previous.toDate();
+
     var msPerMinute = 60 * 1000;
     var msPerHour = msPerMinute * 60;
     var msPerDay = msPerHour * 24;
@@ -154,7 +102,7 @@ const MessagesScreen = (props) => {
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
-          onRefresh={updateChats}
+          onRefresh={async () => await updateChats(userId)}
           tintColor={"white"}
         />
       }
