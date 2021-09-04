@@ -7,7 +7,11 @@ const DefaultText = (props) => {
   fontStyle.fontSize = normalize(fontStyle.fontSize, "width");
 
   return (
-    <Text onPress={props.onPress} style={fontStyle}>
+    <Text
+      onPress={props.onPress}
+      style={fontStyle}
+      numberOfLines={props.numberOfLines == null ? 0 : props.numberOfLines}
+    >
       {props.children}
     </Text>
   );
