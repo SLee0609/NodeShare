@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+//import { firebase } from "../firebase/config";
 import { View, StyleSheet, Platform } from "react-native";
 import {
   GiftedChat,
@@ -17,6 +18,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Colors from "../constants/Colors";
 import { normalize } from "../components/DefaultText";
 import { getUserData } from "../functions/io";
+import { storeMessage } from "../functions/chatio";
+import { Alert } from "react-native";
+import firebase from "firebase/app";
 
 const ChatScreen = (props) => {
   const insets = useSafeAreaInsets();
@@ -36,30 +40,59 @@ const ChatScreen = (props) => {
     async function load() {
       let cUser = await getUserData(currUserId);
       let pUser = await getUserData(postUserId);
-
+      let chatId = "";
+      if (currUserId < postUserId) {
+        chatId = currUserId + postUserId;
+      } else {
+        chatId = postUserId + currUserId;
+      }
       setCurrUser(cUser);
       setPostUser(pUser);
-
-      setMessages([
-        {
-          _id: 1,
-          text: "Hello developer",
-          createdAt: new Date(),
-          user: {
-            _id: postUserId,
-            name: pUser.firstname + " " + pUser.lastname,
-            avatar:
-              pUser.profilePicture != null
-                ? pUser.profilePicture
-                : require("../assets/defaultprofilepicture.png"),
-          },
-        },
-      ]);
+      const unsubscribe = firebase.firestore()
+        .collection("chats").doc(chatId).collection("messages")
+        .orderBy("createdAt", "desc")
+        .onSnapshot((snapshot) =>
+          setMessages(
+            snapshot.docs.map(doc => ({
+              _id: doc.data()._id,
+              createdAt: doc.data().createdAt.toDate(),
+              text: doc.data().text,
+              user: doc.data().user,
+              }))
+          )
+        );
+      return unsubscribe;
     }
     load();
   }, []);
+  // const getData = () => {
+  //   [
+  //     {
+  //       _id: 1,
+  //       text: "Hello developer",
+  //       createdAt: new Date(),
+  //       user: {
+  //         _id: postUserId,
+  //         name: pUser.firstname + " " + pUser.lastname,
+  //         avatar:
+  //           pUser.profilePicture != null
+  //             ? pUser.profilePicture
+  //             : require("../assets/defaultprofilepicture.png"),
+  //       },
+  //     },
+  //   ]
+  // };
 
   const onSend = useCallback((messages = []) => {
+    let chatId = "";
+    if (currUserId < postUserId) {
+      chatId = currUserId + postUserId;
+    } else {
+      chatId = postUserId + currUserId;
+    }
+    for (const message of messages) {
+      storeMessage(chatId, currUserId, postUserId, message);
+    }
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
     );
