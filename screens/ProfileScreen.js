@@ -94,7 +94,7 @@ const ProfileScreen = (props) => {
           var userId = await AsyncStorage.getItem("userId");
           await removeToken(userId);
           await AsyncStorage.removeItem("userId");
-          
+
           firebase
             .auth()
             .signOut()

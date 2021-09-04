@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-//import { firebase } from "../firebase/config";
 import { View, StyleSheet, Platform } from "react-native";
 import {
   GiftedChat,
@@ -48,40 +47,26 @@ const ChatScreen = (props) => {
       }
       setCurrUser(cUser);
       setPostUser(pUser);
-      const unsubscribe = firebase.firestore()
-        .collection("chats").doc(chatId).collection("messages")
+      const unsubscribe = firebase
+        .firestore()
+        .collection("chats")
+        .doc(chatId)
+        .collection("messages")
         .orderBy("createdAt", "desc")
         .onSnapshot((snapshot) =>
           setMessages(
-            snapshot.docs.map(doc => ({
+            snapshot.docs.map((doc) => ({
               _id: doc.data()._id,
               createdAt: doc.data().createdAt.toDate(),
               text: doc.data().text,
               user: doc.data().user,
-              }))
+            }))
           )
         );
       return unsubscribe;
     }
     load();
   }, []);
-  // const getData = () => {
-  //   [
-  //     {
-  //       _id: 1,
-  //       text: "Hello developer",
-  //       createdAt: new Date(),
-  //       user: {
-  //         _id: postUserId,
-  //         name: pUser.firstname + " " + pUser.lastname,
-  //         avatar:
-  //           pUser.profilePicture != null
-  //             ? pUser.profilePicture
-  //             : require("../assets/defaultprofilepicture.png"),
-  //       },
-  //     },
-  //   ]
-  // };
 
   const onSend = useCallback((messages = []) => {
     let chatId = "";

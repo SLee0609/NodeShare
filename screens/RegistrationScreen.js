@@ -57,7 +57,7 @@ const RegistrationScreen = (props) => {
       Alert.alert("Passwords don't match");
       return;
     }
-    
+
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)

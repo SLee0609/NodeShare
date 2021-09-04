@@ -24,7 +24,7 @@ const LoadingScreen = (props) => {
       // if userId exists in the database
     } else {
       let user = await getUserData(userId);
-      
+
       await storeToken(userId);
 
       // if user's occupation is set up already, navigate to App
