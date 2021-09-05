@@ -113,6 +113,7 @@ async function updateUserData(
   bio,
   image
 ) {
+  var userPostIdArr = [];
   await firebase
     .firestore()
     .collection("post")
@@ -120,9 +121,17 @@ async function updateUserData(
     .get()
     .then((posts) => {
       posts.forEach((postSnapshot) => {
-        postSnapshot.update({
-          userName: firstname.concat(" ", lastname),
-        });
+        userPostIdArr.push(postSnapshot.postId);
+      });
+    });
+
+    userPostIdArr.forEach((userPostId) => {
+      firebase
+      .firestore()
+      .collection("post")
+      .doc(userPostId)
+      .update({
+        userName: firstname.concat(" ", lastname)
       });
     });
 
