@@ -8,7 +8,7 @@ let storeMessage = async (chatID, uid1, uid2, message) => {
     if (docSnapshot.exists) {
       chatref.update({ lastmessage: message });
     } else {
-      chatref.set({ lastmessage: message });
+      chatref.set({ lastmessage: message, readed: [] });
     }
     chatref.update({ lasttime: message.createdAt });
     chatref.update({

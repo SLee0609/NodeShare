@@ -51,14 +51,14 @@ const ChatScreen = (props) => {
         let pUser = await getUserData(postUserId);
         setCurrUser(cUser);
         setPostUser(pUser);
-        const chatref = firebase.firestore().collection("chats").doc(chatId);
-        await chatref.get().then((docSnapshot) => {
-          if (docSnapshot.exists) {
-            chatref.update({
-              readed: firebase.firestore.FieldValue.arrayUnion(currUserId),
-            });
-          }
-        });
+        // const chatref = firebase.firestore().collection("chats").doc(chatId);
+        // await chatref.get().then((docSnapshot) => {
+        //   if (docSnapshot.exists) {
+        //     chatref.update({
+        //       readed: firebase.firestore.FieldValue.arrayUnion(currUserId),
+        //     });
+        //   }
+        // });
       }
       loadUser();
       const unsubscribe = firebase
@@ -76,6 +76,14 @@ const ChatScreen = (props) => {
               user: doc.data().user,
             }))
           );
+          const chatref = firebase.firestore().collection("chats").doc(chatId);
+          await chatref.get().then((docSnapshot) => {
+            if (docSnapshot.exists) {
+              chatref.update({
+                readed: firebase.firestore.FieldValue.arrayUnion(currUserId),
+              });
+            }
+          });
         });
       return unsubscribe;
     }
