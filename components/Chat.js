@@ -24,7 +24,7 @@ const Chat = (props) => {
           height={normalize(60, "width")}
         />
         <View style={styles.textContainer}>
-          <DefaultText style={styles.name}>
+          <DefaultText style={props.readed ? styles.name : styles.nameBolded}>
             {postUser == null
               ? null
               : postUser.firstname + " " + postUser.lastname}
@@ -34,7 +34,10 @@ const Chat = (props) => {
               flexDirection: "row",
             }}
           >
-            <DefaultText style={styles.message} numberOfLines={1}>
+            <DefaultText
+              style={props.readed ? styles.message : styles.messageBolded}
+              numberOfLines={1}
+            >
               {props.recentMessage}
             </DefaultText>
             <DefaultText style={styles.message}>
@@ -64,12 +67,20 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 18,
+    color: "white",
+  },
+  nameBolded: {
+    fontSize: 18,
     fontFamily: "open-sans-bold",
     color: "white",
   },
   message: {
     fontSize: 16,
-    fontFamily: "open-sans",
+    color: "gray",
+  },
+  messageBolded: {
+    fontSize: 16,
+    fontFamily: "open-sans-bold",
     color: "gray",
   },
 });
