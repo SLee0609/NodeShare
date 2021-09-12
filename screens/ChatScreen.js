@@ -39,17 +39,28 @@ const ChatScreen = (props) => {
   const [postUser, setPostUser] = useState();
 
   useEffect(() => {
-    async function load() {
-      let cUser = await getUserData(currUserId);
-      let pUser = await getUserData(postUserId);
-      let chatId = "";
-      if (currUserId < postUserId) {
-        chatId = currUserId + postUserId;
-      } else {
-        chatId = postUserId + currUserId;
+    let chatId = "";
+    if (currUserId < postUserId) {
+      chatId = currUserId + postUserId;
+    } else {
+      chatId = postUserId + currUserId;
+    }
+    function load() {
+      async function loadUser() {
+        let cUser = await getUserData(currUserId);
+        let pUser = await getUserData(postUserId);
+        setCurrUser(cUser);
+        setPostUser(pUser);
+        const chatref = firebase.firestore().collection("chats").doc(chatId);
+        await chatref.get().then((docSnapshot) => {
+          if (docSnapshot.exists) {
+            chatref.update({
+              readed: firebase.firestore.FieldValue.arrayUnion(currUserId),
+            });
+          }
+        });
       }
-      setCurrUser(cUser);
-      setPostUser(pUser);
+      loadUser();
       const unsubscribe = firebase
         .firestore()
         .collection("chats")
@@ -65,16 +76,10 @@ const ChatScreen = (props) => {
               user: doc.data().user,
             }))
           );
-          const chatref = firebase.firestore().collection("chats").doc(chatId);
-          await chatref.get().then((docSnapshot) => {
-            chatref.update({
-              readed: firebase.firestore.FieldValue.arrayUnion(currUserId),
-            });
-          });
         });
       return unsubscribe;
     }
-    load();
+    return load();
   }, []);
 
   const onSend = useCallback((messages = []) => {
