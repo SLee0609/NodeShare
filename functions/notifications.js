@@ -95,6 +95,7 @@ let removeToken = async (userId) => {
 
 // takes in userId and message, and sends the notification to the devices of the userId
 // in the format of (name, message)
+// sendUserId is the uid of the person who sent the notification
 let sendChatNotificationMessage = async (sendUserId, userId, messageObj) => {
   var messageText = messageObj.text;
 
@@ -111,33 +112,54 @@ let sendChatNotificationMessage = async (sendUserId, userId, messageObj) => {
     .database()
     .ref("users/" + userId + "/pushTokens")
     .get();
-  tokens.forEach((pushToken) => {
-    var dbtokenString = JSON.stringify(pushToken);
-    dbtokenString = dbtokenString.substring(1, dbtokenString.length - 1);
+  tokens.forEach(async (pushToken) => {
+    var currScreen = await firebase.database().ref('users/' + userId + '/currChatScreen').get();
+    var currScreenData = currScreen.val();
 
-    var message = {
-      to: dbtokenString,
-      sound: "default",
-      title: userName,
-      body: messageText,
-      // data: { someData: 'goes here' },
-    };
+    // send the notification if the receiving user is not on any chat screen
+    // or if the receiving user is not on the chat screen of the send user
+      if ((currScreenData == null || currScreenData == 'noUser') || currScreenData != sendUserId) {
+        var dbtokenString = JSON.stringify(pushToken);
+        dbtokenString = dbtokenString.substring(1, dbtokenString.length - 1);
 
-    fetch("https://exp.host/--/api/v2/push/send", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Accept-encoding": "gzip, deflate",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(message),
-    });
+        var message = {
+          to: dbtokenString,
+          sound: "default",
+          title: userName,
+          body: messageText,
+        };
+
+        fetch("https://exp.host/--/api/v2/push/send", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Accept-encoding": "gzip, deflate",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(message),
+        });
+      }
   });
 };
+
+// tracks the current screen that the user is on
+let enterChatScreen = async (uid) => {
+  userId = await AsyncStorage.getItem('userId');
+  await firebase.database().ref('users/' + userId + '/currChatScreen').set(uid);
+}
+
+// set the current screen to an empty string
+let exitChatScreen = async () => {
+  userId = await AsyncStorage.getItem('userId');
+  await firebase.database().ref('users/' + userId + '/currChatScreen').set('noUser');
+}
+
 
 export {
   registerNotifications,
   sendChatNotificationMessage,
   storeToken,
   removeToken,
+  enterChatScreen,
+  exitChatScreen,
 };

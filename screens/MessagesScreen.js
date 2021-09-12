@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "firebase/app";
 import Chat from "../components/Chat";
 import { normalize } from "../components/DefaultText";
+import { exitChatScreen } from "../functions/notifications";
 
 const MessagesScreen = (props) => {
   const [userId, setUserId] = useState();
@@ -16,6 +17,13 @@ const MessagesScreen = (props) => {
       setUserId(uid);
       await updateChats(uid);
     }
+
+    // listener to unfocus the chat screen
+    let focusListener = props.navigation.addListener('didFocus', () => {
+      exitChatScreen();
+      AsyncStorage.setItem('focusedUser', '');
+    });
+
     load();
     setRefreshing(false);
   }, []);

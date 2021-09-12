@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { View, StyleSheet, Platform } from "react-native";
+import { withNavigationFocus } from 'react-navigation';
 import {
   GiftedChat,
   InputToolbar,
@@ -19,6 +20,8 @@ import { normalize } from "../components/DefaultText";
 import { getUserData } from "../functions/io";
 import { storeMessage } from "../functions/chatio";
 import firebase from "firebase/app";
+import { enterChatScreen, exitChatScreen } from "../functions/notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ChatScreen = (props) => {
   const insets = useSafeAreaInsets();
@@ -36,6 +39,7 @@ const ChatScreen = (props) => {
   const [currUser, setCurrUser] = useState();
   const [postUser, setPostUser] = useState();
 
+
   useEffect(() => {
     async function load() {
       let cUser = await getUserData(currUserId);
@@ -48,7 +52,22 @@ const ChatScreen = (props) => {
       }
       setCurrUser(cUser);
       setPostUser(pUser);
-      const unsubscribe = firebase
+
+      // listener to track when the screen is clicked on
+      let focusListener = props.navigation.addListener('didFocus', () => {
+        enterChatScreen(postUserId);
+        AsyncStorage.setItem('focusedUser', postUserId);
+      });
+
+      // track when the screen is clicked through
+      let unfocusListener = props.navigation.addListener('didBlur', () => {
+        exitChatScreen();
+        // we want to set this here as as sometimes exitChatScreen is called when the user didn't exit
+        AsyncStorage.setItem('focusedUser', '');
+      });
+
+      // unsubscribe the listener
+      const unsubscribe = function () {firebase
         .firestore()
         .collection("chats")
         .doc(chatId)
@@ -64,6 +83,10 @@ const ChatScreen = (props) => {
             }))
           )
         );
+        // find a place to unmount the listeners
+        // unfocusListener.unsubscribe();
+        // focusListener.unsubscribe()
+      }    
       return unsubscribe;
     }
     load();

@@ -100,6 +100,7 @@ async function storeUserData(userID, firstname, lastname, email) {
       firstname: firstname,
       lastname: lastname,
       email: email,
+      currChatScreen: null
     });
 }
 
@@ -121,7 +122,8 @@ async function updateUserData(
     .get()
     .then((posts) => {
       posts.forEach((postSnapshot) => {
-        userPostIdArr.push(postSnapshot.postId);
+        postData = postSnapshot.data();
+        userPostIdArr.push(postData.postId);
       });
     });
 

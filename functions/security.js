@@ -39,7 +39,7 @@ let reportPost = async (postId, userId) => {
 
 // changed so that the image is kept in the database - previously it is deleted
 let movePost = async (postId) => {
-  await firebase.firestore().collection("post").doc(postID).delete();
+  await firebase.firestore().collection("post").doc(postId).delete();
 };
 
 export { reportPost };
