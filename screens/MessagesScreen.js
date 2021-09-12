@@ -46,6 +46,7 @@ const MessagesScreen = (props) => {
           let ob = {
             mostRecentMessage: doc.get("lastmessage"),
             userIds: doc.get("users"),
+            readed: doc.get("readed")
           };
           y.push(ob);
         });

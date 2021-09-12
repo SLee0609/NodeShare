@@ -10,6 +10,12 @@ let storeMessage = async (chatID, uid1, uid2, message) => {
     chatref.update({
       users: firebase.firestore.FieldValue.arrayUnion(uid1, uid2),
     });
+    chatref.update({
+      readed: firebase.firestore.FieldValue.arrayRemove(uid2),
+    })
+    chatref.update({
+      readed: firebase.firestore.FieldValue.arrayUnion(uid1),
+    })
     chatref.collection("messages").add(message);
   });
 };

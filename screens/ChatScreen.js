@@ -56,7 +56,7 @@ const ChatScreen = (props) => {
         .doc(chatId)
         .collection("messages")
         .orderBy("createdAt", "desc")
-        .onSnapshot((snapshot) =>
+        .onSnapshot(async (snapshot) => {
           setMessages(
             snapshot.docs.map((doc) => ({
               _id: doc.data()._id,
@@ -64,8 +64,14 @@ const ChatScreen = (props) => {
               text: doc.data().text,
               user: doc.data().user,
             }))
-          )
-        );
+          );
+          const chatref = firebase.firestore().collection("chats").doc(chatId);
+          await chatref.get().then((docSnapshot) => {
+            chatref.update({
+              readed: firebase.firestore.FieldValue.arrayUnion(currUserId),
+            });
+          });
+        });
       return unsubscribe;
     }
     load();
