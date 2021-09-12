@@ -32,7 +32,6 @@ const Chat = (props) => {
           <View
             style={{
               flexDirection: "row",
-              paddingRight: normalize(30, "width"),
             }}
           >
             <DefaultText style={styles.message} numberOfLines={1}>

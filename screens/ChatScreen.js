@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, StyleSheet, Platform } from "react-native";
+import { View, StyleSheet, Platform, TouchableOpacity } from "react-native";
 import {
   GiftedChat,
   InputToolbar,
@@ -13,12 +13,14 @@ import {
   Composer,
 } from "react-native-gifted-chat";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import dayjs from "dayjs";
 
 import Colors from "../constants/Colors";
-import { normalize } from "../components/DefaultText";
+import { DefaultText, normalize } from "../components/DefaultText";
 import { getUserData } from "../functions/io";
 import { storeMessage } from "../functions/chatio";
 import firebase from "firebase/app";
+import ProfilePic from "../components/ProfilePicture";
 
 const ChatScreen = (props) => {
   const insets = useSafeAreaInsets();
@@ -84,6 +86,36 @@ const ChatScreen = (props) => {
     );
   }, []);
 
+  // Function called when view profile button is pressed
+  const onViewProfilePressed = () => {
+    props.navigation.navigate({
+      routeName: "Profile",
+      params: {
+        profileUserId: postUserId,
+      },
+    });
+  };
+
+  function isSameDay(currentMessage, diffMessage) {
+    if (!diffMessage || !diffMessage.createdAt) {
+      return false;
+    }
+    const currentCreatedAt = dayjs(currentMessage.createdAt);
+    const diffCreatedAt = dayjs(diffMessage.createdAt);
+    if (!currentCreatedAt.isValid() || !diffCreatedAt.isValid()) {
+      return false;
+    }
+    return currentCreatedAt.isSame(diffCreatedAt, "day");
+  }
+  function isSameUser(currentMessage, diffMessage) {
+    return !!(
+      diffMessage &&
+      diffMessage.user &&
+      currentMessage.user &&
+      diffMessage.user._id === currentMessage.user._id
+    );
+  }
+
   if (currUser == null) {
     return null;
   }
@@ -103,15 +135,45 @@ const ChatScreen = (props) => {
       bottomOffset={insets.bottom}
       showUserAvatar={false}
       minInputToolbarHeight={normalize(60, "height")}
-      renderMessage={(props) => (
-        <Message
-          {...props}
-          containerStyle={{
-            left: { marginLeft: normalize(10, "width") },
-            right: { marginRight: normalize(10, "width") },
-          }}
-        />
-      )}
+      renderMessage={(props) => {
+        const {
+          renderAvatarOnTop,
+          showAvatarForEveryMessage,
+          currentMessage,
+          previousMessage,
+          nextMessage,
+        } = props;
+        const messageToCompare = renderAvatarOnTop
+          ? previousMessage
+          : nextMessage;
+        if (
+          !showAvatarForEveryMessage &&
+          currentMessage &&
+          messageToCompare &&
+          isSameUser(currentMessage, messageToCompare) &&
+          isSameDay(currentMessage, messageToCompare)
+        ) {
+          return (
+            <Message
+              {...props}
+              containerStyle={{
+                left: { marginLeft: normalize(28, "width") },
+                right: { marginRight: normalize(10, "width") },
+              }}
+            />
+          );
+        } else {
+          return (
+            <Message
+              {...props}
+              containerStyle={{
+                left: { marginLeft: normalize(10, "width") },
+                right: { marginRight: normalize(10, "width") },
+              }}
+            />
+          );
+        }
+      }}
       renderMessageText={(props) => (
         <MessageText
           {...props}
@@ -137,7 +199,10 @@ const ChatScreen = (props) => {
       renderDay={(props) => (
         <Day
           {...props}
-          textStyle={{ fontSize: normalize(12, "height"), fontWeight: "bold" }}
+          textStyle={{
+            fontSize: normalize(12, "height"),
+            fontWeight: "bold",
+          }}
           containerStyle={{
             marginTop: normalize(5, "height"),
             marginBottom: normalize(10, "height"),
@@ -167,16 +232,18 @@ const ChatScreen = (props) => {
           }}
         />
       )}
-      renderAvatar={(props) => (
-        <Avatar
-          {...props}
-          imageStyle={{ left: styles.avatarImage, right: styles.avatarImage }}
-          containerStyle={{
-            left: { marginRight: normalize(8, "width") },
-            right: { marginLeft: normalize(8, "width") },
-          }}
-        />
-      )}
+      renderAvatar={(props) => {
+        return (
+          <Avatar
+            {...props}
+            imageStyle={{ left: styles.avatarImage, right: styles.avatarImage }}
+            containerStyle={{
+              left: { marginRight: normalize(8, "width") },
+              right: { marginLeft: normalize(8, "width") },
+            }}
+          />
+        );
+      }}
       renderSend={(props) => (
         <Send
           {...props}
@@ -212,9 +279,37 @@ const ChatScreen = (props) => {
       maxComposerHeight={normalize(200, "height")}
       textInputStyle={styles.textInput}
       showAvatarForEveryMessage={false}
+      onPressAvatar={onViewProfilePressed}
       listViewProps={{
         keyboardDismissMode: "on-drag",
         keyboardShouldPersistTaps: "never",
+        ListFooterComponentStyle: { flex: 1 },
+        ListFooterComponent: (
+          <View style={styles.headerContainer}>
+            <ProfilePic
+              imgUrl={postUser == null ? null : postUser.profilePicture}
+              width={normalize(100, "width")}
+              height={normalize(100, "width")}
+            />
+            <View style={styles.postUserNameContainer}>
+              <DefaultText style={styles.postUserNameText}>
+                {postUser == null
+                  ? null
+                  : postUser.firstname + " " + postUser.lastname}
+              </DefaultText>
+            </View>
+            <DefaultText style={styles.postUserEmailText}>
+              {postUser == null ? null : postUser.email}
+            </DefaultText>
+            <TouchableOpacity onPress={onViewProfilePressed}>
+              <View style={styles.viewProfileButton}>
+                <DefaultText style={styles.viewProfileText}>
+                  View Profile
+                </DefaultText>
+              </View>
+            </TouchableOpacity>
+          </View>
+        ),
       }}
       renderUsernameOnMessage={true}
     />
@@ -272,6 +367,39 @@ const styles = StyleSheet.create({
     marginBottom: normalize(5, "height"),
     marginLeft: normalize(10, "width"),
     marginRight: normalize(10, "width"),
+    color: "white",
+  },
+  headerContainer: {
+    //height: Dimensions.get("window").height * 0.5,
+    paddingVertical: normalize(30, "height"),
+    alignItems: "center",
+  },
+  postUserNameContainer: {
+    paddingTop: normalize(10, "height"),
+    paddingBottom: normalize(5, "height"),
+  },
+  postUserNameText: {
+    color: "white",
+    fontSize: 16,
+    fontFamily: "open-sans-bold",
+  },
+  postUserEmailText: {
+    color: "gray",
+    fontSize: 16,
+  },
+  viewProfileButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: "gray",
+    paddingVertical: normalize(4, "height"),
+    paddingHorizontal: normalize(6, "width"),
+    marginTop: normalize(15, "height"),
+    borderWidth: normalize(1, "width"),
+    borderRadius: normalize(5, "width"),
+  },
+  viewProfileText: {
+    fontSize: 12,
+    fontFamily: "open-sans-bold",
     color: "white",
   },
 });
