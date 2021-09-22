@@ -61,10 +61,10 @@ const RegistrationScreen = (props) => {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(async () => {
+      .then(() => {
         let s = firebase.auth().onAuthStateChanged((user) => {
           if (user) {
-            user.sendEmailVerification().then(() => {
+            user.sendEmailVerification().then(async () => {
               Alert.alert("Verification email sent");
               await storeUserData(user.uid, firstName, lastName, email.toLowerCase());
               firebase

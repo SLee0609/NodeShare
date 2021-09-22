@@ -89,7 +89,7 @@ export default function App() {
       nextAppState === 'active'
     ) {
       // app has come to foreground
-      if (checkUserId =! null) {
+      if (checkUserId != null) {
         currScreenState = await AsyncStorage.getItem('focusedUser');
         if (currScreenState != '') {
           enterChatScreen(currScreenState);

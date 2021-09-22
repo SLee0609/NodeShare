@@ -12,6 +12,7 @@ import firebase from "firebase/app";
 
 import Chat from "../components/Chat";
 import { DefaultText, normalize } from "../components/DefaultText";
+import { enterChatScreen, exitChatScreen } from "../functions/notifications";
 
 const MessagesScreen = (props) => {
   const [userId, setUserId] = useState();

@@ -63,7 +63,6 @@ let stringifyPost = async (posts) => {
     });
     postStr.push(lowerStr);
   });
-  console.log(postStr);
   return postStr;
 };
 

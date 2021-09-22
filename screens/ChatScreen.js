@@ -21,6 +21,8 @@ import { getUserData } from "../functions/io";
 import { storeMessage } from "../functions/chatio";
 import firebase from "firebase/app";
 import ProfilePic from "../components/ProfilePicture";
+import { enterChatScreen, exitChatScreen } from "../functions/notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ChatScreen = (props) => {
   const insets = useSafeAreaInsets();
@@ -52,6 +54,19 @@ const ChatScreen = (props) => {
         let pUser = await getUserData(postUserId);
         setCurrUser(cUser);
         setPostUser(pUser);
+
+        // listener to track when the screen is clicked on
+       let focusListener = props.navigation.addListener('didFocus', () => {
+        enterChatScreen(postUserId);
+        AsyncStorage.setItem('focusedUser', postUserId);
+      });
+
+      // track when the screen is clicked through
+      let unfocusListener = props.navigation.addListener('didBlur', () => {
+        exitChatScreen();
+        // we want to set this here as as sometimes exitChatScreen is called when the user didn't exit
+        AsyncStorage.setItem('focusedUser', '');
+      });
         // const chatref = firebase.firestore().collection("chats").doc(chatId);
         // await chatref.get().then((docSnapshot) => {
         //   if (docSnapshot.exists) {
