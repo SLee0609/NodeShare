@@ -389,7 +389,6 @@ const styles = StyleSheet.create({
     color: "white",
   },
   headerContainer: {
-    //height: Dimensions.get("window").height * 0.5,
     paddingVertical: normalize(30, "height"),
     alignItems: "center",
   },

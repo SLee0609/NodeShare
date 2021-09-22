@@ -124,7 +124,6 @@ const MessagesScreen = (props) => {
       style={{
         width: Dimensions.get("window").width,
         padding: normalize(15, "width"),
-        paddingRight: normalize(60, "width"),
       }}
     />
   ) : (
@@ -139,6 +138,9 @@ const MessagesScreen = (props) => {
     >
       <View style={styles.textContainer}>
         <DefaultText style={styles.text}>No Messages Yet</DefaultText>
+        <DefaultText style={styles.text2}>
+          Initialize Conversations through Posts!
+        </DefaultText>
       </View>
     </ScrollView>
   );
@@ -165,6 +167,14 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontFamily: "open-sans-bold",
     color: "white",
+    textAlign: "center",
+  },
+  text2: {
+    marginTop: normalize(20, "height"),
+    fontSize: 16,
+    fontFamily: "open-sans",
+    color: "white",
+    textAlign: "center",
   },
 });
 

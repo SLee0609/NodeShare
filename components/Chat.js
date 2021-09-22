@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 
 import { DefaultText, normalize } from "../components/DefaultText";
 import ProfilePic from "../components/ProfilePicture";
 import { getUserData } from "../functions/io";
+import Colors from "../constants/Colors";
 
 const Chat = (props) => {
   const [postUser, setPostUser] = useState();
@@ -32,6 +34,7 @@ const Chat = (props) => {
           <View
             style={{
               flexDirection: "row",
+              width: "85%",
             }}
           >
             <DefaultText
@@ -45,6 +48,21 @@ const Chat = (props) => {
             </DefaultText>
           </View>
         </View>
+
+        {props.readed ? null : (
+          <View
+            style={{
+              justifyContent: "center",
+              paddingLeft: normalize(15, "width"),
+            }}
+          >
+            <FontAwesome5
+              name="dot-circle"
+              size={normalize(20, "width")}
+              color={Colors.brightBlue}
+            />
+          </View>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -57,31 +75,29 @@ const styles = StyleSheet.create({
   touchable: {
     flexDirection: "row",
     paddingVertical: normalize(15, "height"),
-    justifyContent: "center",
   },
   textContainer: {
     flex: 1,
-    justifyContent: "space-around",
-    marginHorizontal: normalize(15, "width"),
-    alignItems: "flex-start",
+    justifyContent: "space-evenly",
+    marginLeft: normalize(15, "width"),
   },
   name: {
-    fontSize: 18,
+    fontSize: 16,
     color: "white",
   },
   nameBolded: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "open-sans-bold",
     color: "white",
   },
   message: {
-    fontSize: 16,
+    fontSize: 14,
     color: "gray",
   },
   messageBolded: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "open-sans-bold",
-    color: "gray",
+    color: "white",
   },
 });
 
