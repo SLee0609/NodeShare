@@ -122,20 +122,19 @@ async function updateUserData(
     .get()
     .then((posts) => {
       posts.forEach((postSnapshot) => {
-        postData = postSnapshot.data();
-        userPostIdArr.push(postData.postId);
+        userPostIdArr.push(postSnapshot.id);
       });
     });
 
-    userPostIdArr.forEach((userPostId) => {
-      firebase
+  userPostIdArr.forEach((userPostId) => {
+    firebase
       .firestore()
       .collection("post")
       .doc(userPostId)
       .update({
-        userName: firstname.concat(" ", lastname)
+        userName: firstname.concat(" ", lastname),
       });
-    });
+  });
 
   await firebase
     .database()

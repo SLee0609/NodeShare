@@ -7,6 +7,8 @@ export default {
   green: "#0ec978",
   // blue
   blue: "rgb(204, 220, 237)",
+  // bright blue
+  brightBlue: "#009dff",
   // gray
   gray: "rgb(100, 100, 100)",
   // dark gray

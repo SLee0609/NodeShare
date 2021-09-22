@@ -212,12 +212,12 @@ const PostDetail = (props) => {
           <View style={styles.usernameContainer}>
             {userId != post.userId ? (
               <TouchableOpacity onPress={onUsernamePress}>
-                <DefaultText style={styles.username}>
+                <DefaultText style={styles.username} numberOfLines={1}>
                   {user == null ? "" : user.firstname + " " + user.lastname}
                 </DefaultText>
               </TouchableOpacity>
             ) : (
-              <DefaultText style={styles.username}>
+              <DefaultText style={styles.username} numberOfLines={1}>
                 {user == null ? "" : user.firstname + " " + user.lastname}
               </DefaultText>
             )}
@@ -334,6 +334,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   usernameContainer: {
+    maxWidth: Dimensions.get("window").width * 0.75,
     paddingHorizontal: normalize(15, "width"),
     justifyContent: "center",
   },

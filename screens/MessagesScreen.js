@@ -1,21 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { FlatList, RefreshControl, StyleSheet, Dimensions } from "react-native";
+import {
+  View,
+  FlatList,
+  ScrollView,
+  RefreshControl,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "firebase/app";
+
 import Chat from "../components/Chat";
-import { normalize } from "../components/DefaultText";
-import { exitChatScreen } from "../functions/notifications";
+import { DefaultText, normalize } from "../components/DefaultText";
 
 const MessagesScreen = (props) => {
   const [userId, setUserId] = useState();
   const [chats, setChats] = useState([]);
+
+  // state for refreshing
+  const [refreshing, setRefreshing] = useState(true);
+
+  const [firstRender, setFirstRender] = useState(true);
 
   // get locally stored userId
   useEffect(() => {
     async function load() {
       const uid = await AsyncStorage.getItem("userId");
       setUserId(uid);
-      await updateChats(uid);
+      updateChats(uid);
     }
 
     // listener to unfocus the chat screen
@@ -25,13 +37,9 @@ const MessagesScreen = (props) => {
     });
 
     load();
-    setRefreshing(false);
   }, []);
 
-  // state for refreshing
-  const [refreshing, setRefreshing] = useState(true);
-
-  const updateChats = async (uid) => {
+  const updateChats = (uid) => {
     setRefreshing(true);
     let y = [];
     firebase
@@ -45,12 +53,14 @@ const MessagesScreen = (props) => {
           let ob = {
             mostRecentMessage: doc.get("lastmessage"),
             userIds: doc.get("users"),
+            readed: doc.get("readed"),
           };
           y.push(ob);
         });
         setChats(y);
+        setRefreshing(false);
+        setFirstRender(false);
       });
-    setRefreshing(false);
   };
 
   const renderChat = (itemData) => {
@@ -78,6 +88,7 @@ const MessagesScreen = (props) => {
             },
           });
         }}
+        readed={itemData.item.readed.includes(userId)}
       />
     );
   };
@@ -105,12 +116,12 @@ const MessagesScreen = (props) => {
     }
   }
 
-  return (
+  return chats.length != 0 || firstRender ? (
     <FlatList
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
-          onRefresh={async () => await updateChats(userId)}
+          onRefresh={() => updateChats(userId)}
           tintColor={"white"}
         />
       }
@@ -122,6 +133,23 @@ const MessagesScreen = (props) => {
         padding: normalize(15, "width"),
       }}
     />
+  ) : (
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={() => updateChats(userId)}
+          tintColor={"white"}
+        />
+      }
+    >
+      <View style={styles.textContainer}>
+        <DefaultText style={styles.text}>No Messages Yet</DefaultText>
+        <DefaultText style={styles.text2}>
+          Initialize Conversations through Posts!
+        </DefaultText>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -136,6 +164,24 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  textContainer: {
+    height: normalize(470, "height"),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    fontSize: 25,
+    fontFamily: "open-sans-bold",
+    color: "white",
+    textAlign: "center",
+  },
+  text2: {
+    marginTop: normalize(20, "height"),
+    fontSize: 16,
+    fontFamily: "open-sans",
+    color: "white",
+    textAlign: "center",
   },
 });
 

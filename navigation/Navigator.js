@@ -99,6 +99,7 @@ const MessagesNav = createStackNavigator(
   {
     Messages: MessagesScreen,
     Chat: ChatScreen,
+    Profile: ProfileScreen,
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
