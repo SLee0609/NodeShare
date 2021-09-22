@@ -30,6 +30,19 @@ import { reportPost } from "../functions/security";
 
 // Accepts a post and returns an individual post detail component; used in PostDetailScreen
 const PostDetail = (props) => {
+  if (props.post == null) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <DefaultText style={styles.description2}>
+          Post cannot be found
+        </DefaultText>
+        <DefaultText style={styles.description3}>
+          Post might have been deleted
+        </DefaultText>
+      </View>
+    );
+  }
+
   // state for done loading user
   const [doneLoading, setDoneLoading] = useState(false);
   // state for done loading image
@@ -185,19 +198,6 @@ const PostDetail = (props) => {
 
   if (!doneLoading) {
     return <ActivityIndicator size="small" color="white" />;
-  }
-
-  if (user == null) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <DefaultText style={styles.description}>
-          Post data cannot be fetched
-        </DefaultText>
-        <DefaultText style={styles.description}>
-          Post might have been deleted
-        </DefaultText>
-      </View>
-    );
   }
 
   return (
@@ -387,6 +387,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "open-sans",
     color: "white",
+  },
+  description2: {
+    fontSize: 25,
+    fontFamily: "open-sans-bold",
+    color: "white",
+    textAlign: "center",
+  },
+  description3: {
+    marginTop: normalize(20, "height"),
+    fontSize: 16,
+    fontFamily: "open-sans",
+    color: "white",
+    textAlign: "center",
   },
   timeContainer: {
     marginTop: normalize(10, "height"),

@@ -23,9 +23,7 @@ const PostDetailScreen = (props) => {
   // return the post detail for that particular post
   return (
     <View style={styles.screen}>
-      {post == null ? null : (
-        <PostDetail post={post} navigation={props.navigation} />
-      )}
+      <PostDetail post={post} navigation={props.navigation} />
     </View>
   );
 };
