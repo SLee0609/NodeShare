@@ -100,6 +100,7 @@ async function storeUserData(userID, firstname, lastname, email) {
       firstname: firstname,
       lastname: lastname,
       email: email,
+      currChatScreen: null
     });
 }
 

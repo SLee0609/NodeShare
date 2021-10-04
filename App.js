@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { LogBox, StyleSheet } from "react-native";
+import { AppState, LogBox, StyleSheet } from "react-native";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { enableScreens } from "react-native-screens";
 import { Asset } from "expo-asset";
 import * as Notifications from 'expo-notifications';
-import { setHandler, registerNotifications, sendNotificationMessage } from "./functions/notifications";
-
+import { setHandler, registerNotifications, sendNotificationMessage, exitChatScreen, enterChatScreen } from "./functions/notifications";
 import Navigator from "./navigation/Navigator";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Optimize navigation performances
 enableScreens();
@@ -59,28 +59,55 @@ export default function App() {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
-  const responseListener = useRef();
+  const appState = useRef(AppState.currentState);
 
   // more notifications setup
   useEffect(() => {
     registerNotifications().then(token => setExpoPushToken(token));
 
+    // tracks the current app state (foreground or background)
+    AppState.addEventListener('change', _handleAppStateChange);
+
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-    setNotification(notification);
-    });
-
-    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
+      setNotification(notification);
     });
 
     return () => {
+      AppState.removeEventListener('change', _handleAppStateChange);
       Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
     }
   }, []);
 
+  const _handleAppStateChange = async (nextAppState) => {
+    // get locally stored userId
+    // check if user is logged in
+    const checkUserId = await AsyncStorage.getItem("userId");
+    
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      // app has come to foreground
+      if (checkUserId != null) {
+        currScreenState = await AsyncStorage.getItem('focusedUser');
+        if (currScreenState != '') {
+          enterChatScreen(currScreenState);
+      }
+      } else {
+        if (checkUserId != null) {
+          exitChatScreen();
+        }
+      }
+    } else {
+      // app has gone to background
+      if (checkUserId != null) {
+        exitChatScreen();
+      }
+    }
+
+    appState.current = nextAppState;
+  };
 
   // Load fonts
   if (!assetsLoaded) {
@@ -95,7 +122,7 @@ export default function App() {
 
   // Main app starts here - Navigator is the top layer component
   return (
-    <SafeAreaProvider style={styles.container}>
+    <SafeAreaProvider style={styles.container} >
       <Navigator />
     </SafeAreaProvider>
   );
