@@ -17,14 +17,18 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.csatlc.NodeShare",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundImage": "./assets/adaptive-icon-background.png"
-      }
+      },
+      "package": "com.csatlc.NodeShare",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
