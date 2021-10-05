@@ -32,9 +32,9 @@ const MessagesScreen = (props) => {
     }
 
     // listener to unfocus the chat screen
-    let focusListener = props.navigation.addListener('didFocus', () => {
+    let focusListener = props.navigation.addListener("didFocus", () => {
       exitChatScreen();
-      AsyncStorage.setItem('focusedUser', '');
+      AsyncStorage.setItem("focusedUser", "");
     });
 
     load();

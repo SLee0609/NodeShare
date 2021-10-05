@@ -113,47 +113,59 @@ let sendChatNotificationMessage = async (sendUserId, userId, messageObj) => {
     .ref("users/" + userId + "/pushTokens")
     .get();
   tokens.forEach(async (pushToken) => {
-    var currScreen = await firebase.database().ref('users/' + userId + '/currChatScreen').get();
+    var currScreen = await firebase
+      .database()
+      .ref("users/" + userId + "/currChatScreen")
+      .get();
     var currScreenData = currScreen.val();
 
     // send the notification if the receiving user is not on any chat screen
     // or if the receiving user is not on the chat screen of the send user
-      if ((currScreenData == null || currScreenData == 'noUser') || currScreenData != sendUserId) {
-        var dbtokenString = JSON.stringify(pushToken);
-        dbtokenString = dbtokenString.substring(1, dbtokenString.length - 1);
+    if (
+      currScreenData == null ||
+      currScreenData == "noUser" ||
+      currScreenData != sendUserId
+    ) {
+      var dbtokenString = JSON.stringify(pushToken);
+      dbtokenString = dbtokenString.substring(1, dbtokenString.length - 1);
 
-        var message = {
-          to: dbtokenString,
-          sound: "default",
-          title: userName,
-          body: messageText,
-        };
+      var message = {
+        to: dbtokenString,
+        sound: "default",
+        title: userName,
+        body: messageText,
+      };
 
-        fetch("https://exp.host/--/api/v2/push/send", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Accept-encoding": "gzip, deflate",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(message),
-        });
-      }
+      fetch("https://exp.host/--/api/v2/push/send", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Accept-encoding": "gzip, deflate",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(message),
+      });
+    }
   });
 };
 
 // tracks the current screen that the user is on
 let enterChatScreen = async (uid) => {
-  userId = await AsyncStorage.getItem('userId');
-  await firebase.database().ref('users/' + userId + '/currChatScreen').set(uid);
-}
+  userId = await AsyncStorage.getItem("userId");
+  await firebase
+    .database()
+    .ref("users/" + userId + "/currChatScreen")
+    .set(uid);
+};
 
 // set the current screen to an empty string
 let exitChatScreen = async () => {
-  userId = await AsyncStorage.getItem('userId');
-  await firebase.database().ref('users/' + userId + '/currChatScreen').set('noUser');
-}
-
+  userId = await AsyncStorage.getItem("userId");
+  await firebase
+    .database()
+    .ref("users/" + userId + "/currChatScreen")
+    .set("noUser");
+};
 
 export {
   registerNotifications,

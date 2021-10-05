@@ -1,6 +1,10 @@
 import React from "react";
 import { Dimensions, Platform } from "react-native";
-import { createAppContainer, createSwitchNavigator, NavigationActions } from "react-navigation";
+import {
+  createAppContainer,
+  createSwitchNavigator,
+  NavigationActions,
+} from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createBottomTabNavigator } from "react-navigation-tabs";

@@ -40,7 +40,6 @@ const ChatScreen = (props) => {
   const [currUser, setCurrUser] = useState();
   const [postUser, setPostUser] = useState();
 
-
   useEffect(() => {
     let chatId = "";
     if (currUserId < postUserId) {
@@ -56,17 +55,17 @@ const ChatScreen = (props) => {
         setPostUser(pUser);
 
         // listener to track when the screen is clicked on
-       let focusListener = props.navigation.addListener('didFocus', () => {
-        enterChatScreen(postUserId);
-        AsyncStorage.setItem('focusedUser', postUserId);
-      });
+        let focusListener = props.navigation.addListener("didFocus", () => {
+          enterChatScreen(postUserId);
+          AsyncStorage.setItem("focusedUser", postUserId);
+        });
 
-      // track when the screen is clicked through
-      let unfocusListener = props.navigation.addListener('didBlur', () => {
-        exitChatScreen();
-        // we want to set this here as as sometimes exitChatScreen is called when the user didn't exit
-        AsyncStorage.setItem('focusedUser', '');
-      });
+        // track when the screen is clicked through
+        let unfocusListener = props.navigation.addListener("didBlur", () => {
+          exitChatScreen();
+          // we want to set this here as as sometimes exitChatScreen is called when the user didn't exit
+          AsyncStorage.setItem("focusedUser", "");
+        });
         // const chatref = firebase.firestore().collection("chats").doc(chatId);
         // await chatref.get().then((docSnapshot) => {
         //   if (docSnapshot.exists) {
