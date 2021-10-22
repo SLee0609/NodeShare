@@ -2,7 +2,7 @@
   "expo": {
     "name": "NodeShare",
     "slug": "NodeShare",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "nodeshare",
@@ -19,7 +19,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.csatlc.NodeShare",
-      "buildNumber": "1.0.0",
+      "buildNumber": "1.0.1",
       "infoPlist": {
         "NSCameraUsageDescription": "Allow camera access to take photos for posts and profile pictures.",
         "NSPhotoLibraryUsageDescription": "Allow photo library access to use photos from library in posts and profile pictures."
@@ -32,7 +32,7 @@
         "backgroundImage": "./assets/adaptive-icon-background.png"
       },
       "package": "com.csatlc.NodeShare",
-      "versionCode": 1
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
