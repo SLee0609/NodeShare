@@ -19,7 +19,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.csatlc.NodeShare",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow camera access to take photos for posts and profile pictures.",
+        "NSPhotoLibraryUsageDescription": "Allow photo library access to use photos from library in posts and profile pictures."
+      }
     },
     "android": {
       "icon": "./assets/icon.png",
